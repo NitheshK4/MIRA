@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Animated Header -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=230&section=header&text=M%20I%20R%20A&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Market%20Intelligence%20%26%20Research%20Automation&descSize=18&descAlignY=58&descAlign=50" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=230&section=header&text=M%20I%20R%20A&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Market%20Intelligence%20and%20Research%20Automation&descSize=18&descAlignY=58&descAlign=50" width="100%" />
 
 <!-- Typing Animation -->
 <br/>
