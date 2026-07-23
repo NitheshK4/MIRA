@@ -1,49 +1,51 @@
 <div align="center">
 
-<!-- Capsule Render Header -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=🕵️%20ACIE&fontSize=60&fontColor=fff&animation=fadeIn&fontAlignY=34&desc=Autonomous%20Competitor%20Intelligence%20Engine&descSize=18&descAlignY=55&descAlign=50" width="100%"/>
+<!-- Animated Header -->
+<img src="https://capsule-render.vercel.app/api?type=venom&color=gradient&customColorList=12,14,16,18,20&height=250&section=header&text=M%20I%20R%20A&fontSize=90&fontColor=fff&animation=fadeIn&fontAlignY=38&desc=Market%20Intelligence%20%26%20Research%20Automation&descSize=20&descAlignY=62&descAlign=50&stroke=8B5CF6&strokeWidth=1" width="100%" />
+
+<!-- Typing Animation -->
+<br/>
+<a href="#-overview">
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&multiline=true&repeat=true&width=800&height=80&lines=Scrape+%E2%86%92+Detect+%E2%86%92+Analyze+%E2%86%92+Alert;Autonomous+Competitor+Intelligence+in+Under+512MB+RAM" alt="Typing SVG" />
+</a>
+
+<br/><br/>
+
+<!-- Primary Badges -->
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Gemini](https://img.shields.io/badge/Gemini_2.5-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![HuggingFace](https://img.shields.io/badge/🤗_ONNX-FFD21E?style=for-the-badge)](https://huggingface.co)
+[![Chrome MV3](https://img.shields.io/badge/Chrome_MV3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com)
+
+[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://slack.com)
+[![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://notion.so)
+[![Gmail](https://img.shields.io/badge/SMTP-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 
 <br/>
 
-<p>
-<samp>
-  An AI-powered engine that <b>scrapes</b> competitor websites, <b>detects</b> meaningful changes with semantic embeddings,<br/>
-  <b>analyzes</b> business impact with LLMs, and <b>alerts</b> you in real time — all under 512 MB of RAM.
-</samp>
-</p>
-
-<br/>
-
-<!-- Tech Stack Badges -->
-[![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=nodedotjs&logoColor=white&labelColor=0d1117)](https://nodejs.org)
-[![React](https://img.shields.io/badge/React_18-Dashboard-61DAFB?style=for-the-badge&logo=react&logoColor=white&labelColor=0d1117)](https://react.dev)
-[![HuggingFace](https://img.shields.io/badge/🤗_ONNX-Embeddings-FFD21E?style=for-the-badge&labelColor=0d1117)](https://huggingface.co)
-[![Gemini](https://img.shields.io/badge/Gemini_2.5-Flash_LLM-8E75FF?style=for-the-badge&logo=google&logoColor=white&labelColor=0d1117)](https://ai.google.dev)
-
-[![Notion](https://img.shields.io/badge/Notion-CRM_Sync-000000?style=for-the-badge&logo=notion&logoColor=white&labelColor=0d1117)](https://notion.so)
-[![Slack](https://img.shields.io/badge/Slack-Alerts-4A154B?style=for-the-badge&logo=slack&logoColor=white&labelColor=0d1117)](https://slack.com)
-[![Gmail](https://img.shields.io/badge/SMTP-Email_Digest-EA4335?style=for-the-badge&logo=gmail&logoColor=white&labelColor=0d1117)](mailto:)
-[![Chrome](https://img.shields.io/badge/Chrome-Extension_MV3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=0d1117)](https://developer.chrome.com)
-
-<br/>
-
-<!-- Status Badges -->
-![RAM](https://img.shields.io/badge/RAM_Optimized-512MB_Limit-blueviolet?style=flat-square&logo=railway&logoColor=white)
-![CPU](https://img.shields.io/badge/Inference-CPU_Only-orange?style=flat-square&logo=cplusplus&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-Passing_✅-brightgreen?style=flat-square&logo=checkmarx&logoColor=white)
+![RAM](https://img.shields.io/badge/RAM-≤_512MB-blueviolet?style=flat-square)
+![Inference](https://img.shields.io/badge/Inference-CPU_Only-orange?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
+[![Stars](https://img.shields.io/github/stars/NitheshK4/MIRA?style=flat-square&color=FFD21E)](https://github.com/NitheshK4/MIRA/stargazers)
 
 </div>
 
 <br/>
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 📑 Table of Contents
 
+<details open>
+<summary>Click to expand</summary>
+
 - [Overview](#-overview)
 - [System Architecture](#️-system-architecture)
-- [The ML Pipeline](#-the-ml-pipeline)
+- [ML Pipeline](#-ml-pipeline)
 - [Chrome Extension](#-chrome-extension)
 - [Core Features](#-core-features)
 - [Model Configurations](#-model-configurations)
@@ -58,11 +60,13 @@
 - [Contributing](#-contributing)
 - [License](#-license)
 
----
+</details>
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🌟 Overview
 
-> **ACIE** is an autonomous, self-healing competitor monitoring engine that scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **JavaScript ONNX sentence embeddings**, analyzes and scores business impact with **Gemini 2.5 Flash** (or a local **Qwen GGUF** fallback), and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
+> **MIRA** (**M**arket **I**ntelligence & **R**esearch **A**utomation) is an autonomous, self-healing competitor monitoring engine. It scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **ONNX sentence embeddings**, analyzes business impact with **Gemini 2.5 Flash** (with a local **Qwen GGUF** fallback), and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
 
 <br/>
 
@@ -70,23 +74,61 @@
 
 | 🔬 Scrape | 🧠 Detect | 📊 Analyze & Score | 🚨 Alert |
 |:---:|:---:|:---:|:---:|
-| Axios + Puppeteer | JS ONNX Sentence Embeddings | Gemini 2.5 Flash / Qwen GGUF | Slack + Email + CRM |
-| Static & JS-rendered pages | `Xenova/all-MiniLM-L6-v2` cosine sim | LLM classification + impact 1–10 | Real-time webhook push |
+| Axios + Puppeteer | ONNX Sentence Embeddings | Gemini 2.5 Flash / Qwen GGUF | Slack + Email + CRM |
+| Static & JS-rendered pages | Cosine similarity threshold | Classification + Impact 1–10 | Real-time webhook push |
 
 </div>
 
 <br/>
 
-### ✨ Key Highlights
+### ✨ Why MIRA?
 
-- **Semantic understanding** — No brittle string diffs. Changes are compared by *meaning*, not characters.
-- **Triple-tier LLM fallback** — Cloud → Local GGUF → Rule-based heuristics. Always works.
-- **Multi-channel alerts** — Slack (instant, high-impact), Email (periodic digest), CRM (every change).
-- **Chrome Extension** — One-click competitor registration from any browser tab.
-- **Multi-workspace** — Isolated workspaces with per-workspace settings and API keys.
-- **Self-healing** — Failed CRM syncs retry automatically via a local SQLite queue.
+<table>
+<tr>
+<td>
 
----
+**🧠 Semantic Understanding**<br/>
+No brittle string diffs. Changes are compared by *meaning*, not characters. "Price is $100" ≈ "Current Price: $100" → no false alert.
+
+</td>
+<td>
+
+**🔄 Triple-Tier Fallback**<br/>
+Cloud LLM → Local GGUF → Rule-based heuristics. MIRA always produces analysis, even fully offline.
+
+</td>
+</tr>
+<tr>
+<td>
+
+**📢 Multi-Channel Alerts**<br/>
+Slack (instant, high-impact ≥ 8), Email (periodic digest), Notion/Airtable (every change logged).
+
+</td>
+<td>
+
+**🩹 Self-Healing**<br/>
+Failed CRM syncs auto-retry via a local SQLite queue. No data loss, ever.
+
+</td>
+</tr>
+<tr>
+<td>
+
+**🧩 Chrome Extension**<br/>
+One-click competitor registration from any browser tab. Live badge shows unread intel count.
+
+</td>
+<td>
+
+**🏢 Multi-Workspace**<br/>
+Isolated workspaces with per-workspace settings, API keys, and competitor lists.
+
+</td>
+</tr>
+</table>
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🗺️ System Architecture
 
@@ -99,41 +141,43 @@ graph TD
 
     subgraph Core Pipeline
         B --> D["🕸️ Double-Engine Scraper"]
-        D -->|"Cleaned Text"| E["🧠 JS ONNX Sentence Embedder"]
+        D -->|"Cleaned Text"| E["🧠 ONNX Sentence Embedder"]
         E -->|"Cosine Similarity"| F{"🔍 Semantic Change?"}
         F -->|"similarity >= 0.85"| G["✅ No Action"]
-        F -->|"similarity < 0.85"| H["🧠 Gemini / Qwen LLM Analyzer"]
+        F -->|"similarity < 0.85"| H["🧠 Gemini / Qwen LLM"]
     end
 
     subgraph Integrations
         H --> J["🔄 CRM Adapter"]
-        J -->|"Idempotent Write"| K["📓 Notion Database"]
-        J -->|"Idempotent Write"| L["📊 Airtable Base"]
+        J -->|"Idempotent Write"| K["📓 Notion"]
+        J -->|"Idempotent Write"| L["📊 Airtable"]
         J -->|"On Failure"| M["💾 SQLite Retry Queue"]
-        H -->|"Impact >= 8"| N["💬 Slack Channel"]
-        H -->|"Periodic Digest"| O["📧 SMTP Email"]
+        H -->|"Impact >= 8"| N["💬 Slack"]
+        H -->|"Periodic Digest"| O["📧 Email"]
     end
 
-    style K fill:#000000,stroke:#6C63FF,stroke-width:2px,color:#fff
-    style N fill:#4A154B,stroke:#6C63FF,stroke-width:2px,color:#fff
-    style O fill:#EA4335,stroke:#6C63FF,stroke-width:2px,color:#fff
-    style B fill:#0d1117,stroke:#6C63FF,stroke-width:1px,color:#c9d1d9
-    style D fill:#0d1117,stroke:#6C63FF,stroke-width:1px,color:#c9d1d9
+    style K fill:#000000,stroke:#A78BFA,stroke-width:2px,color:#fff
+    style N fill:#4A154B,stroke:#A78BFA,stroke-width:2px,color:#fff
+    style O fill:#EA4335,stroke:#A78BFA,stroke-width:2px,color:#fff
+    style B fill:#0d1117,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
+    style D fill:#0d1117,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
     style E fill:#0d1117,stroke:#FFD21E,stroke-width:2px,color:#FFD21E
-    style H fill:#0d1117,stroke:#6C63FF,stroke-width:1px,color:#c9d1d9
-    style F fill:#161b22,stroke:#6C63FF,stroke-width:2px,color:#c9d1d9
+    style H fill:#0d1117,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
+    style F fill:#161b22,stroke:#A78BFA,stroke-width:2px,color:#c9d1d9
 ```
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## 🧬 The ML Pipeline
+## 🧬 ML Pipeline
 
 <table>
 <tr>
 <td width="50%">
 
 ### 🧠 Stage 1 — Semantic Change Detection
-**JavaScript** • `@huggingface/transformers` • `Xenova/all-MiniLM-L6-v2` (ONNX)
+
+**Runtime:** `@huggingface/transformers` (ONNX, JavaScript)
+**Model:** `Xenova/all-MiniLM-L6-v2`
 
 ```javascript
 const { pipeline } = require('@huggingface/transformers');
@@ -148,29 +192,30 @@ const oldEmbed = await embedder("Price is $100",
 const newEmbed = await embedder("Current Price: $100",
   { pooling: 'mean', normalize: true });
 
-// Cosine similarity → 0.93 — Same meaning, NO alert! ✅
+// Cosine similarity → 0.93
+// Same meaning — NO alert triggered ✅
 ```
 
-> ❌ **No string comparison** — the system understands *meaning*, not characters.
+> ❌ No string comparison — MIRA understands *meaning*, not characters.
 
 </td>
 <td width="50%">
 
 ### 📊 Stage 2 — LLM Analysis & Scoring
-**Node.js** • `Gemini 2.5 Flash API` / `Qwen2.5-0.5B GGUF`
 
-Detected changes are sent to **Gemini 2.5 Flash** (cloud) or a **local Qwen2.5-0.5B GGUF** model (via llama-cli, CPU-only). The LLM returns structured output:
+**Cloud:** Gemini 2.5 Flash API
+**Local:** Qwen2.5-0.5B GGUF via llama-cli (CPU)
+
+Detected changes are analyzed in a **single inference pass**. The LLM returns structured output:
 
 | Output | Description |
 |:---|:---|
-| 📂 **Category** | LLM-determined change type |
-| 📝 **Summary** | Plain-English summary |
+| 📂 **Category** | LLM-classified change type |
+| 📝 **Summary** | Plain-English explanation |
 | ❓ **Why It Matters** | Business impact analysis |
 | 📊 **Impact Score** | 1–10 threat/opportunity rating |
 | 📋 **Justification** | Evidence-based reasoning |
 | 🎯 **Recommendation** | Action item with timeline |
-
-> 💡 Both classification and scoring happen in a **single inference pass**.
 
 </td>
 </tr>
@@ -179,57 +224,59 @@ Detected changes are sent to **Gemini 2.5 Flash** (cloud) or a **local Qwen2.5-0
 ### 🔄 Fallback Chain
 
 ```
-Gemini 2.5 Flash API  →  Qwen2.5-0.5B GGUF (llama-cli, CPU)  →  Rule-Based Heuristic Engine
-      Cloud                     Local (~382 MB)                       Keyword matching
+┌─────────────────────┐     ┌──────────────────────────┐     ┌─────────────────────────┐
+│  Gemini 2.5 Flash   │────▶│  Qwen2.5-0.5B GGUF       │────▶│  Rule-Based Heuristics  │
+│  (Cloud, <1.5s)     │     │  (Local, CPU, 7-15s)      │     │  (Keyword match, <1ms)  │
+└─────────────────────┘     └──────────────────────────┘     └─────────────────────────┘
 ```
 
-When cloud or local LLM inference is unavailable (rate limits, cold starts, missing API key), a **rule-based heuristic engine** assigns categories and approximate impact scores via keyword matching on the diff text.
+> When cloud inference is unavailable (rate limits, missing API key), MIRA falls back to local GGUF, then to keyword-based heuristics. **Analysis always completes.**
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🧩 Chrome Extension
 
 <div align="center">
 
-[![Chrome MV3](https://img.shields.io/badge/Manifest-V3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=0d1117)]()
-[![Service Worker](https://img.shields.io/badge/Background-Service_Worker-FF6D00?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white&labelColor=0d1117)]()
-[![Badge Alerts](https://img.shields.io/badge/Live-Badge_Counter-38bdf8?style=for-the-badge&logo=countingworkspro&logoColor=white&labelColor=0d1117)]()
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3)
+[![Service Worker](https://img.shields.io/badge/Background-Service_Worker-FF6D00?style=for-the-badge)](https://developer.chrome.com/docs/extensions/develop/concepts/service-workers)
+[![Live Badge](https://img.shields.io/badge/Live-Badge_Counter-38bdf8?style=for-the-badge)](https://developer.chrome.com/docs/extensions/reference/api/action#badge)
 
 </div>
 
 <br/>
 
-The **ACIE Chrome Extension** turns your browser into a competitor registration tool. Browse any competitor's website, click the extension icon, and it's instantly queued for monitoring.
+The **MIRA Chrome Extension** turns your browser into a competitor registration tool. Browse any competitor's website, click the extension icon, and it's instantly queued for monitoring.
 
 | Feature | Description |
 |:---|:---|
-| 🖱️ **One-Click Add** | Auto-detects the active tab's URL and infers the competitor name from the domain |
-| 🔴 **Live Badge** | Background service worker polls every 60s — new intel lights up a badge counter |
-| 🔑 **API Key Auth** | All requests secured with `Bearer` token, configured via the Options page |
+| 🖱️ **One-Click Add** | Auto-detects the active tab's URL and infers competitor name from the domain |
+| 🔴 **Live Badge** | Service worker polls every 60s — new intel lights up a badge counter on the icon |
+| 🔑 **API Key Auth** | All requests secured with `Bearer` token, configured via Options page |
 | 🎯 **Scope Selector** | Monitor full website, pricing page, or a specific section |
 
 <details>
-<summary><b>📐 Extension Architecture Diagram</b></summary>
+<summary><b>📐 Architecture</b></summary>
 <br/>
 
 ```mermaid
 graph LR
-    subgraph "Chrome Extension (Manifest V3)"
-        POPUP["🖱️ popup.html + popup.js<br/><i>Registration UI</i>"]
-        OPTIONS["⚙️ options.html + options.js<br/><i>Server Config</i>"]
-        BG["🔄 background.js<br/><i>Service Worker</i>"]
-        STORAGE["💾 chrome.storage.sync<br/><i>API Key + Server URL</i>"]
+    subgraph "Chrome Extension — Manifest V3"
+        POPUP["🖱️ popup.html + popup.js"]
+        OPTIONS["⚙️ options.html + options.js"]
+        BG["🔄 background.js"]
+        STORAGE["💾 chrome.storage.sync"]
     end
 
-    subgraph "ACIE Backend Server"
+    subgraph "MIRA Backend"
         API_ADD["/api/extension/add-competitor"]
         API_UNREAD["/api/extension/unread-count"]
     end
 
-    POPUP -->|"POST with Bearer token"| API_ADD
+    POPUP -->|"POST + Bearer"| API_ADD
     BG -->|"GET every 60s"| API_UNREAD
-    API_UNREAD -->|"unreadCount: N"| BG
-    BG -->|"setBadgeText(N)"| BADGE["🔴 Icon Badge"]
+    API_UNREAD -->|"{ unreadCount: N }"| BG
+    BG -->|"setBadgeText(N)"| BADGE["🔴 Badge"]
     POPUP --> STORAGE
     OPTIONS --> STORAGE
     BG --> STORAGE
@@ -238,8 +285,8 @@ graph LR
     style BG fill:#0d1117,stroke:#FF6D00,stroke-width:2px,color:#c9d1d9
     style OPTIONS fill:#0d1117,stroke:#4285F4,stroke-width:1px,color:#c9d1d9
     style BADGE fill:#38bdf8,stroke:#fff,stroke-width:1px,color:#000
-    style API_ADD fill:#161b22,stroke:#6C63FF,stroke-width:1px,color:#c9d1d9
-    style API_UNREAD fill:#161b22,stroke:#6C63FF,stroke-width:1px,color:#c9d1d9
+    style API_ADD fill:#161b22,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
+    style API_UNREAD fill:#161b22,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
 ```
 
 </details>
@@ -248,87 +295,87 @@ graph LR
 <summary><b>🔧 Installation</b></summary>
 <br/>
 
-1. Open `chrome://extensions/` and enable **Developer mode** (top-right toggle)
+1. Navigate to `chrome://extensions/` and enable **Developer mode**
 2. Click **Load unpacked** → select the `extension/` directory
-3. Click the extension icon → **Configure Server Settings**
-4. Enter your server URL (e.g., `http://localhost:3000`) and Extension API Key (from the dashboard Settings tab)
-5. Click **Verify and Save** — you're ready to go!
+3. Click the MIRA extension icon → **Configure Server Settings**
+4. Enter your server URL (e.g., `http://localhost:3000`) and Extension API Key (from dashboard Settings)
+5. Click **Verify and Save** ✅
 
 </details>
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## ⚡ Core Features
 
 <details open>
-<summary><b>🕸️ 1. Intelligent Double-Engine Scraper</b></summary>
+<summary><b>🕸️ Intelligent Double-Engine Scraper</b></summary>
 <br/>
 
-| Engine | Library | Purpose |
+| Engine | Library | Use Case |
 |:---|:---|:---|
-| ⚡ Fast Fetch | `axios` + `cheerio` | Static HTML pages — fast and lightweight |
-| 🌐 JS Render | `puppeteer` (headless Chromium) | SPAs, React/Angular apps with dynamic content |
+| ⚡ Fast Fetch | `axios` + `cheerio` | Static HTML — fast and lightweight |
+| 🌐 JS Render | `puppeteer` (headless Chromium) | SPAs & dynamic JS content |
 
 **Smart Cleaning Pipeline:**
-- 🧹 Strips cookie banners, navigation bars, footers, sidebars
+- 🧹 Strips cookie banners, nav bars, footers, sidebars
 - 🔄 Rotates User-Agent strings to avoid bot detection
-- 🖼️ Blocks images/CSS in Puppeteer to minimize memory footprint
-- 📸 Captures visual screenshots for audit trails
+- 🖼️ Blocks images/CSS in Puppeteer to minimize RAM
+- 📸 Captures screenshots for audit trails
 
 </details>
 
 <details>
-<summary><b>🔍 2. Tech Stack & DNS Enrichment</b></summary>
+<summary><b>🔍 Tech Stack & DNS Enrichment</b></summary>
 <br/>
 
-- 🌐 **DNS Resolution** — A-records and MX-records for server & email hosting detection
-- 🔧 **Header Inspection** — Reads `server`, `x-powered-by` HTTP headers
-- 📊 **Dashboard Widget** — Shows enriched tech profiles directly in the competitor sidebar
+- 🌐 **DNS Resolution** — A-records & MX-records for server/email hosting detection
+- 🔧 **Header Inspection** — Reads `server`, `x-powered-by` headers
+- 📊 **Dashboard Widget** — Enriched tech profiles displayed in competitor sidebar
 
 </details>
 
 <details>
-<summary><b>💼 3. Idempotent CRM Sync & Fail-Safe Queue</b></summary>
+<summary><b>💼 Idempotent CRM Sync</b></summary>
 <br/>
 
-- 🔒 **Deduplication** — Queries Notion/Airtable before writes to prevent duplicates
-- 🔄 **SQLite Retry Queue** — Failed syncs are queued locally and auto-retried periodically
-- 📊 **Dynamic Schema Matching** — Case-insensitive, whitespace-tolerant property matching
-- ✅ **Status Tracking** — Each card tracks `synced`, `failed`, or `pending` state
+- 🔒 **Deduplication** — Queries Notion/Airtable before writes
+- 🔄 **SQLite Retry Queue** — Failed syncs queued locally, auto-retried
+- 📊 **Dynamic Schema Matching** — Case-insensitive, whitespace-tolerant
+- ✅ **Status Tracking** — `synced` / `failed` / `pending` per card
 
 </details>
 
 <details>
-<summary><b>📢 4. Multi-Channel Alert System</b></summary>
+<summary><b>📢 Multi-Channel Alerts</b></summary>
 <br/>
 
 | Channel | Trigger | Content |
 |:---|:---|:---|
-| 💬 **Slack** | Impact Score ≥ 8 | Immediate webhook with full intelligence card |
-| 📧 **Email** | Periodic digest schedule | HTML-formatted summary of recent changes |
-| 📓 **Notion** | Every detected change | Structured database row with all fields |
-| 📊 **Airtable** | Every detected change | Structured record with all fields |
+| 💬 **Slack** | Impact ≥ 8 | Immediate webhook with full intel card |
+| 📧 **Email** | Periodic digest | HTML summary of recent changes |
+| 📓 **Notion** | Every change | Structured database row |
+| 📊 **Airtable** | Every change | Structured record |
 
 </details>
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🤖 Model Configurations
 
 <div align="center">
 
 | Component | Model | Runtime | Disk | RAM | Latency |
-|:---|:---|:---|:---|:---|:---|
-| 🔍 **Embeddings** | `Xenova/all-MiniLM-L6-v2` | `@huggingface/transformers` (ONNX) | ~90 MB | ~80 MB | < 0.5s |
-| 🧠 **LLM (Cloud)** | `gemini-2.5-flash` | Google Generative Language API | — | — | < 1.5s |
+|:---|:---|:---|:---:|:---:|:---:|
+| 🔍 **Embeddings** | `Xenova/all-MiniLM-L6-v2` | ONNX (JavaScript) | ~90 MB | ~80 MB | < 0.5s |
+| 🧠 **LLM (Cloud)** | `gemini-2.5-flash` | Google API | — | — | < 1.5s |
 | 🧠 **LLM (Local)** | `Qwen2.5-0.5B-Instruct` | llama-cli (GGUF Q4_K_M) | ~382 MB | ~350 MB | 7–15s |
 | 🔧 **Fallback** | Rule-based heuristic | Node.js keyword matching | — | — | < 1ms |
 
 </div>
 
-> 💡 **Tip:** Set `GEMINI_API_KEY` in `.env` for cloud inference. Without it, the engine auto-falls back to local Qwen GGUF, then to rule-based heuristics.
+> 💡 Set `GEMINI_API_KEY` in `.env` for cloud inference. Without it, MIRA auto-falls back to local GGUF → heuristics.
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🚀 Quick Start
 
@@ -340,28 +387,26 @@ graph LR
 ✅ OS         macOS / Linux / Windows (WSL)
 ```
 
-### 1. Clone & Install
+### 1️⃣ Clone & Install
 
 ```bash
-git clone https://github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine.git
-cd Autonomous-Competitor-Intelligence-Engine
+git clone https://github.com/NitheshK4/MIRA.git
+cd MIRA
 
-# Install all dependencies (root + server + client)
 npm install
 npm run install:all
 ```
 
-> 💡 **No Python required!** All ML inference runs natively in Node.js via ONNX or external binaries.
+> 💡 **No Python required.** All ML inference runs natively in Node.js.
 
-### 2. Configure Environment
+### 2️⃣ Configure
 
 ```bash
 cp .env.example .env
+# Edit .env — see Environment Variables below
 ```
 
-Edit `.env` with your configuration (see [Environment Variables](#-environment-variables) for the full list).
-
-### 3. Launch Dev Servers
+### 3️⃣ Launch
 
 ```bash
 npm run dev
@@ -372,35 +417,36 @@ npm run dev
 | 🖥️ Backend API | `http://localhost:3000` |
 | 🎨 Dashboard | `http://localhost:5173` |
 
-### 4. Run Integration Tests
+### 4️⃣ Test
 
 ```bash
 npm test
 ```
 
-Validates the full pipeline: Scraping → Semantic Detection → LLM Inference → CRM Sync.
+> Validates: Scraping → Semantic Detection → LLM Inference → CRM Sync
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🔐 Environment Variables
 
-Create a `.env` file in the project root. Only `PORT` is required — everything else is optional and unlocks additional features.
+Create a `.env` in the project root. Only `PORT` is required.
 
 | Variable | Required | Default | Description |
 |:---|:---:|:---:|:---|
 | `PORT` | ✅ | `3000` | Express server port |
-| `NODE_ENV` | — | `development` | Set to `production` for optimized builds |
-| `GEMINI_API_KEY` | — | — | Google Gemini 2.5 Flash API key ([get one](https://ai.google.dev)) |
-| `SLACK_WEBHOOK_URL` | — | — | Slack Incoming Webhook for real-time alerts |
-| `PUPPETEER_EXECUTABLE_PATH` | — | bundled | Override Chrome path (useful in Docker/Railway) |
+| `NODE_ENV` | — | `development` | `production` for optimized builds |
+| `GEMINI_API_KEY` | — | — | Gemini 2.5 Flash API key · [Get one →](https://ai.google.dev) |
+| `SLACK_WEBHOOK_URL` | — | — | Slack Incoming Webhook URL |
+| `PUPPETEER_EXECUTABLE_PATH` | — | bundled | Override Chrome binary path |
 
-> Notion, Airtable, and SMTP credentials are configured via the **dashboard Settings tab** at runtime — no `.env` entry needed.
+> **Note:** Notion, Airtable, and SMTP credentials are configured via the **dashboard Settings tab** — no `.env` needed.
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 📡 API Reference
 
-All dashboard endpoints use the `X-Workspace-Id` header (defaults to `default`). Extension endpoints require `Authorization: Bearer <api_key>`.
+Dashboard endpoints use `X-Workspace-Id` header (defaults to `default`).
+Extension endpoints require `Authorization: Bearer <api_key>`.
 
 <details>
 <summary><b>📋 Dashboard Endpoints</b></summary>
@@ -408,23 +454,23 @@ All dashboard endpoints use the `X-Workspace-Id` header (defaults to `default`).
 
 | Method | Endpoint | Description |
 |:---|:---|:---|
-| `GET` | `/health` | Health check / keep-alive |
+| `GET` | `/health` | Health check |
 | `GET` | `/api/profile` | Get business profile |
-| `POST` | `/api/profile` | Save/update business profile |
-| `GET` | `/api/competitors` | List all competitors |
-| `POST` | `/api/competitors` | Add a new competitor |
-| `GET` | `/api/competitors/:id` | Get competitor details |
-| `PUT` | `/api/competitors/:id` | Update a competitor |
-| `DELETE` | `/api/competitors/:id` | Remove a competitor |
+| `POST` | `/api/profile` | Save business profile |
+| `GET` | `/api/competitors` | List competitors |
+| `POST` | `/api/competitors` | Add competitor |
+| `GET` | `/api/competitors/:id` | Competitor details |
+| `PUT` | `/api/competitors/:id` | Update competitor |
+| `DELETE` | `/api/competitors/:id` | Remove competitor |
 | `POST` | `/api/competitors/:id/check` | Trigger immediate scrape |
-| `GET` | `/api/intelligence` | Get intelligence cards |
-| `PUT` | `/api/intelligence/:id` | Update an intel card (read/unread) |
-| `POST` | `/api/intelligence/read-all` | Mark all cards as read |
+| `GET` | `/api/intelligence` | Get intel cards |
+| `PUT` | `/api/intelligence/:id` | Update card (read/unread) |
+| `POST` | `/api/intelligence/read-all` | Mark all read |
 | `POST` | `/api/intelligence/:id/retry` | Retry failed CRM sync |
-| `GET` | `/api/settings` | Get workspace settings |
-| `POST` | `/api/settings` | Save workspace settings |
-| `POST` | `/api/settings/test-email` | Test SMTP connection |
-| `GET` | `/api/debug-status` | Pipeline debug status |
+| `GET` | `/api/settings` | Get settings |
+| `POST` | `/api/settings` | Save settings |
+| `POST` | `/api/settings/test-email` | Test SMTP |
+| `GET` | `/api/debug-status` | Pipeline debug info |
 
 </details>
 
@@ -432,15 +478,15 @@ All dashboard endpoints use the `X-Workspace-Id` header (defaults to `default`).
 <summary><b>🧩 Extension Endpoints</b></summary>
 <br/>
 
-| Method | Endpoint | Auth | Description |
-|:---|:---|:---|:---|
-| `GET` | `/api/extension/status` | Bearer | Connection health check |
-| `GET` | `/api/extension/unread-count` | Bearer | Get unread card count (for badge) |
-| `POST` | `/api/extension/add-competitor` | Bearer | Register a competitor from the browser |
+| Method | Endpoint | Description |
+|:---|:---|:---|
+| `GET` | `/api/extension/status` | Connection check |
+| `GET` | `/api/extension/unread-count` | Unread card count (badge) |
+| `POST` | `/api/extension/add-competitor` | Register competitor from browser |
 
 </details>
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🔌 Integration Guides
 
@@ -448,12 +494,12 @@ All dashboard endpoints use the `X-Workspace-Id` header (defaults to `default`).
 <summary><b>📓 Notion CRM</b></summary>
 <br/>
 
-1. Create an integration at **[Notion My Integrations](https://www.notion.so/my-integrations)**
+1. Create an integration at [**Notion My Integrations**](https://www.notion.so/my-integrations)
 2. Create a database with these properties:
 
 | Property | Type |
 |:---|:---|
-| Title | `Title` (default) |
+| Title | `Title` |
 | Competitor Name | `Select` |
 | URL | `URL` |
 | Category | `Select` |
@@ -463,9 +509,9 @@ All dashboard endpoints use the `X-Workspace-Id` header (defaults to `default`).
 | Justification | `Text` |
 | Screenshot URL | `URL` |
 
-3. Connect your integration to the database via `...` → **Connect to**
-4. Copy the **Database ID** from the page URL
-5. Enter credentials in the dashboard **Settings** panel
+3. Connect integration to database → `...` → **Connect to**
+4. Copy **Database ID** from page URL
+5. Enter credentials in dashboard **Settings**
 
 </details>
 
@@ -473,34 +519,34 @@ All dashboard endpoints use the `X-Workspace-Id` header (defaults to `default`).
 <summary><b>📊 Airtable CRM</b></summary>
 <br/>
 
-1. Generate a PAT with `data.records:write` at **[Airtable Developer Hub](https://airtable.com/create/tokens)**
-2. Create a Base → Table named **Competitor Intel** with matching fields
+1. Generate a PAT with `data.records:write` at [**Airtable Tokens**](https://airtable.com/create/tokens)
+2. Create a Base → Table named **Competitor Intel**
 3. Enter Base ID, Table name, and Token in dashboard Settings
 
 </details>
 
 <details>
-<summary><b>💬 Slack Alerts</b></summary>
+<summary><b>💬 Slack</b></summary>
 <br/>
 
-1. Create an **Incoming Webhook** in your Slack workspace
+1. Create an [**Incoming Webhook**](https://api.slack.com/messaging/webhooks) in your workspace
 2. Paste the webhook URL in dashboard Settings
-3. Changes with **Impact Score ≥ 8** trigger instant Slack alerts ⚡
+3. Impact Score **≥ 8** → instant Slack alert ⚡
 
 </details>
 
 <details>
-<summary><b>📧 SMTP Email Digest</b></summary>
+<summary><b>📧 Email (SMTP)</b></summary>
 <br/>
 
-1. For Gmail: Generate an **App Password** at `security.google.com`
-2. Configure in Settings: Host `smtp.gmail.com`, Port `587`
+1. For Gmail: generate an **App Password** at [security.google.com](https://security.google.com)
+2. Configure in Settings: `smtp.gmail.com` / Port `587`
 3. Click **Test SMTP Connection** to verify
-4. Periodic digests will arrive in your inbox automatically 📬
+4. Periodic digests arrive automatically 📬
 
 </details>
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🛠️ Tech Stack
 
@@ -514,130 +560,119 @@ All dashboard endpoints use the `X-Workspace-Id` header (defaults to `default`).
 
 | Layer | Technologies |
 |:---|:---|
-| 🖥️ **Backend** | Node.js 18+, Express 4, SQLite (`sqlite3` + `sqlite`), UUID |
+| 🖥️ **Backend** | Node.js 18+, Express 4, SQLite, UUID |
 | 🎨 **Frontend** | React 18, Vite 5 |
-| 🕸️ **Scraping** | Axios, Cheerio, Puppeteer (headless Chromium) |
-| 🧠 **AI / ML** | `@huggingface/transformers` (ONNX), Gemini 2.5 Flash, Qwen2.5-0.5B GGUF (llama-cli) |
-| 🔌 **Integrations** | Notion API (`@notionhq/client`), Airtable (REST), Slack Webhooks, Nodemailer SMTP |
-| 🧩 **Extension** | Chrome Manifest V3, Service Workers, `chrome.storage` API |
-| 🔧 **Dev Tooling** | Concurrently, Nodemon, Docker |
+| 🕸️ **Scraping** | Axios, Cheerio, Puppeteer |
+| 🧠 **AI / ML** | HuggingFace Transformers (ONNX), Gemini 2.5 Flash, Qwen GGUF |
+| 🔌 **Integrations** | Notion SDK, Airtable REST, Slack Webhooks, Nodemailer |
+| 🧩 **Extension** | Chrome Manifest V3, Service Workers |
+| 🔧 **Tooling** | Concurrently, Nodemon, Docker |
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 📁 Project Structure
 
 ```
-📦 Autonomous-Competitor-Intelligence-Engine
+📦 MIRA
 │
-├── 📂 client/                        # React + Vite dashboard
-│   ├── 📂 src/
-│   │   ├── App.jsx                   # Root dashboard (single-file application)
-│   │   ├── index.css                 # Global styles
-│   │   └── main.jsx                  # React entry point
-│   ├── index.html                    # HTML template
-│   └── vite.config.js                # Vite configuration with API proxy
+├── 📂 client/                     # React + Vite dashboard
+│   ├── src/
+│   │   ├── App.jsx                # Root dashboard application
+│   │   ├── index.css              # Global styles
+│   │   └── main.jsx               # React entry point
+│   ├── index.html
+│   └── vite.config.js             # Vite config with API proxy
 │
-├── 📂 server/                        # Node.js + Express backend
-│   └── 📂 src/
-│       ├── index.js                  # Express server, routes, scheduler
-│       ├── scraper.js                # Double-engine scraper (Axios + Puppeteer)
-│       ├── detector.js               # Semantic change detection (ONNX embeddings)
-│       ├── llm.js                    # LLM inference (Gemini / Qwen GGUF / fallback)
-│       ├── crm.js                    # Notion & Airtable CRM adapter
-│       ├── queue.js                  # Sequential processing queue
-│       ├── slack.js                  # Slack webhook alerts
-│       ├── mailer.js                 # SMTP email digest (Nodemailer)
-│       ├── enrichment.js             # DNS + header tech stack enrichment
-│       ├── db.js                     # SQLite database layer
-│       └── verify-test.js            # Integration test suite
+├── 📂 server/                     # Node.js + Express backend
+│   └── src/
+│       ├── index.js               # Express server, routes, scheduler
+│       ├── scraper.js             # Double-engine scraper
+│       ├── detector.js            # Semantic change detection (ONNX)
+│       ├── llm.js                 # LLM inference (Gemini / Qwen / fallback)
+│       ├── crm.js                 # Notion & Airtable CRM adapter
+│       ├── queue.js               # Sequential processing queue
+│       ├── slack.js               # Slack webhook alerts
+│       ├── mailer.js              # SMTP email digest
+│       ├── enrichment.js          # DNS & header enrichment
+│       ├── db.js                  # SQLite database layer
+│       └── verify-test.js         # Integration tests
 │
-├── 📂 extension/                     # Chrome Extension (Manifest V3)
-│   ├── manifest.json                 # MV3 config & permissions
-│   ├── popup.html / popup.js         # One-click competitor registration
-│   ├── options.html / options.js     # Server URL & API key settings
-│   ├── background.js                 # Service worker — badge polling
-│   └── icon*.png                     # Extension icons (16, 48, 128)
+├── 📂 extension/                  # Chrome Extension (MV3)
+│   ├── manifest.json
+│   ├── popup.html / popup.js      # One-click registration
+│   ├── options.html / options.js  # Server config
+│   ├── background.js              # Badge polling worker
+│   └── icon*.png                  # Icons (16, 48, 128)
 │
-├── 📂 docs/                          # Documentation & screenshots
-│
-├── data_exporter.py                  # Standalone CSV/Markdown export (Python stdlib)
-├── Dockerfile                        # Production container config
-├── package.json                      # Root workspace orchestrator
-└── .env.example                      # Environment template
+├── 📂 docs/                       # Documentation & screenshots
+├── data_exporter.py               # CSV/Markdown export utility
+├── Dockerfile                     # Production container
+├── package.json                   # Workspace orchestrator
+└── .env.example                   # Environment template
 ```
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🐳 Deployment
 
 ### Railway (Recommended)
 
-The included `Dockerfile` handles everything — Chrome installation, model downloads, Vite build, and Express routing.
+The `Dockerfile` handles Chrome, model downloads, Vite build, and Express routing automatically.
 
-```bash
-# Railway reads the Dockerfile automatically:
-# ✅ Chrome for Puppeteer
-# ✅ ONNX + GGUF model downloads
-# ✅ Vite static build
-# ✅ Express server
-```
-
-1. Create a **New Project** on [Railway](https://railway.app)
-2. Link your GitHub repository
-3. Add environment variables: `PORT=3000`, `GEMINI_API_KEY=...`
-4. Deploy! 🚀
+1. Create a project on [**Railway**](https://railway.app)
+2. Link your GitHub repo
+3. Set env vars: `PORT=3000`, `GEMINI_API_KEY=...`
+4. Deploy 🚀
 
 ### Docker (Manual)
 
 ```bash
-docker build -t acie .
-docker run -p 3000:3000 --env-file .env acie
+docker build -t mira .
+docker run -p 3000:3000 --env-file .env mira
 ```
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## ⚠️ Known Limitations
 
 | Issue | Details |
 |:---|:---|
-| ⏳ **Cold Start** | First run downloads ML models (~90 MB ONNX + ~382 MB GGUF). Cached after that. |
-| 🤖 **Anti-Bot** | Some sites block headless scrapers. The engine gracefully falls back to Axios. |
-| 📋 **Sequential Queue** | Competitors are processed one-at-a-time to stay under 512 MB RAM. |
-| 🔄 **LLM Rate Limits** | Gemini may rate-limit under heavy use → auto-fallback to local GGUF → heuristics. |
+| ⏳ **Cold Start** | First run downloads models (~90 MB ONNX + ~382 MB GGUF). Cached after. |
+| 🤖 **Anti-Bot** | Some sites block headless scrapers → graceful Axios fallback. |
+| 📋 **Sequential Queue** | One-at-a-time processing to stay under 512 MB RAM. |
+| 🔄 **Rate Limits** | Gemini may throttle → auto-fallback to GGUF → heuristics. |
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how to get started:
-
 1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. **Commit** your changes: `git commit -m 'Add amazing feature'`
-4. **Push** to the branch: `git push origin feature/amazing-feature`
-5. **Open** a Pull Request
+2. **Branch** → `git checkout -b feature/your-feature`
+3. **Commit** → `git commit -m 'Add your feature'`
+4. **Push** → `git push origin feature/your-feature`
+5. **PR** → Open a Pull Request
 
-Please make sure your code passes `npm test` before submitting.
+Please ensure `npm test` passes before submitting.
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 📜 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer&animation=twinkling" width="100%" />
+Licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 
 <br/>
+
+<!-- Animated Footer -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,16,18,20&height=120&section=footer&animation=twinkling" width="100%" />
+
+<div align="center">
 
 **Built with ❤️ by [Nithesh K](https://github.com/NitheshK4)**
 
 <br/>
 
-[![MIT License](https://img.shields.io/badge/License-MIT-6C63FF?style=for-the-badge&labelColor=0d1117)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/NitheshK4/Autonomous-Competitor-Intelligence-Engine?style=for-the-badge&logo=github&color=FFD21E&labelColor=0d1117)](https://github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/stargazers)
+[![MIT](https://img.shields.io/badge/License-MIT-A78BFA?style=for-the-badge&labelColor=0d1117)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/NitheshK4/MIRA?style=for-the-badge&logo=github&color=FFD21E&labelColor=0d1117)](https://github.com/NitheshK4/MIRA/stargazers)
+[![Issues](https://img.shields.io/github/issues/NitheshK4/MIRA?style=for-the-badge&logo=github&color=F87171&labelColor=0d1117)](https://github.com/NitheshK4/MIRA/issues)
 
 </div>
