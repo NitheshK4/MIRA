@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Animated Header -->
-<img src="https://capsule-render.vercel.app/api?type=venom&color=gradient&customColorList=12,14,16,18,20&height=250&section=header&text=M%20I%20R%20A&fontSize=90&fontColor=fff&animation=fadeIn&fontAlignY=38&desc=Market%20Intelligence%20%26%20Research%20Automation&descSize=20&descAlignY=62&descAlign=50&stroke=8B5CF6&strokeWidth=1" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=230&section=header&text=M%20I%20R%20A&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Market%20Intelligence%20%26%20Research%20Automation&descSize=18&descAlignY=58&descAlign=50" width="100%" />
 
 <!-- Typing Animation -->
 <br/>
@@ -663,7 +663,7 @@ Licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 <br/>
 
 <!-- Animated Footer -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,16,18,20&height=120&section=footer&animation=twinkling" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=120&section=footer&animation=twinkling" width="100%" />
 
 <div align="center">
 
