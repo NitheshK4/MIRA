@@ -1,4 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Bot, 
+  Activity, 
+  ShieldAlert, 
+  Target, 
+  Zap, 
+  Layers, 
+  Settings, 
+  RefreshCw, 
+  Plus, 
+  ExternalLink, 
+  CheckCircle2, 
+  TrendingUp, 
+  Eye, 
+  Image, 
+  FileText, 
+  Swords, 
+  ArrowLeft,
+  Trash2,
+  Pause,
+  Play,
+  Sparkles
+} from 'lucide-react';
 
 // Extract or generate Workspace ID per tab session
 const getWorkspaceId = () => {
@@ -289,29 +313,32 @@ export default function App() {
 
   return (
     <div>
-      {/* Top Navbar */}
+      {/* Top Sticky Header Navbar */}
       <header className="navbar">
-        <div className="nav-brand" onClick={() => onboarded && setActiveTab('dashboard')} style={{ cursor: 'pointer' }}>
-          <span>🤖</span> Autonomous Competitor Intelligence Engine
+        <div className="nav-brand" onClick={() => onboarded && setActiveTab('dashboard')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ background: 'var(--primary-gradient)', padding: '6px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Bot size={22} color="#ffffff" />
+          </div>
+          <span>MIRA Engine</span>
         </div>
         {onboarded && (
           <nav className="nav-links">
             <div className="workspace-indicator" style={{ marginRight: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '12px', opacity: 0.6 }}>Workspace:</span>
-              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '4px 8px', borderRadius: '4px', fontSize: '13px', color: 'var(--color-secondary)', fontWeight: 'bold' }}>{workspaceId}</code>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Workspace:</span>
+              <code style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', color: '#818cf8', fontWeight: 'bold' }}>{workspaceId}</code>
             </div>
             <button className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-              Dashboard
+              <Activity size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Dashboard
             </button>
             <button className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}>
-              Intelligence Feed
+              <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Intelligence Feed
             </button>
             <button className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
-              Settings
+              <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
             </button>
             {activeTab === 'details' && (
               <button className="nav-link active">
-                Competitor Detail
+                <FileText size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Detail
               </button>
             )}
           </nav>
@@ -332,83 +359,98 @@ export default function App() {
             <button className="btn" style={{ marginTop: '15px' }} onClick={fetchInitialData}>Retry Connection</button>
           </div>
         ) : (
-          <div>
-            {activeTab === 'onboarding' && (
-              <OnboardingPage onSubmit={handleOnboardingSubmit} initialProfile={profile} />
-            )}
-            
-            {activeTab === 'dashboard' && (
-              <DashboardPage 
-                competitors={competitors}
-                onAddClick={() => setIsAddModalOpen(true)}
-                onCheckNow={handleCheckNow}
-                onPauseResume={handlePauseResume}
-                onDelete={handleDeleteCompetitor}
-                onViewDetails={navigateToDetails}
-              />
-            )}
-            
-            {activeTab === 'feed' && (
-              <FeedPage 
-                cards={feedCards}
-                competitors={competitors}
-                onRetryCrm={handleRetryCrm}
-                onViewDiff={(diff) => setActiveDiffText(diff)}
-                onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
-                onRefreshFeed={refreshFeed}
-              />
-            )}
-            
-            {activeTab === 'details' && (
-              <DetailsPage 
-                competitorId={selectedCompId}
-                competitors={competitors}
-                onBack={() => { setActiveTab('dashboard'); setSelectedCompId(null); }}
-                onDelete={handleDeleteCompetitor}
-                onCheckNow={handleCheckNow}
-                onUpdateCompetitor={refreshCompetitors}
-              />
-            )}
-            
-            {activeTab === 'settings' && (
-              <SettingsPage 
-                settings={settings}
-                profile={profile}
-                feedCards={feedCards}
-                onSaveSettings={handleSaveSettings}
-                onTestEmail={handleTestEmail}
-                onRetryCrm={handleRetryCrm}
-                onRegenerateKey={handleRegenerateApiKey}
-                onUpdateProfile={handleOnboardingSubmit}
-              />
-            )}
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={activeTab}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeTab === 'onboarding' && (
+                <OnboardingPage onSubmit={handleOnboardingSubmit} initialProfile={profile} />
+              )}
+              
+              {activeTab === 'dashboard' && (
+                <DashboardPage 
+                  competitors={competitors}
+                  feedCards={feedCards}
+                  onAddClick={() => setIsAddModalOpen(true)}
+                  onCheckNow={handleCheckNow}
+                  onPauseResume={handlePauseResume}
+                  onDelete={handleDeleteCompetitor}
+                  onViewDetails={navigateToDetails}
+                />
+              )}
+              
+              {activeTab === 'feed' && (
+                <FeedPage 
+                  cards={feedCards}
+                  competitors={competitors}
+                  onRetryCrm={handleRetryCrm}
+                  onViewDiff={(diff) => setActiveDiffText(diff)}
+                  onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
+                  onRefreshFeed={refreshFeed}
+                />
+              )}
+              
+              {activeTab === 'details' && (
+                <DetailsPage 
+                  competitorId={selectedCompId}
+                  competitors={competitors}
+                  onBack={() => { setActiveTab('dashboard'); setSelectedCompId(null); }}
+                  onDelete={handleDeleteCompetitor}
+                  onCheckNow={handleCheckNow}
+                  onUpdateCompetitor={refreshCompetitors}
+                />
+              )}
+              
+              {activeTab === 'settings' && (
+                <SettingsPage 
+                  settings={settings}
+                  profile={profile}
+                  feedCards={feedCards}
+                  onSaveSettings={handleSaveSettings}
+                  onTestEmail={handleTestEmail}
+                  onRetryCrm={handleRetryCrm}
+                  onRegenerateKey={handleRegenerateApiKey}
+                  onUpdateProfile={handleOnboardingSubmit}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
         )}
       </main>
 
       {/* Add Competitor Modal */}
-      {isAddModalOpen && (
-        <AddCompetitorModal 
-          onClose={() => setIsAddModalOpen(false)}
-          onSubmit={handleAddCompetitor}
-        />
-      )}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <AddCompetitorModal 
+            onClose={() => setIsAddModalOpen(false)}
+            onSubmit={handleAddCompetitor}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Diff Text Modal */}
-      {activeDiffText !== null && (
-        <DiffModal 
-          diffText={activeDiffText}
-          onClose={() => setActiveDiffText(null)}
-        />
-      )}
+      <AnimatePresence>
+        {activeDiffText !== null && (
+          <DiffModal 
+            diffText={activeDiffText}
+            onClose={() => setActiveDiffText(null)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Screenshot Modal */}
-      {activeScreenshotUrl && (
-        <ScreenshotModal 
-          url={activeScreenshotUrl}
-          onClose={() => setActiveScreenshotUrl(null)}
-        />
-      )}
+      <AnimatePresence>
+        {activeScreenshotUrl && (
+          <ScreenshotModal 
+            url={activeScreenshotUrl}
+            onClose={() => setActiveScreenshotUrl(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -421,7 +463,8 @@ function OnboardingPage({ onSubmit, initialProfile }) {
     business_name: initialProfile?.business_name || '',
     product_desc: initialProfile?.product_desc || '',
     customers: initialProfile?.customers || '',
-    price_point: initialProfile?.price_point || ''
+    price_point: initialProfile?.price_point || '',
+    features_list: initialProfile?.features_list || ''
   });
 
   const handleSubmit = (e) => {
@@ -490,6 +533,18 @@ function OnboardingPage({ onSubmit, initialProfile }) {
           />
         </div>
 
+        <div className="form-group">
+          <label className="form-label">Your Core Product Features & Capabilities</label>
+          <textarea 
+            className="form-input" 
+            rows="3"
+            value={form.features_list}
+            onChange={e => setForm({ ...form, features_list: e.target.value })}
+            placeholder="E.g., Automated AI writing, multi-channel outbound, webhook integrations, team workspace analytics, billing dashboard."
+          ></textarea>
+          <div className="form-help">Option 2 Feature Comparison: Used to compare competitor launches feature-by-feature and generate sales battlecards.</div>
+        </div>
+
         <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '10px', padding: '14px' }}>
           Complete Onboarding & Launch Dashboard
         </button>
@@ -501,7 +556,7 @@ function OnboardingPage({ onSubmit, initialProfile }) {
 // ----------------------------------------------------
 // PAGE COMPONENT: DASHBOARD
 // ----------------------------------------------------
-function DashboardPage({ competitors, onAddClick, onCheckNow, onPauseResume, onDelete, onViewDetails }) {
+function DashboardPage({ competitors, feedCards = [], onAddClick, onCheckNow, onPauseResume, onDelete, onViewDetails }) {
   
   const getStatusBadge = (status) => {
     switch (status) {
@@ -524,15 +579,47 @@ function DashboardPage({ competitors, onAddClick, onCheckNow, onPauseResume, onD
     return date.toLocaleDateString();
   };
 
+  const productThreatCount = feedCards.filter(c => c.affects_product === 1 || c.affects_product === true).length;
+
   return (
     <div>
+      {/* Metric Cards Summary */}
+      <div className="stats-grid">
+        <div className="glass-panel stat-card">
+          <div className="stat-header">
+            <span>Monitored Competitors</span>
+            <Activity size={18} color="#38bdf8" />
+          </div>
+          <div className="stat-value">{competitors.length}</div>
+          <div className="stat-footer">Active scrapers tracking targets</div>
+        </div>
+
+        <div className="glass-panel stat-card">
+          <div className="stat-header">
+            <span>Intelligence Cards</span>
+            <Zap size={18} color="#a855f7" />
+          </div>
+          <div className="stat-value">{feedCards.length}</div>
+          <div className="stat-footer">AI-analyzed website updates</div>
+        </div>
+
+        <div className="glass-panel stat-card">
+          <div className="stat-header">
+            <span>Product Threats</span>
+            <Target size={18} color="#ef4444" />
+          </div>
+          <div className="stat-value" style={{ color: '#f87171' }}>{productThreatCount}</div>
+          <div className="stat-footer">Direct feature overlaps flagged</div>
+        </div>
+      </div>
+
       <div className="page-header">
         <div>
-          <h1 className="page-title">Monitored Competitors</h1>
-          <p className="page-subtitle">Track, scan, and manage competitor websites</p>
+          <h1 className="page-title">Competitor Targets</h1>
+          <p className="page-subtitle">Manage automated web scraping targets and inspection schedules</p>
         </div>
         <button className="btn btn-primary" onClick={onAddClick}>
-          ➕ Add Competitor URL
+          <Plus size={16} /> Add Competitor Target
         </button>
       </div>
 
@@ -587,13 +674,13 @@ function DashboardPage({ competitors, onAddClick, onCheckNow, onPauseResume, onD
                   View History
                 </button>
                 <button className="btn btn-primary" style={{ padding: '8px 12px', fontSize: '13px' }} onClick={() => onCheckNow(comp.id)}>
-                  Check Now
+                  <RefreshCw size={14} /> Check Now
                 </button>
                 <button className="btn" style={{ padding: '8px 12px' }} onClick={() => onPauseResume(comp.id, comp.status)}>
-                  {comp.status === 'paused' ? '▶️' : '⏸️'}
+                  {comp.status === 'paused' ? <Play size={14} color="#10b981" /> : <Pause size={14} color="#f59e0b" />}
                 </button>
                 <button className="btn btn-danger" style={{ padding: '8px 12px' }} onClick={() => onDelete(comp.id)}>
-                  🗑️
+                  <Trash2 size={14} />
                 </button>
               </div>
             </div>
@@ -611,11 +698,12 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
   const [selectedComp, setSelectedComp] = useState('all');
   const [selectedCat, setSelectedCat] = useState('all');
   const [unreadOnly, setUnreadOnly] = useState(false);
+  const [productImpactOnly, setProductImpactOnly] = useState(false);
 
   const getScoreColor = (score) => {
-    if (score >= 8) return '#ef4444'; // Red
-    if (score >= 5) return '#f97316'; // Orange
-    return '#3b82f6'; // Blue
+    if (score >= 8) return '#f43f5e'; // Cyber Red/Rose
+    if (score >= 5) return '#f59e0b'; // Amber
+    return '#10b981'; // Emerald
   };
 
   const handleMarkAllRead = async () => {
@@ -645,6 +733,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
     if (selectedComp !== 'all' && card.competitor_id !== parseInt(selectedComp, 10)) return false;
     if (selectedCat !== 'all' && card.category !== selectedCat) return false;
     if (unreadOnly && card.is_read === 1) return false;
+    if (productImpactOnly && (card.affects_product !== 1 && card.affects_product !== true)) return false;
     return true;
   });
 
@@ -653,7 +742,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
       <div className="page-header">
         <div>
           <h1 className="page-title">Intelligence Feed</h1>
-          <p className="page-subtitle">Real-time alerts, business impact analyses, and CRM integration</p>
+          <p className="page-subtitle">Real-time alerts, product impact matrix, and CRM integration</p>
         </div>
         <button className="btn" onClick={handleMarkAllRead}>
           Read All Cards
@@ -686,14 +775,26 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
             </select>
           </div>
 
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
             <input 
               type="checkbox" 
               checked={unreadOnly} 
               onChange={e => setUnreadOnly(e.target.checked)} 
-              style={{ width: '18px', height: '18px' }}
+              style={{ width: '16px', height: '16px' }}
             />
             Unread Alerts Only
+          </label>
+
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', marginTop: '10px' }}>
+            <input 
+              type="checkbox" 
+              checked={productImpactOnly} 
+              onChange={e => setProductImpactOnly(e.target.checked)} 
+              style={{ width: '16px', height: '16px' }}
+            />
+            <span style={{ color: '#f43f5e', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ShieldAlert size={15} /> Direct Product Threats Only
+            </span>
           </label>
         </aside>
 
@@ -710,9 +811,33 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
               <article key={card.id} className="glass-panel feed-card" style={{ borderLeft: `5px solid ${getScoreColor(card.impact_score)}`, opacity: card.is_read ? 0.75 : 1 }}>
                 <div className="feed-card-header">
                   <div className="feed-card-meta">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <span className="feed-card-company">{card.competitor_name}</span>
                       {card.is_read === 0 && <span className="badge badge-info" style={{ fontSize: '10px', padding: '2px 6px' }}>New</span>}
+                      {(card.affects_product === 1 || card.affects_product === true) ? (
+                        <span className="badge" style={{ backgroundColor: 'rgba(244, 63, 94, 0.18)', color: '#fda4af', border: '1px solid rgba(244, 63, 94, 0.4)', fontSize: '11px', padding: '3px 8px', borderRadius: '6px', fontWeight: 'bold' }}>
+                          🎯 Product Threat ({card.impact_type || 'Direct Overlap'})
+                        </span>
+                      ) : (
+                        <span className="badge" style={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#6ee7b7', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '11px', padding: '3px 8px', borderRadius: '6px' }}>
+                          🛡️ No Product Impact
+                        </span>
+                      )}
+
+                      {/* Option 3: Risk Matrix Badges */}
+                      <span className="badge" style={{ 
+                        backgroundColor: (card.churn_risk === 'High' || card.churn_risk === 'Critical') ? 'rgba(244, 63, 94, 0.18)' : (card.churn_risk === 'Medium' ? 'rgba(245, 158, 11, 0.18)' : 'rgba(16, 185, 129, 0.18)'), 
+                        color: (card.churn_risk === 'High' || card.churn_risk === 'Critical') ? '#fda4af' : (card.churn_risk === 'Medium' ? '#fde047' : '#6ee7b7'), 
+                        fontSize: '11px', 
+                        padding: '3px 8px' 
+                      }}>
+                        ⚡ Churn Risk: {card.churn_risk || 'Low'}
+                      </span>
+                      {card.market_position_risk && card.market_position_risk > 1 && (
+                        <span className="badge" style={{ backgroundColor: 'rgba(168, 85, 247, 0.18)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.35)', fontSize: '11px', padding: '3px 8px' }}>
+                          📊 Market Risk: {card.market_position_risk}/10
+                        </span>
+                      )}
                     </div>
                     <span className="feed-card-time">{new Date(card.timestamp).toLocaleString()}</span>
                   </div>
@@ -738,6 +863,22 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                     <strong>Recommended Action</strong>
                     <p style={{ color: '#67e8f9', fontWeight: '600' }}>{card.recommendation}</p>
                   </div>
+                  {card.affected_product_areas && card.affected_product_areas !== 'None' && (
+                    <div className="feed-card-block" style={{ gridColumn: 'span 2', background: 'rgba(239, 68, 68, 0.05)', padding: '10px', borderRadius: '6px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                      <strong style={{ color: '#f87171', fontSize: '11px', textTransform: 'uppercase' }}>🎯 Affected Product Features / Areas:</strong>
+                      <p style={{ color: '#fecaca', fontWeight: '600', margin: '4px 0 0 0', fontSize: '13px' }}>{card.affected_product_areas}</p>
+                    </div>
+                  )}
+
+                  {/* Option 2: Battlecard Generator Output */}
+                  {card.battlecard_counter && (
+                    <div className="feed-card-block" style={{ gridColumn: 'span 2', background: 'rgba(6, 182, 212, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(6, 182, 212, 0.35)' }}>
+                      <strong style={{ color: '#06b6d4', fontSize: '11px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Swords size={15} color="#06b6d4" /> Sales Battlecard Counter (Positioning Strategy):
+                      </strong>
+                      <p style={{ color: '#cffaff', margin: '6px 0 0 0', fontSize: '13px', lineHeight: '1.5' }}>{card.battlecard_counter}</p>
+                    </div>
+                  )}
                 </div>
 
                 {card.crm_sync_status === 'failed' && (
@@ -752,12 +893,12 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                 )}
 
                 <div className="feed-card-actions">
-                  <button className="btn" style={{ fontSize: '13px', padding: '6px 12px' }} onClick={() => handleToggleRead(card)}>
-                    {card.is_read ? '👁️ Mark Unread' : '✔️ Mark Read'}
+                  <button className="btn" style={{ fontSize: '13px', padding: '7px 14px' }} onClick={() => handleToggleRead(card)}>
+                    <CheckCircle2 size={15} color={card.is_read ? '#10b981' : '#94a3b8'} /> {card.is_read ? 'Mark Unread' : 'Mark Read'}
                   </button>
                   {card.screenshot_path && (
-                    <button className="btn" style={{ fontSize: '13px', padding: '6px 12px' }} onClick={() => onViewScreenshot(card.screenshot_path)}>
-                      🖼️ View Page Capture
+                    <button className="btn" style={{ fontSize: '13px', padding: '7px 14px' }} onClick={() => onViewScreenshot(card.screenshot_path)}>
+                      <Image size={15} color="#06b6d4" /> View Page Capture
                     </button>
                   )}
                   {/* Fetch diff text dynamically from scrapes if needed, or query on click */}
@@ -1199,7 +1340,8 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
     business_name: profile?.business_name || '',
     product_desc: profile?.product_desc || '',
     customers: profile?.customers || '',
-    price_point: profile?.price_point || ''
+    price_point: profile?.price_point || '',
+    features_list: profile?.features_list || ''
   });
 
   const [emailForm, setEmailForm] = useState({
@@ -1232,7 +1374,8 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
         business_name: profile.business_name || '',
         product_desc: profile.product_desc || '',
         customers: profile.customers || '',
-        price_point: profile.price_point || ''
+        price_point: profile.price_point || '',
+        features_list: profile.features_list || ''
       });
     }
   }, [profile]);
@@ -1388,6 +1531,16 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
                   onChange={e => setProfileForm({ ...profileForm, price_point: e.target.value })}
                   required
                 />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Core Product Features & Capabilities</label>
+                <textarea 
+                  className="form-input" 
+                  rows="3"
+                  value={profileForm.features_list}
+                  onChange={e => setProfileForm({ ...profileForm, features_list: e.target.value })}
+                  placeholder="List your key features to compare competitor updates feature-by-feature"
+                ></textarea>
               </div>
               <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
                 Update Business Profile

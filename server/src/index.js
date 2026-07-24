@@ -89,11 +89,11 @@ app.get('/api/profile', checkWorkspace, async (req, res) => {
 
 app.post('/api/profile', checkWorkspace, async (req, res) => {
   try {
-    const { business_name, product_desc, customers, price_point } = req.body;
+    const { business_name, product_desc, customers, price_point, features_list } = req.body;
     if (!business_name || !product_desc) {
       return res.status(400).json({ error: 'Business name and product description are required.' });
     }
-    const profile = await db.saveProfile(req.workspaceId, { business_name, product_desc, customers, price_point });
+    const profile = await db.saveProfile(req.workspaceId, { business_name, product_desc, customers, price_point, features_list });
     res.json(profile);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -242,11 +242,12 @@ app.post('/api/competitors/:id/check', checkWorkspace, async (req, res) => {
 // Intelligence Feed
 app.get('/api/intelligence', checkWorkspace, async (req, res) => {
   try {
-    const { competitor_id, category, unreadOnly } = req.query;
+    const { competitor_id, category, unreadOnly, productImpactOnly } = req.query;
     const list = await db.getIntelligenceCards(req.workspaceId, {
       competitor_id: competitor_id ? parseInt(competitor_id, 10) : undefined,
       category,
-      unreadOnly: unreadOnly === 'true'
+      unreadOnly: unreadOnly === 'true',
+      productImpactOnly: productImpactOnly === 'true'
     });
     res.json(list);
   } catch (err) {

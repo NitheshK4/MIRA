@@ -233,12 +233,41 @@ function generateFallbackAnalysis(diffText) {
     summary += `\n\nDiff Preview:\n${preview}`;
   }
 
+  let affects_product = false;
+  let impact_type = 'No Direct Impact';
+  let affected_product_areas = 'None';
+  let battlecard_counter = '';
+  let churn_risk = 'Low';
+  let market_position_risk = 3;
+
+  if (category === 'pricing change') {
+    affects_product = true;
+    impact_type = 'Pricing Threat';
+    affected_product_areas = 'Pricing Tiers & Subscriptions';
+    battlecard_counter = 'Highlight our transparent pricing structure, higher usage limits, and included enterprise support with no hidden fees.';
+    churn_risk = 'High';
+    market_position_risk = 7;
+  } else if (category === 'product or feature update') {
+    affects_product = true;
+    impact_type = 'Direct Overlap';
+    affected_product_areas = 'Core Product Features';
+    battlecard_counter = 'Emphasize our existing feature maturity, superior UI/UX performance, and seamless API integrations.';
+    churn_risk = 'Medium';
+    market_position_risk = 6;
+  }
+
   return {
     category,
     summary,
     impact_score,
     justification,
     recommendation,
+    affects_product,
+    impact_type,
+    affected_product_areas,
+    battlecard_counter,
+    churn_risk,
+    market_position_risk,
     inferenceTime: 0.0
   };
 }
@@ -258,13 +287,20 @@ Always respond using the following XML tags:
 <why_it_matters>A one-paragraph plain-English explanation of why this change matters to our business.</why_it_matters>
 <score>An integer from 1 to 10 representing the business threat/impact score</score>
 <justification>A brief justification for the impact score relative to our business context</justification>
-<recommendation>A brief recommended action for our business (e.g. "Consider a pricing response within 30 days" or "Monitor hiring in this area for the next quarter")</recommendation>`;
+<recommendation>A brief recommended action for our business (e.g. "Consider a pricing response within 30 days" or "Monitor hiring in this area for the next quarter")</recommendation>
+<affects_product>yes or no depending on whether this change directly impacts, overlaps with, or poses a threat to our product features or strategy</affects_product>
+<impact_type>Select one: Direct Overlap, Feature Catch-Up, Feature Leapfrog, Pricing Threat, No Direct Impact</impact_type>
+<affected_product_areas>Comma-separated list of product features or business areas in our product that are affected (or None)</affected_product_areas>
+<battlecard_counter>A 1-2 sentence counter-positioning sales battlecard statement for our sales/product teams to win against this competitor change</battlecard_counter>
+<churn_risk>Select one: Low, Medium, High, Critical</churn_risk>
+<market_position_risk>An integer from 1 to 10 assessing market positioning risk</market_position_risk>`;
 
       const profileContext = businessProfile ? `
 Our Business Name: ${businessProfile.business_name || 'Our Company'}
 What our product does: ${businessProfile.product_desc || 'General Software Services'}
 Who our customers are: ${businessProfile.customers || 'General Businesses'}
 Our pricing/price point: ${businessProfile.price_point || 'Not specified'}
+Our Product Features List: ${businessProfile.features_list || 'Not specified'}
 ` : 'No specific business profile context is available.';
 
       const userPrompt = `
@@ -335,12 +371,32 @@ Analyze the competitor's changes above and generate the classified intelligence 
       ];
       const finalCategory = validCategories.includes(category) ? category : 'other';
 
+      const affectsProductRaw = extractTag(text, 'affects_product').toLowerCase().trim();
+      const affects_product = (affectsProductRaw === 'yes' || affectsProductRaw === 'true' || affectsProductRaw.includes('yes'));
+      const rawImpactType = extractTag(text, 'impact_type').trim();
+      const validImpactTypes = ['Direct Overlap', 'Feature Catch-Up', 'Feature Leapfrog', 'Pricing Threat', 'No Direct Impact'];
+      const impact_type = validImpactTypes.find(t => t.toLowerCase() === rawImpactType.toLowerCase()) || (affects_product ? 'Direct Overlap' : 'No Direct Impact');
+      const affected_product_areas = extractTag(text, 'affected_product_areas') || (affects_product ? 'Core Offering' : 'None');
+
+      const battlecard_counter = extractTag(text, 'battlecard_counter') || (affects_product ? 'Highlight our platform reliability, customer support, and tailored integrations.' : '');
+      const churn_risk_raw = extractTag(text, 'churn_risk').trim();
+      const validChurnRisks = ['Low', 'Medium', 'High', 'Critical'];
+      const churn_risk = validChurnRisks.find(r => r.toLowerCase() === churn_risk_raw.toLowerCase()) || (impact_score >= 8 ? 'High' : (impact_score >= 5 ? 'Medium' : 'Low'));
+      const marketRiskScore = parseInt(extractTag(text, 'market_position_risk').match(/\d+/)?.[0] || '1', 10);
+      const market_position_risk = Math.min(Math.max(isNaN(marketRiskScore) ? 1 : marketRiskScore, 1), 10);
+
       return {
         category: finalCategory,
         summary: `${summary}\n\nWhy it matters: ${whyItMatters}`,
         impact_score,
         justification,
         recommendation,
+        affects_product,
+        impact_type,
+        affected_product_areas,
+        battlecard_counter,
+        churn_risk,
+        market_position_risk,
         inferenceTime: parseFloat(duration)
       };
     } catch (err) {
@@ -373,11 +429,18 @@ Always respond using the following XML tags:
 <why_it_matters>A one-paragraph plain-English explanation of why this change matters to our business.</why_it_matters>
 <score>An integer from 1 to 10 representing the business threat/impact score</score>
 <justification>A brief justification for the impact score relative to our business context</justification>
-<recommendation>A brief recommended action for our business (e.g. "Consider a pricing response within 30 days" or "Monitor hiring in this area for the next quarter")</recommendation>`;
+<recommendation>A brief recommended action for our business (e.g. "Consider a pricing response within 30 days" or "Monitor hiring in this area for the next quarter")</recommendation>
+<affects_product>yes or no depending on whether this change directly impacts, overlaps with, or poses a threat to our product features or strategy</affects_product>
+<impact_type>Select one: Direct Overlap, Feature Catch-Up, Feature Leapfrog, Pricing Threat, No Direct Impact</impact_type>
+<affected_product_areas>Comma-separated list of product features or business areas in our product that are affected (or None)</affected_product_areas>
+<battlecard_counter>A 1-2 sentence counter-positioning sales battlecard statement for our sales/product teams to win against this competitor change</battlecard_counter>
+<churn_risk>Select one: Low, Medium, High, Critical</churn_risk>
+<market_position_risk>An integer from 1 to 10 assessing market positioning risk</market_position_risk>`;
 
   const userPrompt = `
 Here is our business profile for context:
 ${profileContext}
+Our Product Features List: ${businessProfile ? (businessProfile.features_list || 'Not specified') : 'Not specified'}
 
 Here is the diff of the competitor's website content (+ indicates added lines, - indicates removed lines):
 \`\`\`diff
@@ -468,6 +531,20 @@ ${userPrompt}<|im_end|>
       ];
       const finalCategory = validCategories.includes(category) ? category : 'other';
 
+      const affectsProductRaw = extractTag(stdout, 'affects_product').toLowerCase().trim();
+      const affects_product = (affectsProductRaw === 'yes' || affectsProductRaw === 'true' || affectsProductRaw.includes('yes'));
+      const rawImpactType = extractTag(stdout, 'impact_type').trim();
+      const validImpactTypes = ['Direct Overlap', 'Feature Catch-Up', 'Feature Leapfrog', 'Pricing Threat', 'No Direct Impact'];
+      const impact_type = validImpactTypes.find(t => t.toLowerCase() === rawImpactType.toLowerCase()) || (affects_product ? 'Direct Overlap' : 'No Direct Impact');
+      const affected_product_areas = extractTag(stdout, 'affected_product_areas') || (affects_product ? 'Core Offering' : 'None');
+
+      const battlecard_counter = extractTag(stdout, 'battlecard_counter') || (affects_product ? 'Highlight our platform reliability, customer support, and tailored integrations.' : '');
+      const churn_risk_raw = extractTag(stdout, 'churn_risk').trim();
+      const validChurnRisks = ['Low', 'Medium', 'High', 'Critical'];
+      const churn_risk = validChurnRisks.find(r => r.toLowerCase() === churn_risk_raw.toLowerCase()) || (impact_score >= 8 ? 'High' : (impact_score >= 5 ? 'Medium' : 'Low'));
+      const marketRiskScore = parseInt(extractTag(stdout, 'market_position_risk').match(/\d+/)?.[0] || '1', 10);
+      const market_position_risk = Math.min(Math.max(isNaN(marketRiskScore) ? 1 : marketRiskScore, 1), 10);
+
       const fullSummary = `${summary}\n\nWhy it matters: ${whyItMatters}`;
 
       resolve({
@@ -476,6 +553,12 @@ ${userPrompt}<|im_end|>
         impact_score,
         justification,
         recommendation,
+        affects_product,
+        impact_type,
+        affected_product_areas,
+        battlecard_counter,
+        churn_risk,
+        market_position_risk,
         inferenceTime: parseFloat(duration)
       });
     });
