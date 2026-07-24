@@ -25,8 +25,56 @@ async function runMigrations(db) {
 
   // Remove UNIQUE constraint from competitors(url) if present
   try {
-    // SQLite doesn't allow dropping constraints easily, but we can drop the unique index
-    await db.exec('DROP INDEX IF EXISTS sqlite_autoindex_competitors_1');
+    const tableMaster = await db.get("SELECT sql FROM sqlite_master WHERE type='table' AND name='competitors'");
+    if (tableMaster && tableMaster.sql && (tableMaster.sql.includes('url TEXT UNIQUE') || tableMaster.sql.includes('UNIQUE(url)') || tableMaster.sql.includes('UNIQUE (url)'))) {
+      console.log('Migrating competitors table to remove global UNIQUE(url) constraint...');
+      await db.exec('PRAGMA foreign_keys = OFF');
+      const oldCompetitors = await db.all('SELECT * FROM competitors');
+      await db.exec('DROP TABLE competitors');
+      await db.exec(`
+        CREATE TABLE competitors (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          workspace_id TEXT DEFAULT 'default',
+          name TEXT,
+          url TEXT,
+          interval_hours INTEGER DEFAULT 6,
+          scope TEXT DEFAULT 'full',
+          status TEXT DEFAULT 'active',
+          last_checked TEXT,
+          js_enabled INTEGER DEFAULT 0,
+          created_at TEXT,
+          enrichment_data TEXT
+        );
+      `);
+      for (const comp of oldCompetitors) {
+        await db.run(
+          `INSERT INTO competitors (id, workspace_id, name, url, interval_hours, scope, status, last_checked, js_enabled, created_at, enrichment_data)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            comp.id,
+            comp.workspace_id || 'default',
+            comp.name,
+            comp.url,
+            comp.interval_hours || 6,
+            comp.scope || 'full',
+            comp.status || 'active',
+            comp.last_checked || null,
+            comp.js_enabled || 0,
+            comp.created_at || new Date().toISOString(),
+            comp.enrichment_data || null
+          ]
+        );
+      }
+      await db.exec('PRAGMA foreign_keys = ON');
+    }
+  } catch (err) {
+    console.warn('Competitors table migration failed:', err.message);
+    try { await db.exec('PRAGMA foreign_keys = ON'); } catch (_) {}
+  }
+
+  // Create composite unique index scoped to workspace_id and url
+  try {
+    await db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_competitors_workspace_url ON competitors(workspace_id, url)');
   } catch (e) {}
 
   // 2. Migrate profile table to support workspace_id PK
@@ -245,12 +293,13 @@ async function addCompetitor(workspaceId = 'default', competitor) {
   }
   const db = await getDb();
   const now = new Date().toISOString();
+  const trimmedUrl = (finalCompetitor.url || '').trim();
   const result = await db.run(
     'INSERT INTO competitors (workspace_id, name, url, interval_hours, scope, status, js_enabled, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
     [
       finalWorkspaceId,
       finalCompetitor.name,
-      finalCompetitor.url,
+      trimmedUrl,
       finalCompetitor.interval_hours || 6,
       finalCompetitor.scope || 'full',
       finalCompetitor.status || 'active',
@@ -258,7 +307,7 @@ async function addCompetitor(workspaceId = 'default', competitor) {
       now
     ]
   );
-  return { id: result.lastID, workspace_id: finalWorkspaceId, ...finalCompetitor, created_at: now };
+  return { id: result.lastID, workspace_id: finalWorkspaceId, ...finalCompetitor, url: trimmedUrl, created_at: now };
 }
 
 async function getCompetitors(workspaceId = null) {
@@ -283,7 +332,13 @@ async function getCompetitorByUrl(workspaceId = 'default', url) {
     finalWorkspaceId = 'default';
   }
   const db = await getDb();
-  return await db.get('SELECT * FROM competitors WHERE workspace_id = ? AND url = ?', [finalWorkspaceId, finalUrl]);
+  const trimmed = (finalUrl || '').trim();
+  const urlWithoutSlash = trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed;
+  const urlWithSlash = urlWithoutSlash + '/';
+  return await db.get(
+    'SELECT * FROM competitors WHERE workspace_id = ? AND (url = ? OR url = ?)',
+    [finalWorkspaceId, urlWithoutSlash, urlWithSlash]
+  );
 }
 
 async function updateCompetitor(id, updates) {
