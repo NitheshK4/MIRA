@@ -316,16 +316,16 @@ export default function App() {
       {/* Top Sticky Header Navbar */}
       <header className="navbar">
         <div className="nav-brand" onClick={() => onboarded && setActiveTab('dashboard')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ background: 'var(--primary-gradient)', padding: '6px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Bot size={22} color="#ffffff" />
+          <div style={{ background: 'var(--cta-gradient)', padding: '8px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(244, 162, 97, 0.35)' }}>
+            <Bot size={22} color="#2D2A26" />
           </div>
-          <span>MIRA Engine</span>
+          <span style={{ color: '#2D2A26', fontWeight: '800' }}>MIRA Engine</span>
         </div>
         {onboarded && (
           <nav className="nav-links">
             <div className="workspace-indicator" style={{ marginRight: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Workspace:</span>
-              <code style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', color: '#818cf8', fontWeight: 'bold' }}>{workspaceId}</code>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Workspace:</span>
+              <code style={{ background: '#FFF8EE', border: '1px solid #F2E7D8', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#D97706', fontWeight: 'bold' }}>{workspaceId}</code>
             </div>
             <button className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
               <Activity size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Dashboard
@@ -585,30 +585,30 @@ function DashboardPage({ competitors, feedCards = [], onAddClick, onCheckNow, on
     <div>
       {/* Metric Cards Summary */}
       <div className="stats-grid">
-        <div className="glass-panel stat-card">
+        <div className="glass-panel stat-card" style={{ borderLeft: '4px solid #F4A261' }}>
           <div className="stat-header">
             <span>Monitored Competitors</span>
-            <Activity size={18} color="#38bdf8" />
+            <Activity size={18} color="#F4A261" />
           </div>
           <div className="stat-value">{competitors.length}</div>
           <div className="stat-footer">Active scrapers tracking targets</div>
         </div>
 
-        <div className="glass-panel stat-card">
+        <div className="glass-panel stat-card" style={{ borderLeft: '4px solid #D97706' }}>
           <div className="stat-header">
             <span>Intelligence Cards</span>
-            <Zap size={18} color="#a855f7" />
+            <Zap size={18} color="#D97706" />
           </div>
           <div className="stat-value">{feedCards.length}</div>
           <div className="stat-footer">AI-analyzed website updates</div>
         </div>
 
-        <div className="glass-panel stat-card">
+        <div className="glass-panel stat-card" style={{ borderLeft: '4px solid #E11D48' }}>
           <div className="stat-header">
             <span>Product Threats</span>
-            <Target size={18} color="#ef4444" />
+            <Target size={18} color="#E11D48" />
           </div>
-          <div className="stat-value" style={{ color: '#f87171' }}>{productThreatCount}</div>
+          <div className="stat-value" style={{ color: '#E11D48' }}>{productThreatCount}</div>
           <div className="stat-footer">Direct feature overlaps flagged</div>
         </div>
       </div>
@@ -701,9 +701,9 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
   const [productImpactOnly, setProductImpactOnly] = useState(false);
 
   const getScoreColor = (score) => {
-    if (score >= 8) return '#f43f5e'; // Cyber Red/Rose
-    if (score >= 5) return '#f59e0b'; // Amber
-    return '#10b981'; // Emerald
+    if (score >= 8) return '#E11D48'; // Crimson Sunset
+    if (score >= 5) return '#D97706'; // Amber Gold
+    return '#059669'; // Emerald
   };
 
   const handleMarkAllRead = async () => {
@@ -792,7 +792,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
               onChange={e => setProductImpactOnly(e.target.checked)} 
               style={{ width: '16px', height: '16px' }}
             />
-            <span style={{ color: '#f43f5e', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#E11D48', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <ShieldAlert size={15} /> Direct Product Threats Only
             </span>
           </label>
@@ -815,26 +815,26 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                       <span className="feed-card-company">{card.competitor_name}</span>
                       {card.is_read === 0 && <span className="badge badge-info" style={{ fontSize: '10px', padding: '2px 6px' }}>New</span>}
                       {(card.affects_product === 1 || card.affects_product === true) ? (
-                        <span className="badge" style={{ backgroundColor: 'rgba(244, 63, 94, 0.18)', color: '#fda4af', border: '1px solid rgba(244, 63, 94, 0.4)', fontSize: '11px', padding: '3px 8px', borderRadius: '6px', fontWeight: 'bold' }}>
+                        <span className="badge" style={{ backgroundColor: '#FFE4E6', color: '#E11D48', border: '1px solid #FECDD3', fontSize: '11px', padding: '4px 10px', borderRadius: '9999px', fontWeight: 'bold' }}>
                           🎯 Product Threat ({card.impact_type || 'Direct Overlap'})
                         </span>
                       ) : (
-                        <span className="badge" style={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#6ee7b7', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '11px', padding: '3px 8px', borderRadius: '6px' }}>
+                        <span className="badge" style={{ backgroundColor: '#FFF8EE', color: '#6B6B6B', border: '1px solid #F2E7D8', fontSize: '11px', padding: '4px 10px', borderRadius: '9999px' }}>
                           🛡️ No Product Impact
                         </span>
                       )}
 
                       {/* Option 3: Risk Matrix Badges */}
                       <span className="badge" style={{ 
-                        backgroundColor: (card.churn_risk === 'High' || card.churn_risk === 'Critical') ? 'rgba(244, 63, 94, 0.18)' : (card.churn_risk === 'Medium' ? 'rgba(245, 158, 11, 0.18)' : 'rgba(16, 185, 129, 0.18)'), 
-                        color: (card.churn_risk === 'High' || card.churn_risk === 'Critical') ? '#fda4af' : (card.churn_risk === 'Medium' ? '#fde047' : '#6ee7b7'), 
+                        backgroundColor: (card.churn_risk === 'High' || card.churn_risk === 'Critical') ? '#FFE4E6' : (card.churn_risk === 'Medium' ? '#FEF3C7' : '#D1FAE5'), 
+                        color: (card.churn_risk === 'High' || card.churn_risk === 'Critical') ? '#E11D48' : (card.churn_risk === 'Medium' ? '#D97706' : '#059669'), 
                         fontSize: '11px', 
-                        padding: '3px 8px' 
+                        padding: '4px 10px' 
                       }}>
                         ⚡ Churn Risk: {card.churn_risk || 'Low'}
                       </span>
                       {card.market_position_risk && card.market_position_risk > 1 && (
-                        <span className="badge" style={{ backgroundColor: 'rgba(168, 85, 247, 0.18)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.35)', fontSize: '11px', padding: '3px 8px' }}>
+                        <span className="badge" style={{ backgroundColor: '#F3E8FF', color: '#7E22CE', border: '1px solid #E9D5FF', fontSize: '11px', padding: '4px 10px' }}>
                           📊 Market Risk: {card.market_position_risk}/10
                         </span>
                       )}
@@ -872,11 +872,11 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
 
                   {/* Option 2: Battlecard Generator Output */}
                   {card.battlecard_counter && (
-                    <div className="feed-card-block" style={{ gridColumn: 'span 2', background: 'rgba(6, 182, 212, 0.08)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(6, 182, 212, 0.35)' }}>
-                      <strong style={{ color: '#06b6d4', fontSize: '11px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Swords size={15} color="#06b6d4" /> Sales Battlecard Counter (Positioning Strategy):
+                    <div className="feed-card-block" style={{ gridColumn: 'span 2', background: '#FFF8EE', padding: '16px', borderRadius: '16px', border: '1px solid #F2E7D8' }}>
+                      <strong style={{ color: '#D97706', fontSize: '11px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Swords size={15} color="#D97706" /> Sales Battlecard Counter (Positioning Strategy):
                       </strong>
-                      <p style={{ color: '#cffaff', margin: '6px 0 0 0', fontSize: '13px', lineHeight: '1.5' }}>{card.battlecard_counter}</p>
+                      <p style={{ color: '#2D2A26', margin: '6px 0 0 0', fontSize: '13px', lineHeight: '1.5', fontWeight: '500' }}>{card.battlecard_counter}</p>
                     </div>
                   )}
                 </div>
@@ -893,12 +893,12 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                 )}
 
                 <div className="feed-card-actions">
-                  <button className="btn" style={{ fontSize: '13px', padding: '7px 14px' }} onClick={() => handleToggleRead(card)}>
-                    <CheckCircle2 size={15} color={card.is_read ? '#10b981' : '#94a3b8'} /> {card.is_read ? 'Mark Unread' : 'Mark Read'}
+                  <button className="btn" style={{ fontSize: '13px', padding: '7px 16px' }} onClick={() => handleToggleRead(card)}>
+                    <CheckCircle2 size={15} color={card.is_read ? '#059669' : '#6B6B6B'} /> {card.is_read ? 'Mark Unread' : 'Mark Read'}
                   </button>
                   {card.screenshot_path && (
-                    <button className="btn" style={{ fontSize: '13px', padding: '7px 14px' }} onClick={() => onViewScreenshot(card.screenshot_path)}>
-                      <Image size={15} color="#06b6d4" /> View Page Capture
+                    <button className="btn" style={{ fontSize: '13px', padding: '7px 16px' }} onClick={() => onViewScreenshot(card.screenshot_path)}>
+                      <Image size={15} color="#F4A261" /> View Page Capture
                     </button>
                   )}
                   {/* Fetch diff text dynamically from scrapes if needed, or query on click */}
