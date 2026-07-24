@@ -511,8 +511,19 @@ body::before {
 }
 
 /* ============================================================
-   BUTTONS
+   BUTTONS & POINTER EVENTS FIX
    ============================================================ */
+button, .btn, .mira-btn, input[type="button"], input[type="submit"] {
+  position: relative;
+  z-index: 2;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none;
+}
+button *, .btn *, .mira-btn * {
+  pointer-events: none;
+}
+
 .btn, .mira-btn {
   display: inline-flex;
   align-items: center;
@@ -541,6 +552,7 @@ body::before {
   color: #fff;
   border-color: var(--black);
 }
+
 .mira-btn-secondary {
   background: var(--surface);
   color: var(--text);
@@ -732,8 +744,8 @@ body::before {
 /* ============================================================
    MOBILE ONLY
    ============================================================ */
-.mobile-only-btn { display: none; }
-@media (max-width: 1024px) { .mobile-only-btn { display: flex; } }
+.mobile-only-btn { display: none !important; }
+@media (max-width: 1024px) { .mobile-only-btn { display: flex !important; } }
 
 /* ============================================================
    RESPONSIVE

@@ -85,6 +85,7 @@ export default function Sidebar({
 
             {/* Mobile close */}
             <button
+              type="button"
               onClick={onClose}
               className="mobile-only-btn"
               style={{
@@ -108,6 +109,7 @@ export default function Sidebar({
               const isActive = activeTab === item.id;
               return (
                 <button
+                  type="button"
                   key={item.id}
                   onClick={() => {
                     setActiveTab(item.id);
@@ -131,13 +133,17 @@ export default function Sidebar({
 
             {activeTab === 'details' && (
               <div style={{ paddingTop: '8px' }}>
-                <div className="nav-item active-settings">
+                <button 
+                  type="button" 
+                  className="nav-item active-settings"
+                  onClick={() => setActiveTab('details')}
+                >
                   <div className="nav-item-icon">
                     <Layers size={15} />
                   </div>
                   <span style={{ flex:1, color: 'inherit' }}>Competitor Detail</span>
                   <ChevronRight size={13} />
-                </div>
+                </button>
               </div>
             )}
           </nav>

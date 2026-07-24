@@ -29,6 +29,7 @@ export default function TopBar({
       {/* Left: mobile toggle + page label */}
       <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
         <button 
+          type="button"
           onClick={onMobileMenuToggle}
           className="mobile-only-btn"
           style={{
@@ -52,6 +53,7 @@ export default function TopBar({
 
       {/* Center: Search / Command Palette */}
       <button
+        type="button"
         onClick={onOpenCommandPalette}
         className="top-bar-search"
         style={{ maxWidth: 380 }}
@@ -67,6 +69,7 @@ export default function TopBar({
       <div className="top-bar-right">
         {/* Refresh */}
         <button
+          type="button"
           onClick={onRefresh}
           className="top-bar-icon-btn"
           title="Refresh Data"
@@ -76,6 +79,7 @@ export default function TopBar({
 
         {/* Alerts */}
         <button
+          type="button"
           onClick={onOpenCommandPalette}
           className="top-bar-icon-btn"
           title="Alerts"
@@ -91,6 +95,7 @@ export default function TopBar({
 
         {/* Add Target */}
         <button
+          type="button"
           onClick={onAddClick}
           className="mira-btn mira-btn-primary"
           style={{ 

@@ -909,31 +909,35 @@ function DashboardPage({
                   </div>
 
                   {/* Card Actions */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                  <div className="flex items-center gap-2 pt-2 border-t border-white/10" style={{ position:'relative', zIndex:5 }}>
                     <button 
+                      type="button"
                       className="mira-btn mira-btn-secondary flex-1 py-1.5 text-xs font-bold" 
-                      onClick={() => onViewDetails(comp.id)}
+                      onClick={(e) => { e.stopPropagation(); onViewDetails(comp.id); }}
                     >
                       <Eye className="w-3.5 h-3.5 text-violet-400" />
                       History
                     </button>
                     <button 
+                      type="button"
                       className="mira-btn mira-btn-emerald py-1.5 px-2.5 text-xs" 
-                      onClick={() => onCheckNow(comp.id)}
+                      onClick={(e) => { e.stopPropagation(); onCheckNow(comp.id); }}
                       title="Trigger Immediate Scrape"
                     >
                       <RefreshCw className="w-3.5 h-3.5" />
                     </button>
                     <button 
+                      type="button"
                       className="mira-btn mira-btn-secondary py-1.5 px-2.5 text-xs" 
-                      onClick={() => onPauseResume(comp.id, comp.status)}
+                      onClick={(e) => { e.stopPropagation(); onPauseResume(comp.id, comp.status); }}
                       title={comp.status === 'paused' ? 'Resume Monitor' : 'Pause Monitor'}
                     >
                       {comp.status === 'paused' ? <Play className="w-3.5 h-3.5 text-emerald-400" /> : <Pause className="w-3.5 h-3.5 text-amber-400" />}
                     </button>
                     <button 
+                      type="button"
                       className="mira-btn mira-btn-danger py-1.5 px-2.5 text-xs" 
-                      onClick={() => onDelete(comp.id)}
+                      onClick={(e) => { e.stopPropagation(); onDelete(comp.id); }}
                       title="Delete Competitor"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
