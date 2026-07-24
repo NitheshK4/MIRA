@@ -6,6 +6,7 @@ server/node_modules/
 # Production builds
 client/dist/
 dist/
+*.zip
 
 # Local databases and caches
 server/data/database.sqlite
