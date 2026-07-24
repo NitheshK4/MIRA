@@ -188,8 +188,14 @@ export default function App() {
         const data = await res.json();
         throw new Error(data.error || 'Failed to add competitor');
       }
+      const newComp = await res.json();
       setIsAddModalOpen(false);
       await refreshCompetitors();
+      // Navigate directly to Dashboard Competitor Targets view
+      setActiveTab('dashboard');
+      if (newComp && newComp.id) {
+        handleCheckNow(newComp.id);
+      }
     } catch (err) {
       alert(err.message);
     }
