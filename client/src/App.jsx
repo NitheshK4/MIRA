@@ -327,19 +327,19 @@ export default function App() {
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Workspace:</span>
               <code style={{ background: '#FFF8EE', border: '1px solid #F2E7D8', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#D97706', fontWeight: 'bold' }}>{workspaceId}</code>
             </div>
-            <button className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
               <Activity size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Dashboard
-            </button>
-            <button className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}>
               <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Intelligence Feed
-            </button>
-            <button className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
               <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
-            </button>
+            </motion.button>
             {activeTab === 'details' && (
-              <button className="nav-link active">
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="nav-link active">
                 <FileText size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Detail
-              </button>
+              </motion.button>
             )}
           </nav>
         )}
@@ -618,9 +618,9 @@ function DashboardPage({ competitors, feedCards = [], onAddClick, onCheckNow, on
           <h1 className="page-title">Competitor Targets</h1>
           <p className="page-subtitle">Manage automated web scraping targets and inspection schedules</p>
         </div>
-        <button className="btn btn-primary" onClick={onAddClick}>
+        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} className="btn btn-primary" onClick={onAddClick}>
           <Plus size={16} /> Add Competitor Target
-        </button>
+        </motion.button>
       </div>
 
       {competitors.length === 0 ? (
@@ -670,18 +670,18 @@ function DashboardPage({ competitors, feedCards = [], onAddClick, onCheckNow, on
               </div>
 
               <div className="card-actions">
-                <button className="btn" style={{ flex: 1, padding: '8px 12px', fontSize: '13px' }} onClick={() => onViewDetails(comp.id)}>
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn" style={{ flex: 1, padding: '8px 12px', fontSize: '13px' }} onClick={() => onViewDetails(comp.id)}>
                   View History
-                </button>
-                <button className="btn btn-primary" style={{ padding: '8px 12px', fontSize: '13px' }} onClick={() => onCheckNow(comp.id)}>
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn btn-primary" style={{ padding: '8px 12px', fontSize: '13px' }} onClick={() => onCheckNow(comp.id)}>
                   <RefreshCw size={14} /> Check Now
-                </button>
-                <button className="btn" style={{ padding: '8px 12px' }} onClick={() => onPauseResume(comp.id, comp.status)}>
-                  {comp.status === 'paused' ? <Play size={14} color="#10b981" /> : <Pause size={14} color="#f59e0b" />}
-                </button>
-                <button className="btn btn-danger" style={{ padding: '8px 12px' }} onClick={() => onDelete(comp.id)}>
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn" style={{ padding: '8px 12px' }} onClick={() => onPauseResume(comp.id, comp.status)}>
+                  {comp.status === 'paused' ? <Play size={14} color="#059669" /> : <Pause size={14} color="#D97706" />}
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn btn-danger" style={{ padding: '8px 12px' }} onClick={() => onDelete(comp.id)}>
                   <Trash2 size={14} />
-                </button>
+                </motion.button>
               </div>
             </div>
           ))}
@@ -744,9 +744,9 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
           <h1 className="page-title">Intelligence Feed</h1>
           <p className="page-subtitle">Real-time alerts, product impact matrix, and CRM integration</p>
         </div>
-        <button className="btn" onClick={handleMarkAllRead}>
+        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn" onClick={handleMarkAllRead}>
           Read All Cards
-        </button>
+        </motion.button>
       </div>
 
       <div className="feed-layout">

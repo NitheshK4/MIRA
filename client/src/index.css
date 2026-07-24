@@ -211,7 +211,43 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 4px;
 }
 
-/* Luxury Pill Buttons */
+/* Luxury Pill Buttons & Click Animations */
+.btn, button, .nav-link {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+/* High-Impact Active Click / Tap Press Animation */
+.btn:active, button:active, .nav-link:active {
+  transform: scale(0.92) translateY(2px) !important;
+  box-shadow: 0 2px 6px rgba(45, 42, 38, 0.15) !important;
+  filter: brightness(0.95);
+}
+
+/* Radiant Click Pulse Ripple Wave */
+.btn::after, button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 10%, transparent 60%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+.btn:active::after, button:active::after {
+  transform: translate(-50%, -50%) scale(2.2);
+  opacity: 1;
+  transition: 0s;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -226,7 +262,6 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(45, 42, 38, 0.04);
 }
 
@@ -258,6 +293,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-danger:hover {
+  background: #FFE4E6;
+  border-color: #FDA4AF;
+  color: #BE123C;
+}
   background: #FFE4E6;
   border-color: #FDA4AF;
   color: #BE123C;
