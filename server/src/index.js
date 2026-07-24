@@ -132,21 +132,23 @@ app.post('/api/competitors', checkWorkspace, async (req, res) => {
       return res.status(400).json({ error: 'Name and URL are required.' });
     }
 
+    const trimmedUrl = url.trim();
+
     // Basic URL validation
     try {
-      new URL(url);
+      new URL(trimmedUrl);
     } catch (_) {
       return res.status(400).json({ error: 'Invalid URL format. Include http:// or https://' });
     }
 
-    const existing = await db.getCompetitorByUrl(req.workspaceId, url);
+    const existing = await db.getCompetitorByUrl(req.workspaceId, trimmedUrl);
     if (existing) {
       return res.status(400).json({ error: 'A competitor with this URL is already registered in this workspace.' });
     }
 
     const comp = await db.addCompetitor(req.workspaceId, {
-      name,
-      url,
+      name: name.trim(),
+      url: trimmedUrl,
       interval_hours: parseInt(interval_hours, 10) || 6,
       scope: scope || 'full',
       js_enabled: js_enabled ? 1 : 0
@@ -157,6 +159,9 @@ app.post('/api/competitors', checkWorkspace, async (req, res) => {
 
     res.status(201).json(comp);
   } catch (err) {
+    if (err.message && (err.message.includes('SQLITE_CONSTRAINT') || err.message.includes('UNIQUE constraint failed'))) {
+      return res.status(400).json({ error: 'A competitor with this URL is already registered in this workspace.' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
@@ -453,20 +458,22 @@ app.post('/api/extension/add-competitor', checkExtensionAuth, async (req, res) =
       return res.status(400).json({ error: 'Competitor name and URL are required.' });
     }
 
+    const trimmedUrl = url.trim();
+
     try {
-      new URL(url);
+      new URL(trimmedUrl);
     } catch (_) {
       return res.status(400).json({ error: 'Invalid URL format.' });
     }
 
-    const existing = await db.getCompetitorByUrl(req.workspaceId, url);
+    const existing = await db.getCompetitorByUrl(req.workspaceId, trimmedUrl);
     if (existing) {
-      return res.status(400).json({ error: 'URL already exists in this workspace.' });
+      return res.status(400).json({ error: 'A competitor with this URL is already registered in this workspace.' });
     }
 
     const comp = await db.addCompetitor(req.workspaceId, {
-      name,
-      url,
+      name: name.trim(),
+      url: trimmedUrl,
       interval_hours: 6, // Default interval
       scope: scope || 'full',
       js_enabled: 0 // Default static
@@ -477,6 +484,9 @@ app.post('/api/extension/add-competitor', checkExtensionAuth, async (req, res) =
 
     res.status(201).json(comp);
   } catch (err) {
+    if (err.message && (err.message.includes('SQLITE_CONSTRAINT') || err.message.includes('UNIQUE constraint failed'))) {
+      return res.status(400).json({ error: 'A competitor with this URL is already registered in this workspace.' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
