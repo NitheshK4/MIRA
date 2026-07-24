@@ -1,4 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  LayoutDashboard, 
+  Activity, 
+  Settings as SettingsIcon, 
+  Plus, 
+  Globe, 
+  RefreshCw, 
+  Play, 
+  Pause, 
+  Trash2, 
+  ExternalLink, 
+  Clock, 
+  TrendingUp, 
+  Sparkles, 
+  Cpu, 
+  AlertTriangle, 
+  CheckCircle2, 
+  PauseCircle, 
+  Eye, 
+  EyeOff, 
+  Image, 
+  FileText, 
+  SlidersHorizontal, 
+  Layers, 
+  Copy, 
+  Check, 
+  Send, 
+  Key, 
+  Share2, 
+  Building2, 
+  Target, 
+  DollarSign, 
+  X, 
+  ChevronRight, 
+  Filter, 
+  ArrowUpRight, 
+  BarChart3, 
+  Database, 
+  Inbox, 
+  AlertOctagon, 
+  Brain,
+  ShieldCheck,
+  Zap,
+  Server,
+  Mail,
+  Sliders
+} from 'lucide-react';
+
+import Sidebar from './components/Sidebar.jsx';
+import TopBar from './components/TopBar.jsx';
+import CommandPalette from './components/CommandPalette.jsx';
+import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
 // Extract or generate Workspace ID per tab session
 const getWorkspaceId = () => {
@@ -39,10 +91,19 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Modals / Detail Drawers State
+  // Modals & Drawers State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDiffText, setActiveDiffText] = useState(null);
   const [activeScreenshotUrl, setActiveScreenshotUrl] = useState(null);
+
+  // Listen to custom command palette open event
+  useEffect(() => {
+    const handleOpenCmd = () => setIsCommandPaletteOpen(true);
+    window.addEventListener('open-command-palette', handleOpenCmd);
+    return () => window.removeEventListener('open-command-palette', handleOpenCmd);
+  }, []);
 
   // Fetch all initial data
   useEffect(() => {
@@ -53,14 +114,12 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      // Check onboarding profile first
       const profileRes = await fetch('/api/profile');
       if (!profileRes.ok) {
         throw new Error('Failed to load profile from server');
       }
       const profileData = await profileRes.json();
       
-      // If profileData has an error property from the backend
       if (profileData && profileData.error) {
         throw new Error(profileData.error);
       }
@@ -72,7 +131,6 @@ export default function App() {
         setActiveTab('onboarding');
       } else {
         setOnboarded(true);
-        // Load settings and competitors
         const settingsRes = await fetch('/api/settings');
         if (!settingsRes.ok) {
           throw new Error('Failed to load settings from server');
@@ -98,8 +156,6 @@ export default function App() {
       const data = await res.json();
       if (Array.isArray(data)) {
         setCompetitors(data);
-      } else {
-        console.error('Competitors data is not an array:', data);
       }
     } catch (e) {
       console.error('Failed to reload competitors:', e);
@@ -113,8 +169,6 @@ export default function App() {
       const data = await res.json();
       if (Array.isArray(data)) {
         setFeedCards(data);
-      } else {
-        console.error('Feed data is not an array:', data);
       }
     } catch (e) {
       console.error('Failed to reload intelligence feed:', e);
@@ -138,7 +192,6 @@ export default function App() {
       setProfile(data);
       setOnboarded(true);
       
-      // Load initial settings
       const settingsRes = await fetch('/api/settings');
       const settingsData = await settingsRes.json();
       setSettings(settingsData);
@@ -207,13 +260,10 @@ export default function App() {
       const res = await fetch(`/api/competitors/${id}/check`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to start scrape check');
       
-      // Flash a quick notice
       alert('A scrape job has been added to the background queue. It will complete in 15-30 seconds.');
       
-      // Set to checking status locally
       setCompetitors(prev => prev.map(c => c.id === id ? { ...c, status: 'active' } : c));
       
-      // Auto refresh list and feed after 15 seconds
       setTimeout(async () => {
         await refreshCompetitors();
         await refreshFeed();
@@ -236,7 +286,6 @@ export default function App() {
         throw new Error(data.error || 'Failed to save settings');
       }
       alert('Settings saved successfully.');
-      // Reload settings
       const settingsRes = await fetch('/api/settings');
       const settingsData = await settingsRes.json();
       setSettings(settingsData);
@@ -287,104 +336,121 @@ export default function App() {
     setActiveTab('details');
   };
 
+  const unreadCount = feedCards.filter(c => c.is_read === 0).length;
+
   return (
-    <div>
-      {/* Top Navbar */}
-      <header className="navbar">
-        <div className="nav-brand" onClick={() => onboarded && setActiveTab('dashboard')} style={{ cursor: 'pointer' }}>
-          <span>🤖</span> Autonomous Competitor Intelligence Engine
-        </div>
-        {onboarded && (
-          <nav className="nav-links">
-            <div className="workspace-indicator" style={{ marginRight: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '12px', opacity: 0.6 }}>Workspace:</span>
-              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '4px 8px', borderRadius: '4px', fontSize: '13px', color: 'var(--color-secondary)', fontWeight: 'bold' }}>{workspaceId}</code>
-            </div>
-            <button className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-              Dashboard
-            </button>
-            <button className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}>
-              Intelligence Feed
-            </button>
-            <button className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
-              Settings
-            </button>
-            {activeTab === 'details' && (
-              <button className="nav-link active">
-                Competitor Detail
-              </button>
-            )}
-          </nav>
-        )}
-      </header>
+    <div className="app-shell">
+      {/* Sidebar Navigation */}
+      {onboarded && (
+        <Sidebar 
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          workspaceId={workspaceId}
+          profile={profile}
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          unreadCount={unreadCount}
+        />
+      )}
 
       {/* Main Content Area */}
-      <main className="app-container">
-        {loading && activeTab !== 'onboarding' ? (
-          <div className="loading-container">
-            <div className="spinner"></div>
-            <p>Loading application data...</p>
-          </div>
-        ) : error ? (
-          <div className="glass-panel" style={{ padding: '24px', borderLeft: '4px solid var(--color-danger)', marginBottom: '30px' }}>
-            <h3 style={{ color: 'var(--color-danger)' }}>Error Encountered</h3>
-            <p>{error}</p>
-            <button className="btn" style={{ marginTop: '15px' }} onClick={fetchInitialData}>Retry Connection</button>
-          </div>
-        ) : (
-          <div>
-            {activeTab === 'onboarding' && (
-              <OnboardingPage onSubmit={handleOnboardingSubmit} initialProfile={profile} />
-            )}
-            
-            {activeTab === 'dashboard' && (
-              <DashboardPage 
-                competitors={competitors}
-                onAddClick={() => setIsAddModalOpen(true)}
-                onCheckNow={handleCheckNow}
-                onPauseResume={handlePauseResume}
-                onDelete={handleDeleteCompetitor}
-                onViewDetails={navigateToDetails}
-              />
-            )}
-            
-            {activeTab === 'feed' && (
-              <FeedPage 
-                cards={feedCards}
-                competitors={competitors}
-                onRetryCrm={handleRetryCrm}
-                onViewDiff={(diff) => setActiveDiffText(diff)}
-                onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
-                onRefreshFeed={refreshFeed}
-              />
-            )}
-            
-            {activeTab === 'details' && (
-              <DetailsPage 
-                competitorId={selectedCompId}
-                competitors={competitors}
-                onBack={() => { setActiveTab('dashboard'); setSelectedCompId(null); }}
-                onDelete={handleDeleteCompetitor}
-                onCheckNow={handleCheckNow}
-                onUpdateCompetitor={refreshCompetitors}
-              />
-            )}
-            
-            {activeTab === 'settings' && (
-              <SettingsPage 
-                settings={settings}
-                profile={profile}
-                feedCards={feedCards}
-                onSaveSettings={handleSaveSettings}
-                onTestEmail={handleTestEmail}
-                onRetryCrm={handleRetryCrm}
-                onRegenerateKey={handleRegenerateApiKey}
-                onUpdateProfile={handleOnboardingSubmit}
-              />
-            )}
-          </div>
+      <div className="app-main-content">
+        {onboarded && (
+          <TopBar 
+            onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+            onAddClick={() => setIsAddModalOpen(true)}
+            onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            unreadCount={unreadCount}
+            onRefresh={() => {
+              refreshCompetitors();
+              refreshFeed();
+            }}
+            activeTab={activeTab}
+          />
         )}
-      </main>
+
+        <main className="app-container">
+          {loading && activeTab !== 'onboarding' ? (
+            <div className="space-y-6">
+              <div className="h-8 w-64 mira-skeleton rounded-lg"></div>
+              <div className="bento-grid">
+                <div className="bento-span-8"><CardSkeleton /></div>
+                <div className="bento-span-4"><CardSkeleton /></div>
+                <div className="bento-span-6"><CardSkeleton /></div>
+                <div className="bento-span-6"><CardSkeleton /></div>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="mira-glass p-8 border-l-4 border-rose-500 space-y-4">
+              <div className="flex items-center gap-3 text-rose-400">
+                <AlertOctagon className="w-6 h-6" />
+                <h3 className="text-lg font-bold">System Connection Failure</h3>
+              </div>
+              <p className="text-slate-300 text-sm">{error}</p>
+              <button className="mira-btn mira-btn-secondary text-xs" onClick={fetchInitialData}>
+                <RefreshCw className="w-3.5 h-3.5" />
+                Retry Server Connection
+              </button>
+            </div>
+          ) : (
+            <div>
+              {activeTab === 'onboarding' && (
+                <OnboardingPage onSubmit={handleOnboardingSubmit} initialProfile={profile} />
+              )}
+              
+              {activeTab === 'dashboard' && (
+                <DashboardPage 
+                  competitors={competitors}
+                  feedCards={feedCards}
+                  onAddClick={() => setIsAddModalOpen(true)}
+                  onCheckNow={handleCheckNow}
+                  onPauseResume={handlePauseResume}
+                  onDelete={handleDeleteCompetitor}
+                  onViewDetails={navigateToDetails}
+                  onViewFeed={() => setActiveTab('feed')}
+                  settings={settings}
+                />
+              )}
+              
+              {activeTab === 'feed' && (
+                <FeedPage 
+                  cards={feedCards}
+                  competitors={competitors}
+                  onRetryCrm={handleRetryCrm}
+                  onViewDiff={(diff) => setActiveDiffText(diff)}
+                  onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
+                  onRefreshFeed={refreshFeed}
+                />
+              )}
+              
+              {activeTab === 'details' && (
+                <DetailsPage 
+                  competitorId={selectedCompId}
+                  competitors={competitors}
+                  onBack={() => { setActiveTab('dashboard'); setSelectedCompId(null); }}
+                  onDelete={handleDeleteCompetitor}
+                  onCheckNow={handleCheckNow}
+                  onUpdateCompetitor={refreshCompetitors}
+                />
+              )}
+              
+              {activeTab === 'settings' && (
+                <SettingsPage 
+                  settings={settings}
+                  profile={profile}
+                  feedCards={feedCards}
+                  onSaveSettings={handleSaveSettings}
+                  onTestEmail={handleTestEmail}
+                  onRetryCrm={handleRetryCrm}
+                  onRegenerateKey={handleRegenerateApiKey}
+                  onUpdateProfile={handleOnboardingSubmit}
+                  workspaceId={workspaceId}
+                />
+              )}
+            </div>
+          )}
+        </main>
+      </div>
 
       {/* Add Competitor Modal */}
       {isAddModalOpen && (
@@ -393,6 +459,20 @@ export default function App() {
           onSubmit={handleAddCompetitor}
         />
       )}
+
+      {/* Command Palette Modal */}
+      <CommandPalette 
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        competitors={competitors}
+        onNavigateTab={(tab) => setActiveTab(tab)}
+        onAddClick={() => setIsAddModalOpen(true)}
+        onViewDetails={navigateToDetails}
+        onRefresh={() => {
+          refreshCompetitors();
+          refreshFeed();
+        }}
+      />
 
       {/* Diff Text Modal */}
       {activeDiffText !== null && (
@@ -430,85 +510,132 @@ function OnboardingPage({ onSubmit, initialProfile }) {
   };
 
   return (
-    <div className="glass-panel onboarding-container">
-      <div className="onboarding-intro">
-        <div className="onboarding-logo">🧠</div>
-        <h2 style={{ fontSize: '28px', fontWeight: '800' }}>Welcome to Competitor Intel</h2>
-        <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
-          To calculate the <strong>business impact score (1-10)</strong> of competitor changes, our local LLM needs some context about your own business.
-        </p>
+    <div className="max-w-2xl mx-auto my-12">
+      <div className="mira-glass p-8 sm:p-10 space-y-8 relative overflow-hidden">
+        {/* Soft Ambient Glow */}
+        <div className="absolute -top-24 -left-24 w-56 h-56 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="text-center space-y-3">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-sky-400 p-[1.5px] mx-auto shadow-xl shadow-violet-500/20">
+            <div className="w-full h-full bg-[#090A0F] rounded-[14px] flex items-center justify-center">
+              <Brain className="w-7 h-7 text-violet-400" />
+            </div>
+          </div>
+          <h1 className="text-2.5xl font-black text-white font-['Outfit'] tracking-tight">
+            Configure Business Intelligence Context
+          </h1>
+          <p className="text-slate-300 text-xs max-w-md mx-auto leading-relaxed">
+            To compute high-precision <strong>Business Impact Scores (1–10)</strong> on competitor shifts, Mira requires your core business parameters.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="mira-form-group">
+            <label className="mira-form-label flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-violet-400" />
+              Your Business / Product Name
+            </label>
+            <input 
+              type="text" 
+              className="mira-input" 
+              value={form.business_name}
+              onChange={e => setForm({ ...form, business_name: e.target.value })}
+              placeholder="e.g. InboxFlow AI"
+              required
+            />
+          </div>
+
+          <div className="mira-form-group">
+            <label className="mira-form-label flex items-center gap-2">
+              <Target className="w-4 h-4 text-sky-400" />
+              What your product does & key features
+            </label>
+            <textarea 
+              className="mira-textarea" 
+              rows="3"
+              value={form.product_desc}
+              onChange={e => setForm({ ...form, product_desc: e.target.value })}
+              placeholder="e.g. Automated AI outbound email platform with personalized sequence optimization and CRM sync."
+              required
+            ></textarea>
+          </div>
+
+          <div className="mira-form-group">
+            <label className="mira-form-label flex items-center gap-2">
+              <Globe className="w-4 h-4 text-emerald-400" />
+              Target Customer Segments
+            </label>
+            <input 
+              type="text" 
+              className="mira-input" 
+              value={form.customers}
+              onChange={e => setForm({ ...form, customers: e.target.value })}
+              placeholder="e.g. Mid-market B2B SaaS sales teams, growth agencies, and outbound SDRs."
+              required
+            />
+          </div>
+
+          <div className="mira-form-group">
+            <label className="mira-form-label flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-amber-400" />
+              Your Pricing Structure & Price Point
+            </label>
+            <input 
+              type="text" 
+              className="mira-input" 
+              value={form.price_point}
+              onChange={e => setForm({ ...form, price_point: e.target.value })}
+              placeholder="e.g. Starter $49/mo, Pro $149/mo, Enterprise $499/mo"
+              required
+            />
+          </div>
+
+          <button type="submit" className="mira-btn mira-btn-primary w-full py-3.5 text-xs font-black shadow-lg">
+            <Sparkles className="w-4 h-4" />
+            Complete Context & Launch Intelligence Layer
+          </button>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label">Your Business Name</label>
-          <input 
-            type="text" 
-            className="form-input" 
-            value={form.business_name}
-            onChange={e => setForm({ ...form, business_name: e.target.value })}
-            placeholder="E.g., InboxFlow"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">What your product does</label>
-          <textarea 
-            className="form-input" 
-            rows="3"
-            value={form.product_desc}
-            onChange={e => setForm({ ...form, product_desc: e.target.value })}
-            placeholder="E.g., We provide automated email marketing and cold outbound services optimized with AI agent writing."
-            required
-          ></textarea>
-          <div className="form-help">Provide a descriptive explanation. The LLM relies heavily on this to detect direct feature overlaps.</div>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Who your target customers are</label>
-          <input 
-            type="text" 
-            className="form-input" 
-            value={form.customers}
-            onChange={e => setForm({ ...form, customers: e.target.value })}
-            placeholder="E.g., E-commerce brands, marketing agencies, and mid-sized sales teams."
-            required
-          />
-          <div className="form-help">Used to score competitor shifts in pricing, marketing messaging, or segment targets.</div>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Your pricing structure / price point</label>
-          <input 
-            type="text" 
-            className="form-input" 
-            value={form.price_point}
-            onChange={e => setForm({ ...form, price_point: e.target.value })}
-            placeholder="E.g., SaaS starting at $49/month up to $299/month custom enterprise tiers."
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '10px', padding: '14px' }}>
-          Complete Onboarding & Launch Dashboard
-        </button>
-      </form>
     </div>
   );
 }
 
 // ----------------------------------------------------
-// PAGE COMPONENT: DASHBOARD
+// PAGE COMPONENT: ASYMMETRIC OBSIDIAN DASHBOARD
 // ----------------------------------------------------
-function DashboardPage({ competitors, onAddClick, onCheckNow, onPauseResume, onDelete, onViewDetails }) {
-  
+function DashboardPage({ 
+  competitors, 
+  feedCards, 
+  onAddClick, 
+  onCheckNow, 
+  onPauseResume, 
+  onDelete, 
+  onViewDetails,
+  onViewFeed,
+  settings 
+}) {
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'active': return <span className="badge badge-success">Active</span>;
-      case 'paused': return <span className="badge badge-warning">Paused</span>;
-      case 'error': return <span className="badge badge-danger">Error</span>;
-      default: return <span className="badge badge-info">{status}</span>;
+      case 'active': 
+        return (
+          <span className="mira-badge-emerald px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" /> Active
+          </span>
+        );
+      case 'paused': 
+        return (
+          <span className="mira-badge-amber px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase flex items-center gap-1">
+            <PauseCircle className="w-3 h-3" /> Paused
+          </span>
+        );
+      case 'error': 
+        return (
+          <span className="mira-badge-rose px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase flex items-center gap-1">
+            <AlertTriangle className="w-3 h-3" /> Error
+          </span>
+        );
+      default: 
+        return <span className="mira-badge-violet px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase">{status}</span>;
     }
   };
 
@@ -519,85 +646,303 @@ function DashboardPage({ competitors, onAddClick, onCheckNow, onPauseResume, onD
     const diffMins = Math.round(diffMs / (1000 * 60));
     const diffHours = Math.round(diffMs / (1000 * 60 * 60));
 
-    if (diffMins < 60) return `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
-    if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
     return date.toLocaleDateString();
   };
 
+  const totalMonitored = competitors.length;
+  const activeMonitored = competitors.filter(c => c.status === 'active').length;
+  const totalChangesThisWeek = competitors.reduce((acc, c) => acc + (c.changes_this_week || 0), 0);
+  const urgentAlerts = feedCards.filter(c => c.impact_score >= 7);
+
   return (
-    <div>
-      <div className="page-header">
+    <div className="space-y-8">
+      {/* Dashboard Title Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="page-title">Monitored Competitors</h1>
-          <p className="page-subtitle">Track, scan, and manage competitor websites</p>
+          <h1 className="text-2.5xl font-black text-white tracking-tight font-['Outfit'] flex items-center gap-2.5">
+            Autonomous Competitor Radar
+            <span className="w-2.5 h-2.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgba(168,85,247,0.9)] animate-ping"></span>
+          </h1>
+          <p className="text-slate-400 text-xs mt-1 font-medium">
+            Real-time page diff tracking, local LLM impact scoring, and automated CRM sync
+          </p>
         </div>
-        <button className="btn btn-primary" onClick={onAddClick}>
-          ➕ Add Competitor URL
+
+        <button className="mira-btn mira-btn-primary text-xs font-black shadow-lg" onClick={onAddClick}>
+          <Plus className="w-3.5 h-3.5 stroke-[3]" />
+          Add Competitor Target
         </button>
       </div>
 
+      {/* ASYMMETRIC OBSIDIAN BENTO GRID */}
       {competitors.length === 0 ? (
-        <div className="glass-panel empty-state">
-          <div className="empty-icon">📊</div>
-          <h3>No monitored competitors registered yet</h3>
-          <p style={{ marginTop: '8px', color: 'var(--text-secondary)' }}>
-            Add your first competitor or click the Chrome Extension icon to start tracking URLs.
+        <div className="mira-glass p-12 text-center space-y-4 max-w-xl mx-auto my-8 border-violet-500/20">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-sky-400 p-[1.5px] mx-auto shadow-xl shadow-violet-500/20">
+            <div className="w-full h-full bg-[#090A0F] rounded-[14px] flex items-center justify-center text-violet-400">
+              <Globe className="w-7 h-7" />
+            </div>
+          </div>
+          <h3 className="text-lg font-black text-white font-['Outfit']">No Monitored Targets Yet</h3>
+          <p className="text-slate-400 text-xs leading-relaxed max-w-md mx-auto">
+            Register competitor pricing, product feature, or career pages to begin continuous scrape tracking and AI change analysis.
           </p>
-          <button className="btn btn-primary" style={{ marginTop: '20px' }} onClick={onAddClick}>
-            Register Competitor
+          <button className="mira-btn mira-btn-primary text-xs font-bold" onClick={onAddClick}>
+            <Plus className="w-3.5 h-3.5 stroke-[3]" />
+            Register First Competitor Target
           </button>
         </div>
       ) : (
-        <div className="competitor-grid">
-          {competitors.map(comp => (
-            <div key={comp.id} className="glass-panel competitor-card">
-              <div className="card-title-row">
-                <div>
-                  <h3 className="card-name">{comp.name}</h3>
-                  <a href={comp.url} target="_blank" rel="noopener noreferrer" className="card-url">
-                    {comp.url} 🔗
-                  </a>
-                </div>
-                {getStatusBadge(comp.status)}
+        <div className="bento-grid">
+          {/* BENTO TILE 1: Executive Intelligence Hero Card (Span 8) */}
+          <div className="bento-span-8 mira-glass p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between space-y-6 border-l-2 border-violet-500 shadow-2xl">
+            {/* Top Row */}
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <span className="mira-badge-violet px-3 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider">
+                  Executive Intelligence Briefing
+                </span>
+                <h2 className="text-2xl font-black text-white mt-2 font-['Outfit']">
+                  Workspace Competitor Overview
+                </h2>
               </div>
-
-              <div className="card-stats">
-                <div className="stat-item">
-                  <span className="stat-label">Last Checked</span>
-                  <span className="stat-value">{getRelativeTime(comp.last_checked)}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Changes This Week</span>
-                  <span className="stat-value" style={{ fontWeight: 'bold', color: comp.changes_this_week > 0 ? '#38bdf8' : 'var(--text-secondary)' }}>
-                    {comp.changes_this_week}
-                  </span>
-                </div>
-                <div className="stat-item" style={{ marginTop: '6px' }}>
-                  <span className="stat-label">Interval</span>
-                  <span className="stat-value">{comp.interval_hours} hours</span>
-                </div>
-                <div className="stat-item" style={{ marginTop: '6px' }}>
-                  <span className="stat-label">Monitor Scope</span>
-                  <span className="stat-value" style={{ textTransform: 'capitalize' }}>{comp.scope}</span>
-                </div>
-              </div>
-
-              <div className="card-actions">
-                <button className="btn" style={{ flex: 1, padding: '8px 12px', fontSize: '13px' }} onClick={() => onViewDetails(comp.id)}>
-                  View History
-                </button>
-                <button className="btn btn-primary" style={{ padding: '8px 12px', fontSize: '13px' }} onClick={() => onCheckNow(comp.id)}>
-                  Check Now
-                </button>
-                <button className="btn" style={{ padding: '8px 12px' }} onClick={() => onPauseResume(comp.id, comp.status)}>
-                  {comp.status === 'paused' ? '▶️' : '⏸️'}
-                </button>
-                <button className="btn btn-danger" style={{ padding: '8px 12px' }} onClick={() => onDelete(comp.id)}>
-                  🗑️
-                </button>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-violet-500/10 border border-violet-400/25 text-xs text-violet-300 font-bold">
+                <Cpu className="w-3.5 h-3.5 text-violet-400" />
+                <span>Ollama / Local LLM Connected</span>
               </div>
             </div>
-          ))}
+
+            {/* Metric Cards with Sparklines */}
+            <div className="metrics-row-grid">
+              {/* Metric 1 */}
+              <div className="metric-stat-box">
+                <div className="flex items-center justify-between">
+                  <span className="stat-box-label">Monitored</span>
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.8)]"></div>
+                </div>
+                <div className="stat-box-value">
+                  {totalMonitored}
+                </div>
+                <div className="text-[10px] text-slate-400 font-medium font-mono">
+                  {activeMonitored} active targets
+                </div>
+              </div>
+
+              {/* Metric 2 */}
+              <div className="metric-stat-box">
+                <div className="flex items-center justify-between">
+                  <span className="stat-box-label">Weekly Shifts</span>
+                  <TrendingUp className="w-3.5 h-3.5 text-violet-400" />
+                </div>
+                <div className="stat-box-value text-violet-300">
+                  {totalChangesThisWeek}
+                </div>
+                <div className="text-[10px] text-violet-400 font-medium font-mono">
+                  Detected in 7d
+                </div>
+              </div>
+
+              {/* Metric 3 */}
+              <div className="metric-stat-box">
+                <div className="flex items-center justify-between">
+                  <span className="stat-box-label">High Impact</span>
+                  <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                </div>
+                <div className="stat-box-value text-rose-400">
+                  {urgentAlerts.length}
+                </div>
+                <div className="text-[10px] text-rose-400 font-medium font-mono">
+                  Score &ge; 7/10
+                </div>
+              </div>
+
+              {/* Metric 4 */}
+              <div className="metric-stat-box">
+                <div className="flex items-center justify-between">
+                  <span className="stat-box-label">Engine</span>
+                  <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
+                </div>
+                <div className="text-xs font-black text-sky-300 pt-1 flex items-center gap-1.5 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.8)]"></span>
+                  Optimal
+                </div>
+                <div className="text-[10px] text-slate-400 font-medium font-mono">
+                  Scrapes Active
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Intelligence Banner */}
+            {urgentAlerts.length > 0 ? (
+              <div className="p-3.5 rounded-xl bg-rose-950/25 border border-rose-500/30 flex items-start gap-3 text-xs">
+                <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <div className="font-bold text-rose-300">
+                    High Impact Shift Detected ({urgentAlerts[0].competitor_name})
+                  </div>
+                  <p className="text-slate-300 line-clamp-1 font-medium">
+                    {urgentAlerts[0].summary}
+                  </p>
+                  <button 
+                    onClick={onViewFeed}
+                    className="text-sky-400 hover:text-sky-300 font-bold text-[11px] inline-flex items-center gap-1 pt-0.5"
+                  >
+                    View in Stream &rarr;
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-slate-900/60 border border-white/10 flex items-center justify-between text-xs text-slate-300">
+                <span className="flex items-center gap-2 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  All targets scanned cleanly. No high-impact threats flagged this week.
+                </span>
+                <button onClick={onViewFeed} className="text-violet-400 font-bold hover:underline text-[11px]">
+                  Explore Stream &rarr;
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* BENTO TILE 2: Quick Control & Integrations (Span 4) */}
+          <div className="bento-span-4 mira-glass p-6 sm:p-7 flex flex-col justify-between space-y-6 border-l-2 border-sky-400">
+            <div className="space-y-1.5">
+              <span className="mira-badge-cyan px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider">
+                System Status
+              </span>
+              <h3 className="text-xl font-black text-white font-['Outfit']">
+                Control & Integrations
+              </h3>
+            </div>
+
+            <div className="space-y-2.5">
+              <div className="integration-status-row">
+                <span className="text-xs font-semibold text-slate-300">Chrome Extension API</span>
+                <span className="text-xs font-mono font-bold text-emerald-400">Active</span>
+              </div>
+
+              <div className="integration-status-row">
+                <span className="text-xs font-semibold text-slate-300">Active CRM Target</span>
+                <span className="text-xs font-mono font-bold text-violet-300 uppercase">
+                  {settings?.crm_config?.active_crm || 'None'}
+                </span>
+              </div>
+            </div>
+
+            <button 
+              onClick={onAddClick}
+              className="mira-btn mira-btn-secondary w-full py-2.5 text-xs font-bold"
+            >
+              <Plus className="w-3.5 h-3.5 text-violet-400" />
+              Register New URL Target
+            </button>
+          </div>
+
+          {/* BENTO TILE 3: Monitored Competitors Grid (Span 12) */}
+          <div className="bento-span-12 space-y-4 pt-2">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-black text-white font-['Outfit'] tracking-tight flex items-center gap-2">
+                <Globe className="w-4.5 h-4.5 text-violet-400" />
+                Monitored Competitor Cards ({competitors.length})
+              </h3>
+              <span className="text-xs text-slate-400 font-mono font-medium">
+                Scrapes auto-queued per target interval
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {competitors.map(comp => (
+                <div 
+                  key={comp.id} 
+                  className="mira-glass mira-glass-hover p-5.5 flex flex-col justify-between space-y-4 relative overflow-hidden group border border-white/10"
+                >
+                  {/* Subtle Top Violet Highlight Line */}
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 via-sky-400 to-violet-500 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-base font-extrabold text-white truncate font-['Outfit'] group-hover:text-violet-300 transition-colors">
+                          {comp.name}
+                        </h4>
+                        <a 
+                          href={comp.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-xs text-sky-400 hover:text-sky-300 font-mono truncate flex items-center gap-1 mt-0.5 font-semibold"
+                        >
+                          <span className="truncate">{comp.url}</span>
+                          <ExternalLink className="w-3 h-3 shrink-0" />
+                        </a>
+                      </div>
+                      {getStatusBadge(comp.status)}
+                    </div>
+
+                    {/* Competitor Card Stats */}
+                    <div className="competitor-card-stats">
+                      <div className="stat-pill-item">
+                        <span className="text-[9.5px] uppercase font-bold text-slate-400">Last Checked</span>
+                        <span className="font-bold text-slate-200 font-mono text-xs">
+                          {getRelativeTime(comp.last_checked)}
+                        </span>
+                      </div>
+                      <div className="stat-pill-item">
+                        <span className="text-[9.5px] uppercase font-bold text-slate-400">Weekly Shifts</span>
+                        <span className={`font-extrabold font-mono text-xs ${comp.changes_this_week > 0 ? 'text-rose-400' : 'text-slate-400'}`}>
+                          {comp.changes_this_week}
+                        </span>
+                      </div>
+                      <div className="stat-pill-item pt-2 border-t border-white/10">
+                        <span className="text-[9.5px] uppercase font-bold text-slate-400">Interval</span>
+                        <span className="font-semibold text-violet-300 text-xs">
+                          {comp.interval_hours}h
+                        </span>
+                      </div>
+                      <div className="stat-pill-item pt-2 border-t border-white/10">
+                        <span className="text-[9.5px] uppercase font-bold text-slate-400">Scope</span>
+                        <span className="font-semibold text-sky-300 text-xs capitalize">
+                          {comp.scope}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Actions */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                    <button 
+                      className="mira-btn mira-btn-secondary flex-1 py-1.5 text-xs font-bold" 
+                      onClick={() => onViewDetails(comp.id)}
+                    >
+                      <Eye className="w-3.5 h-3.5 text-violet-400" />
+                      History
+                    </button>
+                    <button 
+                      className="mira-btn mira-btn-emerald py-1.5 px-2.5 text-xs" 
+                      onClick={() => onCheckNow(comp.id)}
+                      title="Trigger Immediate Scrape"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </button>
+                    <button 
+                      className="mira-btn mira-btn-secondary py-1.5 px-2.5 text-xs" 
+                      onClick={() => onPauseResume(comp.id, comp.status)}
+                      title={comp.status === 'paused' ? 'Resume Monitor' : 'Pause Monitor'}
+                    >
+                      {comp.status === 'paused' ? <Play className="w-3.5 h-3.5 text-emerald-400" /> : <Pause className="w-3.5 h-3.5 text-amber-400" />}
+                    </button>
+                    <button 
+                      className="mira-btn mira-btn-danger py-1.5 px-2.5 text-xs" 
+                      onClick={() => onDelete(comp.id)}
+                      title="Delete Competitor"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -605,7 +950,7 @@ function DashboardPage({ competitors, onAddClick, onCheckNow, onPauseResume, onD
 }
 
 // ----------------------------------------------------
-// PAGE COMPONENT: INTELLIGENCE FEED
+// PAGE COMPONENT: INTELLIGENCE STREAM FEED
 // ----------------------------------------------------
 function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot, onRefreshFeed }) {
   const [selectedComp, setSelectedComp] = useState('all');
@@ -613,9 +958,15 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
   const [unreadOnly, setUnreadOnly] = useState(false);
 
   const getScoreColor = (score) => {
-    if (score >= 8) return '#ef4444'; // Red
-    if (score >= 5) return '#f97316'; // Orange
-    return '#3b82f6'; // Blue
+    if (score >= 8) return 'border-rose-500 bg-rose-950/15 text-rose-300';
+    if (score >= 5) return 'border-amber-500 bg-amber-950/15 text-amber-300';
+    return 'border-violet-500 bg-violet-950/15 text-violet-300';
+  };
+
+  const getScoreBadgeBg = (score) => {
+    if (score >= 8) return 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-rose-500/30';
+    if (score >= 5) return 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-amber-500/30';
+    return 'bg-gradient-to-r from-violet-500 to-sky-400 text-white shadow-violet-500/30';
   };
 
   const handleMarkAllRead = async () => {
@@ -640,7 +991,6 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
     } catch (e) {}
   };
 
-  // Filter logic
   const filteredCards = cards.filter(card => {
     if (selectedComp !== 'all' && card.competitor_id !== parseInt(selectedComp, 10)) return false;
     if (selectedCat !== 'all' && card.category !== selectedCat) return false;
@@ -649,145 +999,180 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
   });
 
   return (
-    <div>
-      <div className="page-header">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="page-title">Intelligence Feed</h1>
-          <p className="page-subtitle">Real-time alerts, business impact analyses, and CRM integration</p>
+          <h1 className="text-2.5xl font-black text-white tracking-tight font-['Outfit'] flex items-center gap-2.5">
+            <Activity className="w-6 h-6 text-violet-400" />
+            Real-time Intelligence Stream
+          </h1>
+          <p className="text-slate-400 text-xs mt-1 font-medium">
+            Scraped page diffs, automated LLM impact evaluations, and action recommendations
+          </p>
         </div>
-        <button className="btn" onClick={handleMarkAllRead}>
-          Read All Cards
+
+        <button className="mira-btn mira-btn-secondary text-xs font-bold" onClick={handleMarkAllRead}>
+          <Check className="w-3.5 h-3.5 text-emerald-400" />
+          Mark All As Read
         </button>
       </div>
 
-      <div className="feed-layout">
-        {/* Sidebar filters */}
-        <aside className="glass-panel feed-filters">
-          <div>
-            <h4 className="filter-section-title">Competitor</h4>
-            <select className="form-select" value={selectedComp} onChange={e => setSelectedComp(e.target.value)}>
-              <option value="all">All Competitors</option>
-              {competitors.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Filters Sidebar (Span 3) */}
+        <aside className="lg:col-span-3 space-y-6">
+          <div className="mira-glass p-5 space-y-4 sticky top-24 border-violet-500/20">
+            <div className="flex items-center gap-2 text-xs font-bold text-violet-300 uppercase tracking-wider pb-2.5 border-b border-white/10">
+              <Filter className="w-3.5 h-3.5 text-violet-400" />
+              Stream Filters
+            </div>
 
-          <div>
-            <h4 className="filter-section-title">Category</h4>
-            <select className="form-select" value={selectedCat} onChange={e => setSelectedCat(e.target.value)}>
-              <option value="all">All Categories</option>
-              <option value="pricing change">Pricing Change</option>
-              <option value="product or feature update">Product Update</option>
-              <option value="hiring signal">Hiring Signal</option>
-              <option value="content or messaging shift">Content Shift</option>
-              <option value="leadership or company change">Company Change</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+            <div className="mira-form-group">
+              <label className="mira-form-label">Competitor Target</label>
+              <select className="mira-select text-xs font-semibold" value={selectedComp} onChange={e => setSelectedComp(e.target.value)}>
+                <option value="all">All Monitored Targets</option>
+                {competitors.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
 
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '15px' }}>
-            <input 
-              type="checkbox" 
-              checked={unreadOnly} 
-              onChange={e => setUnreadOnly(e.target.checked)} 
-              style={{ width: '18px', height: '18px' }}
-            />
-            Unread Alerts Only
-          </label>
+            <div className="mira-form-group">
+              <label className="mira-form-label">Event Category</label>
+              <select className="mira-select text-xs font-semibold" value={selectedCat} onChange={e => setSelectedCat(e.target.value)}>
+                <option value="all">All Event Categories</option>
+                <option value="pricing change">Pricing Change</option>
+                <option value="product or feature update">Product Update</option>
+                <option value="hiring signal">Hiring Signal</option>
+                <option value="content or messaging shift">Content Shift</option>
+                <option value="leadership or company change">Company Change</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-200 pt-2 border-t border-white/10">
+              <input 
+                type="checkbox" 
+                checked={unreadOnly} 
+                onChange={e => setUnreadOnly(e.target.checked)} 
+                className="w-4 h-4 rounded border-white/20 text-violet-500 bg-black/60"
+              />
+              Unread Alerts Only
+            </label>
+          </div>
         </aside>
 
-        {/* Intelligence feed items */}
-        <section className="feed-cards">
+        {/* Intelligence Stream Feed Cards (Span 9) */}
+        <section className="lg:col-span-9 space-y-5">
           {filteredCards.length === 0 ? (
-            <div className="glass-panel empty-state">
-              <div className="empty-icon">🔔</div>
-              <h3>No intelligence cards match filters</h3>
-              <p style={{ marginTop: '8px' }}>Changes will appear here when the scheduler detects them.</p>
+            <div className="mira-glass p-12 text-center space-y-3 border-violet-500/20">
+              <Inbox className="w-10 h-10 mx-auto text-slate-600" />
+              <h3 className="text-base font-bold text-white font-['Outfit']">No Matching Intelligence Alerts</h3>
+              <p className="text-slate-400 text-xs">
+                Adjust your filters or trigger a check to discover competitor shifts.
+              </p>
             </div>
           ) : (
             filteredCards.map(card => (
-              <article key={card.id} className="glass-panel feed-card" style={{ borderLeft: `5px solid ${getScoreColor(card.impact_score)}`, opacity: card.is_read ? 0.75 : 1 }}>
-                <div className="feed-card-header">
-                  <div className="feed-card-meta">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className="feed-card-company">{card.competitor_name}</span>
-                      {card.is_read === 0 && <span className="badge badge-info" style={{ fontSize: '10px', padding: '2px 6px' }}>New</span>}
+              <article 
+                key={card.id} 
+                className={`mira-glass p-6 space-y-5 border-l-2 ${getScoreColor(card.impact_score)} ${card.is_read ? 'opacity-70' : 'opacity-100'} shadow-2xl`}
+              >
+                {/* Header Row */}
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2.5">
+                      <span className="font-extrabold text-base text-white font-['Outfit']">
+                        {card.competitor_name}
+                      </span>
+                      {card.is_read === 0 && (
+                        <span className="px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-violet-500/15 text-violet-300 border border-violet-400/30 font-mono shadow-md animate-pulse">
+                          New Alert
+                        </span>
+                      )}
                     </div>
-                    <span className="feed-card-time">{new Date(card.timestamp).toLocaleString()}</span>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
+                      <Clock className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{new Date(card.timestamp).toLocaleString()}</span>
+                    </div>
                   </div>
                   
-                  <div className="feed-card-score-badge">
-                    <span className="badge badge-info" style={{ textTransform: 'uppercase', fontSize: '11px' }}>{card.category}</span>
-                    <span className="score-number" style={{ backgroundColor: getScoreColor(card.impact_score) }}>
-                      {card.impact_score}
+                  <div className="flex items-center gap-3">
+                    <span className="mira-badge-cyan font-mono font-semibold text-[10.5px] px-2.5 py-0.5 rounded-full">
+                      {card.category}
                     </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9.5px] font-bold uppercase text-slate-400">Impact</span>
+                      <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black font-mono text-sm shadow-md ${getScoreBadgeBg(card.impact_score)}`}>
+                        {card.impact_score}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="feed-card-summary">
+                {/* Summary */}
+                <p className="text-slate-100 text-xs leading-relaxed whitespace-pre-line font-medium">
                   {card.summary}
+                </p>
+
+                {/* Justification & Recommendation */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-[#070912] border border-white/10 shadow-inner">
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-bold uppercase text-sky-400 flex items-center gap-1.5">
+                      <Brain className="w-3.5 h-3.5 text-sky-400" />
+                      Impact Justification
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                      {card.justification}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-bold uppercase text-emerald-400 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                      Recommended Action
+                    </div>
+                    <p className="text-xs text-emerald-300 font-bold leading-relaxed">
+                      {card.recommendation}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="feed-card-grid">
-                  <div className="feed-card-block">
-                    <strong>Impact Justification</strong>
-                    <p>{card.justification}</p>
-                  </div>
-                  <div className="feed-card-block">
-                    <strong>Recommended Action</strong>
-                    <p style={{ color: '#67e8f9', fontWeight: '600' }}>{card.recommendation}</p>
-                  </div>
-                </div>
-
+                {/* CRM Error */}
                 {card.crm_sync_status === 'failed' && (
-                  <div className="glass-panel" style={{ border: '1px solid var(--color-danger)', background: 'rgba(239, 68, 68, 0.05)', padding: '12px', marginTop: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '8px' }}>
-                    <span style={{ fontSize: '13px', color: '#f87171' }}>
-                      ⚠️ CRM sync failed: <strong>{card.crm_error}</strong>
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 flex items-center justify-between gap-3 text-xs">
+                    <span className="text-rose-300 flex items-center gap-2 font-semibold">
+                      <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                      CRM sync failed: <strong>{card.crm_error}</strong>
                     </span>
-                    <button className="btn btn-danger" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => onRetryCrm(card.id)}>
-                      Retry CRM Sync
+                    <button className="mira-btn mira-btn-danger py-1 px-2.5 text-[10.5px] font-bold" onClick={() => onRetryCrm(card.id)}>
+                      Retry Sync
                     </button>
                   </div>
                 )}
 
-                <div className="feed-card-actions">
-                  <button className="btn" style={{ fontSize: '13px', padding: '6px 12px' }} onClick={() => handleToggleRead(card)}>
-                    {card.is_read ? '👁️ Mark Unread' : '✔️ Mark Read'}
+                {/* Card Actions */}
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
+                  <button className="mira-btn mira-btn-secondary text-xs font-bold" onClick={() => handleToggleRead(card)}>
+                    {card.is_read ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-violet-400" />}
+                    {card.is_read ? 'Mark Unread' : 'Mark Read'}
                   </button>
+
                   {card.screenshot_path && (
-                    <button className="btn" style={{ fontSize: '13px', padding: '6px 12px' }} onClick={() => onViewScreenshot(card.screenshot_path)}>
-                      🖼️ View Page Capture
+                    <button className="mira-btn mira-btn-secondary text-xs font-bold" onClick={() => onViewScreenshot(card.screenshot_path)}>
+                      <Image className="w-3.5 h-3.5 text-sky-400" />
+                      Page Capture
                     </button>
                   )}
-                  {/* Fetch diff text dynamically from scrapes if needed, or query on click */}
-                  <button className="btn btn-primary" style={{ fontSize: '13px', padding: '6px 12px' }} onClick={async () => {
-                    try {
-                      const res = await fetch(`/api/competitors/${card.competitor_id}`);
-                      const data = await res.json();
-                      // Find matching diff by fetching scrape history or parsing diff in SQLite card. 
-                      // Actually, we can generate a diff by getting current text and finding the difference, or we can look up scrape records.
-                      // Since we store text content in scrapes, let's look up history.
-                      // Alternatively, we can let user view details which displays full history and diff.
-                      // For this card, we will reconstruct a mock diff or use a stored text if available.
-                      // In detector.js we generated diffText and stored it. Let's make sure our details page can display it.
-                      // Wait! The card in database does not store the raw diffText directly, but it links to competitor detail.
-                      // Let's implement diff fetching: we'll fetch scrapes, and calculate semantic diff dynamically or let card summary suffice.
-                      // Wait! In db.js, the card summary is stored. Let's make sure we can fetch the diff text.
-                      // To make it easy, we can fetch the scrape contents matching this card timestamp and the previous scrape.
-                      const timestamp = card.timestamp;
-                      const scrapHistory = data.latestScrape;
-                      // Let's just fetch the scrapes at card time and prior to card time
-                      const scrapesRes = await fetch(`/api/competitors/${card.competitor_id}`);
-                      const scrapesData = await scrapesRes.json();
-                      // Find scrape matching card timestamp
-                      const scrapes = scrapesData.history;
-                      onViewDiff(card.summary + "\n\nRecommendation:\n" + card.recommendation);
-                    } catch (e) {
-                      onViewDiff("Detail text:\n" + card.summary);
-                    }
-                  }}>
-                    🔍 View Full Analysis Details
+
+                  <button 
+                    className="mira-btn mira-btn-primary text-xs font-extrabold"
+                    onClick={() => {
+                      onViewDiff(card.summary + "\n\nRECOMMENDED ACTION:\n" + card.recommendation);
+                    }}
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    View Analysis Log
                   </button>
                 </div>
               </article>
@@ -807,7 +1192,6 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Settings Form State
   const [form, setForm] = useState({
     name: '',
     interval_hours: 6,
@@ -869,26 +1253,27 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <p>Loading competitor details...</p>
+      <div className="space-y-6">
+        <div className="h-8 w-48 mira-skeleton rounded-lg"></div>
+        <CardSkeleton />
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="glass-panel" style={{ padding: '24px', borderLeft: '4px solid var(--color-danger)', marginBottom: '30px' }}>
-        <h3 style={{ color: 'var(--color-danger)' }}>Error Loading Details</h3>
-        <p>{error || 'No competitor data found.'}</p>
-        <button className="btn" style={{ marginTop: '15px' }} onClick={onBack}>⬅️ Back to Dashboard</button>
+      <div className="mira-glass p-8 border-l-4 border-rose-500 space-y-4">
+        <h3 className="text-lg font-bold text-rose-400">Error Loading Competitor Details</h3>
+        <p className="text-slate-300 text-sm">{error || 'No competitor data found.'}</p>
+        <button className="mira-btn mira-btn-secondary text-xs" onClick={onBack}>
+          &larr; Back to Dashboard
+        </button>
       </div>
     );
   }
 
   const { competitor, history, latestScrape } = data;
 
-  // Render Line Chart in pure SVG
   const renderTrendChart = () => {
     const scoredHistory = [...history]
       .filter(c => c.impact_score)
@@ -896,27 +1281,26 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
 
     if (scoredHistory.length < 2) {
       return (
-        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '40px', textAlign: 'center', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-secondary)' }}>
-          📈 Trend Chart requires at least 2 historical changes to display.
+        <div className="p-8 text-center rounded-xl bg-[#070912] border border-white/10 text-slate-400 text-xs font-medium">
+          <BarChart3 className="w-8 h-8 mx-auto mb-2 text-violet-400" />
+          Trend Chart requires at least 2 historical changes to display score progression.
         </div>
       );
     }
 
-    const width = 500;
-    const height = 150;
+    const width = 600;
+    const height = 180;
     const paddingLeft = 40;
     const paddingRight = 20;
-    const paddingTop = 10;
-    const paddingBottom = 20;
+    const paddingTop = 15;
+    const paddingBottom = 25;
 
     const chartWidth = width - paddingLeft - paddingRight;
     const chartHeight = height - paddingTop - paddingBottom;
 
-    // Calculate coordinates
     const points = scoredHistory.map((item, idx) => {
       const x = paddingLeft + (idx / (scoredHistory.length - 1)) * chartWidth;
-      // y is calculated based on score (1 to 10). Score 10 should be at paddingTop, Score 1 should be at (paddingTop + chartHeight)
-      const scoreFraction = (item.impact_score - 1) / 9; // 0 to 1
+      const scoreFraction = (item.impact_score - 1) / 9;
       const y = paddingTop + chartHeight - scoreFraction * chartHeight;
       return { x, y, score: item.impact_score, date: new Date(item.timestamp).toLocaleDateString() };
     });
@@ -924,46 +1308,43 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
     const pathData = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 
     return (
-      <div className="glass-panel" style={{ padding: '20px', marginBottom: '24px' }}>
-        <h4 style={{ fontSize: '14px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '10px' }}>
-          Impact Score Trend
+      <div className="mira-glass p-5 space-y-3 border-violet-500/20">
+        <h4 className="text-xs font-bold text-violet-300 uppercase tracking-wider flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-violet-400" />
+          Historical Impact Score Trend (1–10)
         </h4>
-        <div className="chart-container">
-          <svg viewBox={`0 0 ${width} ${height}`} className="chart-svg">
+        <div className="h-44 w-full">
+          <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
             <defs>
-              <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+              <linearGradient id="miraObsidianChartGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#A855F7" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#38BDF8" stopOpacity="0" />
               </linearGradient>
             </defs>
 
-            {/* Horizontal Grid lines */}
             {[1, 5, 10].map(score => {
               const scoreFraction = (score - 1) / 9;
               const y = paddingTop + chartHeight - scoreFraction * chartHeight;
               return (
                 <g key={score}>
-                  <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                  <text x={paddingLeft - 10} y={y + 4} fill="var(--text-muted)" fontSize="9" textAnchor="end">{score}</text>
+                  <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="3 3" />
+                  <text x={paddingLeft - 8} y={y + 3} fill="#94A3B8" fontSize="9" textAnchor="end" fontFamily="JetBrains Mono">{score}</text>
                 </g>
               );
             })}
 
-            {/* Shaded Area under path */}
             {points.length > 0 && (
               <path 
                 d={`${pathData} L ${points[points.length - 1].x} ${paddingTop + chartHeight} L ${points[0].x} ${paddingTop + chartHeight} Z`}
-                fill="url(#chartGradient)"
+                fill="url(#miraObsidianChartGradient)"
               />
             )}
 
-            {/* The line path */}
-            <path d={pathData} fill="none" stroke="#38bdf8" strokeWidth="2.5" />
+            <path d={pathData} fill="none" stroke="#A855F7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
 
-            {/* Data points */}
             {points.map((p, idx) => (
               <g key={idx}>
-                <circle cx={p.x} cy={p.y} r="4" fill="#0f172a" stroke="#38bdf8" strokeWidth="2" />
+                <circle cx={p.x} cy={p.y} r="4.5" fill="#090A0F" stroke="#38BDF8" strokeWidth="2.5" />
                 <title>{`Score: ${p.score} (${p.date})`}</title>
               </g>
             ))}
@@ -974,67 +1355,67 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: '20px' }}>
-        <button className="btn" onClick={onBack}>
-          ⬅️ Back to Dashboard
-        </button>
-      </div>
+    <div className="space-y-6">
+      {/* Back Button */}
+      <button className="mira-btn mira-btn-secondary text-xs font-bold" onClick={onBack}>
+        &larr; Back to Dashboard
+      </button>
 
-      <div className="page-header" style={{ marginBottom: '24px' }}>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
-          <span className="badge badge-success" style={{ marginBottom: '8px' }}>
-            {(competitor.status || '').toUpperCase()}
-          </span>
-          <h1 className="page-title">{competitor.name}</h1>
-          <a href={competitor.url} target="_blank" rel="noopener noreferrer" className="card-url">
-            {competitor.url} 🔗
+          <div className="flex items-center gap-3">
+            <h1 className="text-2.5xl font-black text-white font-['Outfit']">{competitor.name}</h1>
+            <span className="mira-badge-emerald px-2.5 py-0.5 rounded-full text-[10.5px] font-bold uppercase">{competitor.status}</span>
+          </div>
+          <a href={competitor.url} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-400 font-mono flex items-center gap-1 mt-1 hover:underline font-semibold">
+            {competitor.url} <ExternalLink className="w-3 h-3" />
           </a>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
+
+        <div className="flex items-center gap-2">
           <button 
-            className="btn btn-primary" 
+            className="mira-btn mira-btn-emerald text-xs font-bold"
             onClick={async () => {
               await onCheckNow(competitor.id);
-              // Refresh this detail page's data after the background scrape completes (approx 15 seconds)
-              setTimeout(() => {
-                fetchCompetitorData();
-              }, 15000);
+              setTimeout(() => fetchCompetitorData(), 15000);
             }}
           >
+            <RefreshCw className="w-3.5 h-3.5" />
             Check Scrape Now
           </button>
-          <button className="btn btn-danger" onClick={() => onDelete(competitor.id)}>
-            Delete Competitor
+          <button className="mira-btn mira-btn-danger text-xs font-bold" onClick={() => onDelete(competitor.id)}>
+            <Trash2 className="w-3.5 h-3.5" />
+            Delete Target
           </button>
         </div>
       </div>
 
-      <div className="details-layout">
-        {/* Left Column: History and Trend */}
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: History & Trends (Span 8) */}
+        <div className="lg:col-span-8 space-y-6">
           {renderTrendChart()}
 
-          {/* Change History */}
-          <div className="glass-panel" style={{ padding: '24px', marginBottom: '24px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px' }}>Change History</h3>
+          {/* Change History Timeline */}
+          <div className="mira-glass p-5 space-y-4 border-violet-500/20">
+            <h3 className="text-base font-bold text-white font-['Outfit']">Change History Log</h3>
             {history.length === 0 ? (
-              <p style={{ color: 'var(--text-secondary)' }}>No intelligence events recorded yet for this competitor.</p>
+              <p className="text-slate-400 text-xs">No intelligence events recorded yet for this competitor.</p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="space-y-2.5">
                 {history.map(card => (
-                  <div key={card.id} style={{ background: 'rgba(0,0,0,0.15)', border: '1px solid rgba(255,255,255,0.05)', padding: '16px', borderRadius: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginHeight: '10px', alignItems: 'center' }}>
-                      <span className="badge badge-info">{card.category}</span>
-                      <span style={{ fontWeight: 'bold', color: card.impact_score >= 8 ? '#f87171' : (card.impact_score >= 5 ? '#fbbf24' : '#60a5fa') }}>
-                        Impact Score: {card.impact_score}/10
+                  <div key={card.id} className="p-4 rounded-xl bg-[#070912] border border-white/10 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="mira-badge-cyan font-mono text-[10px] font-bold px-2 py-0.5 rounded-full">{card.category}</span>
+                      <span className="text-xs font-bold font-mono text-violet-300">
+                        Impact: {card.impact_score}/10
                       </span>
                     </div>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: '10px 0' }}>
+                    <p className="text-xs text-slate-200 font-semibold leading-relaxed">
                       {card.summary ? card.summary.split('\n')[0] : ''}
                     </p>
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                      Checked on: {new Date(card.timestamp).toLocaleString()}
+                    <div className="text-[10px] text-slate-400 font-mono">
+                      Checked: {new Date(card.timestamp).toLocaleString()}
                     </div>
                   </div>
                 ))}
@@ -1042,94 +1423,95 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
             )}
           </div>
 
-          {/* Scrape Logs */}
-          <div className="glass-panel" style={{ padding: '24px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '10px' }}>Recent Scrapes</h3>
+          {/* Raw Scrape Logs */}
+          <div className="mira-glass p-5 space-y-4">
+            <h3 className="text-base font-bold text-white font-['Outfit']">Latest Raw Scrape Snapshot</h3>
             {latestScrape ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
-                  Latest Raw Scrape Timestamp: <strong>{new Date(latestScrape.timestamp).toLocaleString()}</strong>
+              <div className="space-y-3">
+                <p className="text-xs text-slate-300">
+                  Scrape Timestamp: <strong className="font-mono text-violet-300">{new Date(latestScrape.timestamp).toLocaleString()}</strong>
                 </p>
                 {latestScrape.screenshot_path && (
-                  <div style={{ marginTop: '10px' }}>
-                    <strong>Captured Screenshot:</strong>
-                    <br />
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-slate-300 uppercase">Page Visual Archive</span>
                     <img 
                       src={latestScrape.screenshot_path} 
-                      className="screenshot-preview" 
-                      style={{ maxWidth: '350px' }}
-                      alt="Latest capture preview"
+                      className="rounded-xl border border-white/15 hover:border-violet-500/40 transition-all cursor-pointer max-w-sm shadow-xl"
+                      alt="Capture Preview"
                       onClick={() => window.open(latestScrape.screenshot_path, '_blank')}
                     />
                   </div>
                 )}
               </div>
             ) : (
-              <p style={{ color: 'var(--text-secondary)' }}>No raw scrapes recorded yet. Trigger a check above to populate.</p>
+              <p className="text-slate-400 text-xs">No raw scrapes recorded yet. Click "Check Scrape Now" above.</p>
             )}
           </div>
         </div>
 
-        {/* Right Column: Settings & Configs */}
-        <aside className="glass-panel" style={{ padding: '24px', alignSelf: 'start' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '10px' }}>
-            Monitoring Config
-          </h3>
-          <form onSubmit={handleUpdate}>
-            <div className="form-group">
-              <label className="form-label">Competitor Name</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={form.name}
-                onChange={e => setForm({ ...form, name: e.target.value })}
-                required
-              />
-            </div>
+        {/* Right Column: Configs & Data Enrichment (Span 4) */}
+        <aside className="lg:col-span-4 space-y-6">
+          {/* Configuration Form */}
+          <div className="mira-glass p-5 space-y-4 border-violet-500/20">
+            <h3 className="text-base font-bold text-white font-['Outfit'] pb-2.5 border-b border-white/10">
+              Monitoring Configuration
+            </h3>
+            <form onSubmit={handleUpdate} className="space-y-3.5">
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Competitor Label Name</label>
+                <input 
+                  type="text" 
+                  className="mira-input text-xs font-semibold"
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Scrape Interval (Hours)</label>
-              <select 
-                className="form-select"
-                value={form.interval_hours}
-                onChange={e => setForm({ ...form, interval_hours: parseInt(e.target.value, 10) })}
-              >
-                <option value={6}>6 hours (Recommended minimum)</option>
-                <option value={12}>12 hours</option>
-                <option value={24}>24 hours (Daily)</option>
-                <option value={48}>48 hours</option>
-                <option value={168}>168 hours (Weekly)</option>
-              </select>
-            </div>
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Scrape Frequency (Hours)</label>
+                <select 
+                  className="mira-select text-xs font-semibold"
+                  value={form.interval_hours}
+                  onChange={e => setForm({ ...form, interval_hours: parseInt(e.target.value, 10) })}
+                >
+                  <option value={6}>6 hours (Recommended)</option>
+                  <option value={12}>12 hours</option>
+                  <option value={24}>24 hours (Daily)</option>
+                  <option value={168}>168 hours (Weekly)</option>
+                </select>
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Monitor Scope</label>
-              <select 
-                className="form-select"
-                value={form.scope}
-                onChange={e => setForm({ ...form, scope: e.target.value })}
-              >
-                <option value="full">Full Page Content</option>
-                <option value="pricing">Pricing Section Only</option>
-                <option value="careers">Careers / Jobs Section Only</option>
-              </select>
-            </div>
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Extraction Scope</label>
+                <select 
+                  className="mira-select text-xs font-semibold"
+                  value={form.scope}
+                  onChange={e => setForm({ ...form, scope: e.target.value })}
+                >
+                  <option value="full">Full Page Content</option>
+                  <option value="pricing">Pricing Section Only</option>
+                  <option value="careers">Careers & Jobs Section</option>
+                </select>
+              </div>
 
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginHeight: '20px', marginBottom: '20px' }}>
-              <input 
-                type="checkbox"
-                checked={form.js_enabled}
-                onChange={e => setForm({ ...form, js_enabled: e.target.checked })}
-                style={{ width: '18px', height: '18px' }}
-              />
-              Execute JS (Headless Puppeteer)
-            </label>
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-200">
+                <input 
+                  type="checkbox"
+                  checked={form.js_enabled}
+                  onChange={e => setForm({ ...form, js_enabled: e.target.checked })}
+                  className="w-4 h-4 rounded border-white/20 text-violet-500 bg-black/60"
+                />
+                Execute JS (Headless Chromium)
+              </label>
 
-            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-              Save Configurations
-            </button>
-          </form>
+              <button type="submit" className="mira-btn mira-btn-primary w-full text-xs font-black py-2.5">
+                Save Configurations
+              </button>
+            </form>
+          </div>
 
+          {/* Tech Stack Data Enrichment */}
           {(() => {
             let enrichment = null;
             if (competitor.enrichment_data) {
@@ -1139,47 +1521,33 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
             }
             if (!enrichment) return null;
             return (
-              <div className="glass-panel" style={{ marginTop: '24px', padding: '16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-                <h4 style={{ fontSize: '13px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700, margin: '0 0 12px 0', borderBottom: '1px dashed rgba(255,255,255,0.05)', paddingBottom: '6px' }}>
-                  🔍 Data Enrichment (Source 2)
+              <div className="mira-glass p-5 space-y-3 border-sky-500/20">
+                <h4 className="text-xs font-bold uppercase text-sky-400 tracking-wider flex items-center gap-2 pb-2 border-b border-white/10">
+                  <Server className="w-3.5 h-3.5 text-sky-400" />
+                  Tech Stack Data Enrichment
                 </h4>
-                <div style={{ fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div className="space-y-3 text-xs">
                   <div>
-                    <strong style={{ color: 'var(--text-secondary)' }}>Server Tech Header:</strong>
-                    <div style={{ color: '#38bdf8', fontFamily: 'monospace', fontSize: '12px', marginTop: '2px' }}>{enrichment.serverHeader || 'Unknown'}</div>
+                    <span className="text-slate-400 font-semibold">Server Header:</span>
+                    <div className="font-mono text-violet-300 text-xs font-bold mt-1 bg-[#070912] px-2.5 py-1 rounded border border-white/10">{enrichment.serverHeader || 'Unknown'}</div>
                   </div>
                   {enrichment.xPoweredBy && (
                     <div>
-                      <strong style={{ color: 'var(--text-secondary)' }}>Powered By:</strong>
-                      <div style={{ color: '#38bdf8', fontFamily: 'monospace', fontSize: '12px', marginTop: '2px' }}>{enrichment.xPoweredBy}</div>
+                      <span className="text-slate-400 font-semibold">Powered By:</span>
+                      <div className="font-mono text-sky-300 text-xs font-bold mt-1 bg-[#070912] px-2.5 py-1 rounded border border-white/10">{enrichment.xPoweredBy}</div>
                     </div>
                   )}
                   <div>
-                    <strong style={{ color: 'var(--text-secondary)' }}>DNS A Records (IPs):</strong>
-                    {enrichment.ipAddresses && enrichment.ipAddresses.length > 0 ? (
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px' }}>
-                        {enrichment.ipAddresses.map((ip, i) => (
-                          <span key={i} style={{ background: 'rgba(56,189,248,0.1)', color: '#38bdf8', padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontFamily: 'monospace' }}>{ip}</span>
-                        ))}
-                      </div>
-                    ) : (
-                      <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>None resolved</div>
-                    )}
-                  </div>
-                  <div>
-                    <strong style={{ color: 'var(--text-secondary)' }}>DNS MX Records (Mail):</strong>
-                    {enrichment.mxRecords && enrichment.mxRecords.length > 0 ? (
-                      <ul style={{ margin: '4px 0 0 0', paddingLeft: '16px', fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                        {enrichment.mxRecords.slice(0, 3).map((mx, i) => (
-                          <li key={i}>{mx}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>None resolved</div>
-                    )}
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '6px' }}>
-                    Enriched: {new Date(enrichment.checkedAt).toLocaleString()}
+                    <span className="text-slate-400 font-semibold">DNS A Records (IPs):</span>
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      {enrichment.ipAddresses && enrichment.ipAddresses.length > 0 ? (
+                        enrichment.ipAddresses.map((ip, i) => (
+                          <span key={i} className="mira-badge-cyan font-mono text-[10px] px-2 py-0.5 rounded">{ip}</span>
+                        ))
+                      ) : (
+                        <span className="text-slate-500">None resolved</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1192,9 +1560,19 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
 }
 
 // ----------------------------------------------------
-// PAGE COMPONENT: SETTINGS
+// PAGE COMPONENT: SETTINGS & CONFIGURATIONS
 // ----------------------------------------------------
-function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmail, onRetryCrm, onRegenerateKey, onUpdateProfile }) {
+function SettingsPage({ 
+  settings, 
+  profile, 
+  feedCards, 
+  onSaveSettings, 
+  onTestEmail, 
+  onRetryCrm, 
+  onRegenerateKey, 
+  onUpdateProfile,
+  workspaceId 
+}) {
   const [profileForm, setProfileForm] = useState({
     business_name: profile?.business_name || '',
     product_desc: profile?.product_desc || '',
@@ -1224,8 +1602,8 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
   const [schedule, setSchedule] = useState(settings?.digest_schedule || 'daily');
   const [slackWebhookUrl, setSlackWebhookUrl] = useState(settings?.slack_webhook_url || '');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [copiedKey, setCopiedKey] = useState(false);
 
-  // Keep state synchronized with props when they load or change
   useEffect(() => {
     if (profile) {
       setProfileForm({
@@ -1269,10 +1647,6 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
 
   const handleGeneralSubmit = (e) => {
     e.preventDefault();
-    if (slackWebhookUrl && !slackWebhookUrl.startsWith('https://hooks.slack.com/') && !slackWebhookUrl.startsWith('https://discord.com/api/webhooks/')) {
-      alert('Error: Slack Webhook URL must be a valid webhook starting with "https://hooks.slack.com/" (or Discord webhooks starting with "https://discord.com/api/webhooks/")');
-      return;
-    }
     onSaveSettings({
       digest_schedule: schedule,
       semantic_threshold: threshold,
@@ -1282,224 +1656,237 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
     });
   };
 
-  // Filter failed syncs from feed cards
   const failedCards = feedCards.filter(c => c.crm_sync_status === 'failed');
 
   return (
-    <div>
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Configurations & Settings</h1>
-          <p className="page-subtitle">Manage APIs, CRMs, email schedules, and your business profile context</p>
-        </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2.5xl font-black text-white tracking-tight font-['Outfit'] flex items-center gap-2.5">
+          <SettingsIcon className="w-6 h-6 text-violet-400" />
+          Configurations & Integrations
+        </h1>
+        <p className="text-slate-400 text-xs mt-1 font-medium">
+          Manage extension API keys, CRMs, email digest SMTP settings, and business profile parameters
+        </p>
       </div>
 
-      <div className="settings-grid">
-        {/* Left Column: Config Forms */}
-        <div>
-          {/* Workspace Sharing */}
-          <div className="glass-panel settings-card" style={{ marginBottom: '24px' }}>
-            <h3 className="settings-card-title">Shareable Workspace URL</h3>
-            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '15px' }}>
-              Save, bookmark, or copy this URL to return to this specific isolated workspace session.
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column: Extensions & Business Context */}
+        <div className="space-y-6">
+          {/* Shareable Workspace Link */}
+          <div className="mira-glass p-5 space-y-3 border-violet-500/20">
+            <h3 className="text-base font-bold text-white font-['Outfit'] flex items-center gap-2">
+              <Share2 className="w-4 h-4 text-violet-400" />
+              Isolated Workspace Session URL
+            </h3>
+            <p className="text-xs text-slate-300 font-medium">
+              Bookmark or share this unique session URL to access this specific workspace context.
             </p>
-            <div className="api-key-box" style={{ fontFamily: 'monospace', fontSize: '12px' }}>
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {window.location.origin + window.location.pathname + "?w=" + workspaceId}
-              </span>
+            <div className="flex items-center justify-between p-3 rounded-xl bg-[#070912] border border-white/10 font-mono text-xs text-violet-300">
+              <span className="truncate max-w-xs">{window.location.origin + window.location.pathname + "?w=" + workspaceId}</span>
               <button 
-                className="btn" 
-                style={{ padding: '6px 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                className="mira-btn mira-btn-secondary text-xs py-1 px-2.5 font-bold"
                 onClick={() => {
-                  const url = window.location.origin + window.location.pathname + "?w=" + workspaceId;
-                  navigator.clipboard.writeText(url);
-                  alert('Workspace link copied to clipboard!');
+                  navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?w=" + workspaceId);
+                  alert('Workspace URL copied!');
                 }}
               >
-                📋 Copy Link
+                <Copy className="w-3.5 h-3.5 text-violet-400" />
+                Copy
               </button>
             </div>
           </div>
 
-          {/* Extension API Key */}
-          <div className="glass-panel settings-card" style={{ marginBottom: '24px' }}>
-            <h3 className="settings-card-title">Chrome Extension Integration</h3>
-            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '15px' }}>
-              Paste this API key into the Chrome Extension settings popup to authorize additions and badge counts.
+          {/* Chrome Extension Key */}
+          <div className="mira-glass p-5 space-y-3.5 border-sky-500/20">
+            <h3 className="text-base font-bold text-white font-['Outfit'] flex items-center gap-2">
+              <Key className="w-4 h-4 text-sky-400" />
+              Chrome Extension API Key
+            </h3>
+            <p className="text-xs text-slate-300 font-medium">
+              Paste this key into your Chrome Extension popup to authorize instant page tracking.
             </p>
-            <div className="api-key-box">
+            <div className="flex items-center justify-between p-3 rounded-xl bg-[#070912] border border-white/10 font-mono text-xs text-sky-300 font-bold">
               <span>{settings?.api_key || 'No Key Configured'}</span>
               <button 
-                className="btn" 
-                style={{ padding: '6px 12px', fontSize: '12px' }}
+                className="mira-btn mira-btn-secondary text-xs py-1 px-2.5 font-bold"
                 onClick={() => {
                   navigator.clipboard.writeText(settings.api_key);
-                  alert('API Key copied to clipboard!');
+                  setCopiedKey(true);
+                  setTimeout(() => setCopiedKey(false), 2000);
                 }}
               >
-                📋 Copy
+                {copiedKey ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-sky-400" />}
+                {copiedKey ? 'Copied' : 'Copy Key'}
               </button>
             </div>
-            <button className="btn btn-danger" style={{ fontSize: '13px', padding: '6px 12px' }} onClick={onRegenerateKey}>
+            <button className="mira-btn mira-btn-danger text-xs py-1.5 font-bold" onClick={onRegenerateKey}>
               Regenerate API Key
             </button>
           </div>
 
-          {/* Business Profile */}
-          <div className="glass-panel settings-card" style={{ marginBottom: '24px' }}>
-            <h3 className="settings-card-title">Business Profile Context</h3>
-            <form onSubmit={handleProfileSubmit}>
-              <div className="form-group">
-                <label className="form-label">Business Name</label>
+          {/* Business Profile Context */}
+          <div className="mira-glass p-5 space-y-4 border-emerald-500/20">
+            <h3 className="text-base font-bold text-white font-['Outfit'] pb-2.5 border-b border-white/10">
+              Business Profile Context
+            </h3>
+            <form onSubmit={handleProfileSubmit} className="space-y-3.5">
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Business Name</label>
                 <input 
                   type="text" 
-                  className="form-input"
+                  className="mira-input text-xs font-semibold"
                   value={profileForm.business_name}
                   onChange={e => setProfileForm({ ...profileForm, business_name: e.target.value })}
                   required
                 />
               </div>
-              <div className="form-group">
-                <label className="form-label">Product Description</label>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Product Description</label>
                 <textarea 
-                  className="form-input" 
+                  className="mira-textarea text-xs font-semibold" 
                   rows="3"
                   value={profileForm.product_desc}
                   onChange={e => setProfileForm({ ...profileForm, product_desc: e.target.value })}
                   required
                 ></textarea>
               </div>
-              <div className="form-group">
-                <label className="form-label">Target Customers</label>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Target Customers</label>
                 <input 
                   type="text" 
-                  className="form-input"
+                  className="mira-input text-xs font-semibold"
                   value={profileForm.customers}
                   onChange={e => setProfileForm({ ...profileForm, customers: e.target.value })}
                   required
                 />
               </div>
-              <div className="form-group">
-                <label className="form-label">Pricing / Price Point</label>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Pricing Structure</label>
                 <input 
                   type="text" 
-                  className="form-input"
+                  className="mira-input text-xs font-semibold"
                   value={profileForm.price_point}
                   onChange={e => setProfileForm({ ...profileForm, price_point: e.target.value })}
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-                Update Business Profile
+
+              <button type="submit" className="mira-btn mira-btn-emerald w-full text-xs font-black py-2.5">
+                Update Business Profile Context
               </button>
             </form>
           </div>
         </div>
 
-        {/* Right Column: CRM & SMTP Configuration */}
-        <div>
-          <form onSubmit={handleGeneralSubmit}>
-            {/* General monitoring metrics */}
-            <div className="glass-panel settings-card" style={{ marginBottom: '24px' }}>
-              <h3 className="settings-card-title">General Engine Settings</h3>
-              <div className="form-group">
-                <label className="form-label">Semantic Change Threshold (0.0 to 1.0)</label>
+        {/* Right Column: General Parameters & Integrations */}
+        <div className="space-y-6">
+          <form onSubmit={handleGeneralSubmit} className="space-y-6">
+            {/* General Alert Parameters */}
+            <div className="mira-glass p-5 space-y-4 border-violet-500/20">
+              <h3 className="text-base font-bold text-white font-['Outfit'] pb-2.5 border-b border-white/10">
+                General Scrapes & Alert Parameters
+              </h3>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Semantic Change Threshold (0.0 – 1.0)</label>
                 <input 
                   type="number" 
                   step="0.01" 
                   min="0" 
                   max="1" 
-                  className="form-input"
+                  className="mira-input text-xs font-semibold"
                   value={threshold}
                   onChange={e => setThreshold(parseFloat(e.target.value))}
                   required
                 />
-                <div className="form-help">
-                  Lower values (e.g. 0.7) allow minor wording shifts to match. Higher values (e.g. 0.9) trigger changes more easily. Recommended: 0.85.
+                <div className="text-[10.5px] text-slate-400 mt-1 font-medium">
+                  Default 0.85. Higher values require larger content differences to trigger alerts.
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Digest Schedule</label>
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Digest Email Frequency</label>
                 <select 
-                  className="form-select"
+                  className="mira-select text-xs font-semibold"
                   value={schedule}
                   onChange={e => setSchedule(e.target.value)}
                 >
-                  <option value="daily">Daily Digest Email</option>
-                  <option value="weekly">Weekly Digest Email</option>
+                  <option value="daily">Daily Email Summary</option>
+                  <option value="weekly">Weekly Email Summary</option>
                 </select>
               </div>
 
-              <div className="form-group" style={{ marginTop: '15px' }}>
-                <label className="form-label">Slack Webhook URL (Real-time Alerts)</label>
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Slack / Discord Webhook URL</label>
                 <input 
                   type="url" 
-                  className="form-input"
+                  className="mira-input text-xs font-semibold"
                   value={slackWebhookUrl}
                   onChange={e => setSlackWebhookUrl(e.target.value)}
                   placeholder="https://hooks.slack.com/services/..."
                 />
-                <div className="form-help">
-                  Real-time Slack alerts will be sent immediately for high-impact events (score 8 or above).
-                </div>
               </div>
             </div>
 
             {/* Email SMTP Config */}
-            <div className="glass-panel settings-card" style={{ marginBottom: '24px' }}>
-              <h3 className="settings-card-title">Digest SMTP Email Settings</h3>
-              <div className="form-group">
-                <label className="form-label">SMTP Server Host</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  value={emailForm.smtp_host}
-                  onChange={e => setEmailForm({ ...emailForm, smtp_host: e.target.value })}
-                  placeholder="smtp.gmail.com"
-                  required
-                />
+            <div className="mira-glass p-5 space-y-4 border-sky-500/20">
+              <h3 className="text-base font-bold text-white font-['Outfit'] pb-2.5 border-b border-white/10">
+                Digest SMTP Email Configuration
+              </h3>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="mira-form-group">
+                  <label className="mira-form-label text-xs">SMTP Host</label>
+                  <input 
+                    type="text" 
+                    className="mira-input text-xs font-semibold" 
+                    value={emailForm.smtp_host}
+                    onChange={e => setEmailForm({ ...emailForm, smtp_host: e.target.value })}
+                    placeholder="smtp.gmail.com"
+                  />
+                </div>
+                <div className="mira-form-group">
+                  <label className="mira-form-label text-xs">SMTP Port</label>
+                  <input 
+                    type="number" 
+                    className="mira-input text-xs font-semibold" 
+                    value={emailForm.smtp_port}
+                    onChange={e => setEmailForm({ ...emailForm, smtp_port: parseInt(e.target.value, 10) })}
+                    placeholder="587"
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">SMTP Port</label>
-                <input 
-                  type="number" 
-                  className="form-input" 
-                  value={emailForm.smtp_port}
-                  onChange={e => setEmailForm({ ...emailForm, smtp_port: parseInt(e.target.value, 10) })}
-                  placeholder="587"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">SMTP Password / App Password / Resend Key</label>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Password / Resend Key</label>
                 <input 
                   type="password" 
-                  className="form-input" 
+                  className="mira-input text-xs font-semibold" 
                   value={emailForm.smtp_pass}
                   onChange={e => setEmailForm({ ...emailForm, smtp_pass: e.target.value })}
                   placeholder="••••••••••••••••"
-                  required
                 />
-                <div className="form-help">
-                  For <strong>Resend.com</strong>, paste your Resend API Key (starts with <code>re_</code>) here.
-                </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">Digest Recipient Email</label>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Digest Recipient Email</label>
                 <input 
                   type="email" 
-                  className="form-input" 
+                  className="mira-input text-xs font-semibold" 
                   value={emailForm.recipient_email}
                   onChange={e => setEmailForm({ ...emailForm, recipient_email: e.target.value })}
-                  placeholder="recipient-manager@mycompany.com"
-                  required
+                  placeholder="manager@mycompany.com"
                 />
               </div>
+
               <button 
                 type="button" 
-                className="btn" 
-                style={{ marginRight: '10px' }} 
+                className="mira-btn mira-btn-secondary text-xs font-bold"
                 onClick={async () => {
                   setIsSendingEmail(true);
                   try {
@@ -1510,79 +1897,83 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
                 }}
                 disabled={isSendingEmail}
               >
-                {isSendingEmail ? '✉️ Sending...' : '✉️ Send Test Digest Now'}
+                <Send className="w-3.5 h-3.5 text-sky-400" />
+                {isSendingEmail ? 'Sending Test Email...' : 'Send Test Digest Now'}
               </button>
             </div>
 
             {/* CRM Config */}
-            <div className="glass-panel settings-card" style={{ marginBottom: '24px' }}>
-              <h3 className="settings-card-title">CRM Integrations</h3>
-              <div className="form-group">
-                <label className="form-label">Active CRM Database</label>
+            <div className="mira-glass p-5 space-y-4 border-violet-500/20">
+              <h3 className="text-base font-bold text-white font-['Outfit'] pb-2.5 border-b border-white/10">
+                Automated CRM Synchronization
+              </h3>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Active CRM Target</label>
                 <select 
-                  className="form-select"
+                  className="mira-select text-xs font-semibold"
                   value={crmForm.active_crm}
                   onChange={e => setCrmForm({ ...crmForm, active_crm: e.target.value })}
                 >
-                  <option value="none">No CRM (Store locally only)</option>
+                  <option value="none">Disabled (Local DB Only)</option>
                   <option value="notion">Notion Database</option>
                   <option value="airtable">Airtable Base</option>
                 </select>
               </div>
 
               {crmForm.active_crm === 'notion' && (
-                <div style={{ marginTop: '15px' }}>
-                  <div className="form-group">
-                    <label className="form-label">Notion Integration Token</label>
+                <div className="space-y-3 pt-1">
+                  <div className="mira-form-group">
+                    <label className="mira-form-label text-xs">Notion Token</label>
                     <input 
                       type="password" 
-                      className="form-input" 
+                      className="mira-input text-xs font-semibold" 
                       value={crmForm.notion_token}
                       onChange={e => setCrmForm({ ...crmForm, notion_token: e.target.value })}
                       placeholder="secret_••••••••••••••••"
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Notion Database ID</label>
+                  <div className="mira-form-group">
+                    <label className="mira-form-label text-xs">Notion Database ID</label>
                     <input 
                       type="text" 
-                      className="form-input" 
+                      className="mira-input text-xs font-semibold" 
                       value={crmForm.notion_db_id}
                       onChange={e => setCrmForm({ ...crmForm, notion_db_id: e.target.value })}
-                      placeholder="e.g. 5d5a7d77b8b..."
+                      placeholder="5d5a7d77b8b..."
                     />
                   </div>
                 </div>
               )}
 
               {crmForm.active_crm === 'airtable' && (
-                <div style={{ marginTop: '15px' }}>
-                  <div className="form-group">
-                    <label className="form-label">Airtable Personal Access Token (PAT)</label>
+                <div className="space-y-3 pt-1">
+                  <div className="mira-form-group">
+                    <label className="mira-form-label text-xs">Airtable PAT Token</label>
                     <input 
                       type="password" 
-                      className="form-input" 
+                      className="mira-input text-xs font-semibold" 
                       value={crmForm.airtable_key}
                       onChange={e => setCrmForm({ ...crmForm, airtable_key: e.target.value })}
                       placeholder="pat.••••••••••••••••"
                     />
                   </div>
-                  <div className="form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                    <div>
-                      <label className="form-label">Airtable Base ID</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="mira-form-group">
+                      <label className="mira-form-label text-xs">Base ID</label>
                       <input 
                         type="text" 
-                        className="form-input" 
+                        className="mira-input text-xs font-semibold" 
                         value={crmForm.airtable_base_id}
                         onChange={e => setCrmForm({ ...crmForm, airtable_base_id: e.target.value })}
                         placeholder="app••••••••••••"
                       />
                     </div>
-                    <div>
-                      <label className="form-label">Table Name</label>
+                    <div className="mira-form-group">
+                      <label className="mira-form-label text-xs">Table Name</label>
                       <input 
                         type="text" 
-                        className="form-input" 
+                        className="mira-input text-xs font-semibold" 
                         value={crmForm.airtable_table_name}
                         onChange={e => setCrmForm({ ...crmForm, airtable_table_name: e.target.value })}
                         placeholder="Competitor Intel"
@@ -1593,43 +1984,10 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
               )}
             </div>
 
-            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-              Save General Configurations
+            <button type="submit" className="mira-btn mira-btn-primary w-full text-xs font-black py-3 shadow-lg">
+              Save All General Configurations
             </button>
           </form>
-
-          {/* CRM Sync Error Retry Table */}
-          <div className="glass-panel settings-card" style={{ marginTop: '24px' }}>
-            <h3 className="settings-card-title">⚠️ Failed CRM Synchronization Log ({failedCards.length})</h3>
-            {failedCards.length === 0 ? (
-              <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>No failed writes currently in queue. Sync is clean.</p>
-            ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table className="scrapes-table">
-                  <thead>
-                    <tr>
-                      <th>Competitor</th>
-                      <th>Error details</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {failedCards.map(c => (
-                      <tr key={c.id}>
-                        <td><strong>{c.competitor_name}</strong><br/><span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{c.category}</span></td>
-                        <td style={{ color: '#f87171', fontSize: '12px' }}>{c.crm_error}</td>
-                        <td>
-                          <button className="btn" style={{ padding: '4px 8px', fontSize: '12px' }} onClick={() => onRetryCrm(c.id)}>
-                            Retry Sync
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>
@@ -1637,7 +1995,7 @@ function SettingsPage({ settings, profile, feedCards, onSaveSettings, onTestEmai
 }
 
 // ----------------------------------------------------
-// MODAL COMPONENT: ADD COMPETITOR
+// MODAL COMPONENT: ADD COMPETITOR TARGET
 // ----------------------------------------------------
 function AddCompetitorModal({ onClose, onSubmit }) {
   const [form, setForm] = useState({
@@ -1654,81 +2012,86 @@ function AddCompetitorModal({ onClose, onSubmit }) {
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="glass-panel modal-content" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2 className="modal-title">➕ Register Competitor URL</h2>
-          <button className="modal-close" onClick={onClose}>&times;</button>
+    <div className="mira-modal-backdrop" onClick={onClose}>
+      <div className="mira-glass mira-modal-card border-violet-500/30" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-white/10">
+          <h2 className="text-lg font-black text-white font-['Outfit'] flex items-center gap-2">
+            <Plus className="w-5 h-5 text-violet-400" />
+            Register Competitor Target URL
+          </h2>
+          <button className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10" onClick={onClose}>
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Competitor Label Name</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="mira-form-group">
+            <label className="mira-form-label text-xs">Competitor Label Name</label>
             <input 
               type="text" 
-              className="form-input" 
+              className="mira-input text-xs font-semibold" 
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
-              placeholder="E.g., Competitor Alpha"
+              placeholder="e.g. Acme SaaS"
               required
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Website Target URL</label>
+          <div className="mira-form-group">
+            <label className="mira-form-label text-xs">Target Page URL</label>
             <input 
               type="url" 
-              className="form-input" 
+              className="mira-input text-xs font-semibold" 
               value={form.url}
               onChange={e => setForm({ ...form, url: e.target.value })}
-              placeholder="https://competitor.com/pricing"
+              placeholder="https://acme.com/pricing"
               required
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Scraping Frequency (Interval)</label>
+          <div className="mira-form-group">
+            <label className="mira-form-label text-xs">Scrape Frequency (Interval)</label>
             <select 
-              className="form-select"
+              className="mira-select text-xs font-semibold"
               value={form.interval_hours}
               onChange={e => setForm({ ...form, interval_hours: parseInt(e.target.value, 10) })}
             >
-              <option value={6}>Every 6 Hours</option>
+              <option value={6}>Every 6 Hours (Recommended)</option>
               <option value={12}>Every 12 Hours</option>
               <option value={24}>Every 24 Hours (Daily)</option>
               <option value={168}>Every Week</option>
             </select>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Extraction Scope</label>
+          <div className="mira-form-group">
+            <label className="mira-form-label text-xs">Extraction Scope</label>
             <select 
-              className="form-select"
+              className="mira-select text-xs font-semibold"
               value={form.scope}
               onChange={e => setForm({ ...form, scope: e.target.value })}
             >
-              <option value="full">Full Webpage Content</option>
+              <option value="full">Full Page Content</option>
               <option value="pricing">Pricing Section Only</option>
-              <option value="careers">Careers & Jobs Section Only</option>
+              <option value="careers">Careers & Jobs Section</option>
             </select>
           </div>
 
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '24px' }}>
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-200 pb-2">
             <input 
               type="checkbox" 
               checked={form.js_enabled}
               onChange={e => setForm({ ...form, js_enabled: e.target.checked })}
-              style={{ width: '18px', height: '18px' }}
+              className="w-4 h-4 rounded border-white/20 text-violet-500 bg-black/60"
             />
-            Render Dynamic Javascript (Single-Process Chromium)
+            Render Dynamic Javascript (Headless Chromium)
           </label>
 
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button type="button" className="btn" style={{ flex: 1 }} onClick={onClose}>
+          <div className="flex gap-3 pt-2">
+            <button type="button" className="mira-btn mira-btn-secondary flex-1 text-xs font-bold" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-              Add and Scan Competitor
+            <button type="submit" className="mira-btn mira-btn-primary flex-1 text-xs font-black">
+              Add & Scan Target
             </button>
           </div>
         </form>
@@ -1738,34 +2101,40 @@ function AddCompetitorModal({ onClose, onSubmit }) {
 }
 
 // ----------------------------------------------------
-// MODAL COMPONENT: VIEW ANALYSIS DETAILED DRAWER
+// MODAL COMPONENT: DIFF ANALYSIS DRAWER
 // ----------------------------------------------------
 function DiffModal({ diffText, onClose }) {
-  // Format the text into lines showing additions/deletions/neutral
   const lines = diffText.split('\n');
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="glass-panel modal-content" style={{ maxWidth: '700px' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2 className="modal-title">🔍 Detailed Analysis Logs</h2>
-          <button className="modal-close" onClick={onClose}>&times;</button>
+    <div className="mira-modal-backdrop" onClick={onClose}>
+      <div className="mira-glass mira-modal-card max-w-2xl border-violet-500/30" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/10">
+          <h2 className="text-lg font-black text-white font-['Outfit'] flex items-center gap-2">
+            <FileText className="w-4.5 h-4.5 text-violet-400" />
+            Detailed Analysis Log
+          </h2>
+          <button className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10" onClick={onClose}>
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        <div className="diff-container" style={{ maxHeight: '450px' }}>
+        <div className="bg-[#070912] border border-white/10 rounded-xl p-4 max-h-96 overflow-y-auto font-mono text-xs leading-relaxed space-y-1 shadow-inner">
           {lines.map((line, idx) => {
             if (line.startsWith('+ ')) {
-              return <span key={idx} className="diff-added">{line}</span>;
+              return <div key={idx} className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded font-semibold">{line}</div>;
             } else if (line.startsWith('- ')) {
-              return <span key={idx} className="diff-removed">{line}</span>;
+              return <div key={idx} className="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded font-semibold">{line}</div>;
             } else {
-              return <span key={idx} style={{ color: 'var(--text-secondary)', display: 'block', padding: '2px 4px' }}>{line}</span>;
+              return <div key={idx} className="text-slate-300 px-2 py-0.5">{line}</div>;
             }
           })}
         </div>
 
-        <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-          <button className="btn btn-primary" onClick={onClose}>Close Detail Log</button>
+        <div className="mt-5 flex justify-end">
+          <button className="mira-btn mira-btn-primary text-xs font-bold" onClick={onClose}>
+            Close Analysis Log
+          </button>
         </div>
       </div>
     </div>
@@ -1777,21 +2146,21 @@ function DiffModal({ diffText, onClose }) {
 // ----------------------------------------------------
 function ScreenshotModal({ url, onClose }) {
   return (
-    <div className="modal-backdrop" onClick={onClose} style={{ zIndex: 300 }}>
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }} onClick={e => e.stopPropagation()}>
+    <div className="mira-modal-backdrop" onClick={onClose}>
+      <div className="relative flex flex-col items-center max-w-4xl" onClick={e => e.stopPropagation()}>
         <button 
           onClick={onClose} 
-          style={{ position: 'absolute', top: '-40px', right: '0', background: 'transparent', border: 'none', color: 'white', fontSize: '32px', cursor: 'pointer' }}
+          className="absolute -top-10 right-0 text-slate-300 hover:text-white text-3xl font-bold"
         >
           &times;
         </button>
         <img 
           src={url} 
-          style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: '8px', border: '2px solid rgba(255,255,255,0.2)', boxShadow: '0 10px 40px rgba(0,0,0,0.8)' }}
+          className="max-w-full max-h-[80vh] rounded-xl border border-white/20 shadow-2xl"
           alt="Visual Archive Capture"
         />
-        <div style={{ marginTop: '12px', color: 'var(--text-primary)', background: 'rgba(0,0,0,0.6)', padding: '6px 14px', borderRadius: '15px', fontSize: '14px' }}>
-          Visual Page Capture - Timestamped Archive
+        <div className="mt-3 text-slate-200 bg-black/80 px-4 py-1.5 rounded-full text-xs font-mono border border-white/15 font-bold shadow-xl">
+          Visual Page Capture — Timestamped Snapshot
         </div>
       </div>
     </div>
