@@ -22,27 +22,6 @@ async function runMigrations(db) {
   try {
     await db.exec('ALTER TABLE intelligence_cards ADD COLUMN workspace_id TEXT DEFAULT "default"');
   } catch (e) {}
-  try {
-    await db.exec('ALTER TABLE intelligence_cards ADD COLUMN affects_product INTEGER DEFAULT 0');
-  } catch (e) {}
-  try {
-    await db.exec('ALTER TABLE intelligence_cards ADD COLUMN impact_type TEXT DEFAULT "No Direct Impact"');
-  } catch (e) {}
-  try {
-    await db.exec('ALTER TABLE intelligence_cards ADD COLUMN affected_product_areas TEXT DEFAULT ""');
-  } catch (e) {}
-  try {
-    await db.exec('ALTER TABLE intelligence_cards ADD COLUMN battlecard_counter TEXT DEFAULT ""');
-  } catch (e) {}
-  try {
-    await db.exec('ALTER TABLE intelligence_cards ADD COLUMN churn_risk TEXT DEFAULT "Low"');
-  } catch (e) {}
-  try {
-    await db.exec('ALTER TABLE intelligence_cards ADD COLUMN market_position_risk INTEGER DEFAULT 1');
-  } catch (e) {}
-  try {
-    await db.exec('ALTER TABLE profile ADD COLUMN features_list TEXT DEFAULT ""');
-  } catch (e) {}
 
   // Remove UNIQUE constraint from competitors(url) if present
   try {
@@ -212,8 +191,7 @@ async function getDb() {
       business_name TEXT,
       product_desc TEXT,
       customers TEXT,
-      price_point TEXT,
-      features_list TEXT
+      price_point TEXT
     );
 
     CREATE TABLE IF NOT EXISTS competitors (
@@ -252,12 +230,6 @@ async function getDb() {
       crm_error TEXT,
       is_read INTEGER DEFAULT 0,
       timestamp TEXT,
-      affects_product INTEGER DEFAULT 0,
-      impact_type TEXT DEFAULT 'No Direct Impact',
-      affected_product_areas TEXT DEFAULT '',
-      battlecard_counter TEXT DEFAULT '',
-      churn_risk TEXT DEFAULT 'Low',
-      market_position_risk INTEGER DEFAULT 1,
       FOREIGN KEY(competitor_id) REFERENCES competitors(id) ON DELETE CASCADE
     );
 
@@ -305,8 +277,8 @@ async function saveProfile(workspaceId = 'default', profileData) {
   }
   const db = await getDb();
   await db.run(
-    'INSERT OR REPLACE INTO profile (workspace_id, business_name, product_desc, customers, price_point, features_list) VALUES (?, ?, ?, ?, ?, ?)',
-    [finalWorkspaceId, finalProfileData.business_name, finalProfileData.product_desc, finalProfileData.customers, finalProfileData.price_point, finalProfileData.features_list || '']
+    'INSERT OR REPLACE INTO profile (workspace_id, business_name, product_desc, customers, price_point) VALUES (?, ?, ?, ?, ?)',
+    [finalWorkspaceId, finalProfileData.business_name, finalProfileData.product_desc, finalProfileData.customers, finalProfileData.price_point]
   );
   return await getProfile(finalWorkspaceId);
 }
@@ -418,7 +390,7 @@ async function getScrapeHistory(competitorId) {
 async function saveIntelligenceCard(card) {
   const db = await getDb();
   await db.run(
-    'INSERT INTO intelligence_cards (id, workspace_id, competitor_id, category, summary, impact_score, justification, recommendation, screenshot_path, crm_sync_status, crm_error, timestamp, affects_product, impact_type, affected_product_areas, battlecard_counter, churn_risk, market_position_risk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    'INSERT INTO intelligence_cards (id, workspace_id, competitor_id, category, summary, impact_score, justification, recommendation, screenshot_path, crm_sync_status, crm_error, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       card.id,
       card.workspace_id || 'default',
@@ -431,13 +403,7 @@ async function saveIntelligenceCard(card) {
       card.screenshot_path || '',
       card.crm_sync_status || 'pending',
       card.crm_error || '',
-      card.timestamp,
-      card.affects_product ? 1 : 0,
-      card.impact_type || 'No Direct Impact',
-      card.affected_product_areas || '',
-      card.battlecard_counter || '',
-      card.churn_risk || 'Low',
-      card.market_position_risk || 1
+      card.timestamp
     ]
   );
   return card;
@@ -473,9 +439,6 @@ async function getIntelligenceCards(workspaceId = null, filters = {}) {
   }
   if (finalFilters.unreadOnly) {
     conditions.push('ic.is_read = 0');
-  }
-  if (finalFilters.productImpactOnly) {
-    conditions.push('ic.affects_product = 1');
   }
 
   if (conditions.length > 0) {
