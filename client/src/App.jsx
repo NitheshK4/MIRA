@@ -353,6 +353,9 @@ export default function App() {
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'battlecards' ? 'active' : ''}`} onClick={() => setActiveTab('battlecards')}>
               <Swords size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Battlecards
             </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'visual-diff' ? 'active' : ''}`} onClick={() => setActiveTab('visual-diff')}>
+              <Eye size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Visual Diff
+            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
               <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
             </motion.button>
@@ -427,6 +430,13 @@ export default function App() {
                   competitors={competitors}
                   feedCards={feedCards}
                   profile={profile}
+                />
+              )}
+
+              {activeTab === 'visual-diff' && (
+                <VisualDiffPage 
+                  competitors={competitors}
+                  onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
                 />
               )}
               
@@ -2261,5 +2271,118 @@ function BattlecardsPage({ competitors = [], feedCards = [], profile }) {
     </div>
   );
 }
+
+// ----------------------------------------------------
+// PAGE COMPONENT: FEATURE 3 VISUAL WEBPAGE DIFF HUB
+// ----------------------------------------------------
+function VisualDiffPage({ competitors = [], onViewScreenshot }) {
+  const [selectedComp, setSelectedComp] = useState(competitors[0]?.id || '');
+  const [diffData, setDiffData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (selectedComp) {
+      fetchVisualDiff(selectedComp);
+    }
+  }, [selectedComp]);
+
+  const fetchVisualDiff = async (id) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/intelligence/visual-diff/${id}`);
+      if (!res.ok) throw new Error('Failed to load visual diff data');
+      const data = await res.json();
+      setDiffData(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const selectedScrape = diffData?.scrapes?.[0];
+  const diffLines = selectedScrape?.diff_text ? selectedScrape.diff_text.split('\n') : [];
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Visual Webpage Diff & Inspection Hub</h1>
+          <p className="page-subtitle">Side-by-side screenshot capture inspection and visual heatmap diff highlights</p>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: '24px', maxWidth: '340px' }}>
+        <label className="form-label">Select Target Competitor</label>
+        <select className="form-select" value={selectedComp} onChange={e => setSelectedComp(e.target.value)}>
+          {competitors.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+      </div>
+
+      {loading ? (
+        <div className="loading-container"><div className="spinner"></div><p>Fetching screenshot captures...</p></div>
+      ) : !diffData || !diffData.scrapes || diffData.scrapes.length === 0 ? (
+        <div className="glass-panel empty-state">
+          <div className="empty-icon">🖼️</div>
+          <h3>No visual captures recorded yet for this competitor</h3>
+          <p style={{ marginTop: '8px', color: 'var(--text-secondary)' }}>Visual page captures will display side-by-side once the scraper detects updates.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          {/* Left Column: Visual Screenshot Capture */}
+          <div className="glass-panel" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Image size={18} color="#F4A261" /> Visual Page Capture
+              </h3>
+              <span className="badge badge-info">{new Date(selectedScrape.created_at).toLocaleString()}</span>
+            </div>
+
+            {selectedScrape.screenshot_path ? (
+              <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => onViewScreenshot(selectedScrape.screenshot_path)}>
+                <img 
+                  src={selectedScrape.screenshot_path} 
+                  alt="Scraped Webpage Capture" 
+                  style={{ width: '100%', borderRadius: '16px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-soft)' }}
+                />
+                <div style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(45, 42, 38, 0.85)', color: '#FFFFFF', padding: '6px 14px', borderRadius: '9999px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Eye size={14} /> Click for Full Lightbox
+                </div>
+              </div>
+            ) : (
+              <p style={{ color: 'var(--text-secondary)' }}>No screenshot image available for this capture.</p>
+            )}
+          </div>
+
+          {/* Right Column: Visual Text Diff Overlay */}
+          <div className="glass-panel" style={{ padding: '24px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FileText size={18} color="#D97706" /> Heatmap Diff Highlights
+            </h3>
+
+            <div className="diff-container" style={{ maxHeight: '480px' }}>
+              {diffLines.length === 0 ? (
+                <p style={{ color: 'var(--text-secondary)' }}>No text diff recorded for this inspection.</p>
+              ) : (
+                diffLines.map((line, idx) => {
+                  if (line.startsWith('+ ')) {
+                    return <span key={idx} className="diff-added" style={{ background: '#D1FAE5', color: '#059669', display: 'block', padding: '4px 8px', borderRadius: '6px', margin: '2px 0', fontSize: '13px', fontWeight: '600' }}>{line}</span>;
+                  } else if (line.startsWith('- ')) {
+                    return <span key={idx} className="diff-removed" style={{ background: '#FFE4E6', color: '#E11D48', display: 'block', padding: '4px 8px', borderRadius: '6px', margin: '2px 0', fontSize: '13px', fontWeight: '600' }}>{line}</span>;
+                  } else {
+                    return <span key={idx} style={{ color: 'var(--text-secondary)', display: 'block', padding: '2px 4px', fontSize: '13px' }}>{line}</span>;
+                  }
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 

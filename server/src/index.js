@@ -398,6 +398,28 @@ app.post('/api/intelligence/battlecards/counter-pitch', checkWorkspace, async (r
   }
 });
 
+// Feature 3: Visual Webpage Diff & Interactive Screenshot Overlay Endpoint
+app.get('/api/intelligence/visual-diff/:competitor_id', checkWorkspace, async (req, res) => {
+  try {
+    const competitorId = parseInt(req.params.competitor_id, 10);
+    const competitor = await db.getCompetitorById(competitorId);
+    if (!competitor || competitor.workspace_id !== req.workspaceId) {
+      return res.status(404).json({ error: 'Competitor not found.' });
+    }
+
+    const scrapes = await db.getScrapesForCompetitor(competitorId);
+    const cards = await db.getIntelligenceCards(req.workspaceId, { competitor_id: competitorId });
+
+    res.json({
+      competitor,
+      scrapes: scrapes.slice(0, 10),
+      cards: cards.slice(0, 10)
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.put('/api/intelligence/:id', checkWorkspace, async (req, res) => {
   try {
     const card = await db.getIntelligenceCardById(req.params.id);
