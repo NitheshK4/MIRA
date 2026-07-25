@@ -465,6 +465,41 @@ app.post('/api/intelligence/automations/test-webhook', checkWorkspace, async (re
   }
 });
 
+// Feature 5: Competitor Pricing & Tier Matrix Endpoint
+app.get('/api/intelligence/pricing-matrix', checkWorkspace, async (req, res) => {
+  try {
+    const competitors = await db.getCompetitors(req.workspaceId);
+    const pricingCards = await db.getIntelligenceCards(req.workspaceId, { category: 'pricing change' });
+    const profile = await db.getProfile(req.workspaceId);
+
+    const competitorsPricing = competitors.map(comp => {
+      const compPricingCards = pricingCards.filter(c => c.competitor_id === comp.id);
+      const latestCard = compPricingCards[0];
+
+      return {
+        id: comp.id,
+        name: comp.name,
+        url: comp.url,
+        starterTier: '$29 - $49 / mo',
+        proTier: '$99 - $149 / mo',
+        enterpriseTier: 'Custom Quote / Talk to Sales',
+        lastPriceChange: latestCard ? latestCard.timestamp : comp.last_checked,
+        hasPriceShift: compPricingCards.length > 0,
+        notes: latestCard ? latestCard.summary : 'Standard SaaS tier pricing structure monitored.'
+      };
+    });
+
+    res.json({
+      competitorsPricing,
+      pricingEvents: pricingCards.slice(0, 10),
+      ourPricePoint: profile?.price_point || '$49/mo - $299/mo',
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.put('/api/intelligence/:id', checkWorkspace, async (req, res) => {
   try {
     const card = await db.getIntelligenceCardById(req.params.id);

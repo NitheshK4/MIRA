@@ -359,6 +359,9 @@ export default function App() {
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'automations' ? 'active' : ''}`} onClick={() => setActiveTab('automations')}>
               <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Automations
             </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'pricing-matrix' ? 'active' : ''}`} onClick={() => setActiveTab('pricing-matrix')}>
+              <TrendingUp size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Pricing Matrix
+            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
               <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
             </motion.button>
@@ -447,6 +450,13 @@ export default function App() {
                 <AutomationsPage 
                   settings={settings}
                   profile={profile}
+                />
+              )}
+
+              {activeTab === 'pricing-matrix' && (
+                <PricingMatrixPage 
+                  competitors={competitors}
+                  feedCards={feedCards}
                 />
               )}
               
@@ -2526,6 +2536,119 @@ function AutomationsPage({ settings, profile }) {
     </div>
   );
 }
+
+// ----------------------------------------------------
+// PAGE COMPONENT: FEATURE 5 COMPETITOR PRICING MATRIX
+// ----------------------------------------------------
+function PricingMatrixPage({ competitors = [], feedCards = [] }) {
+  const [matrixData, setMatrixData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchPricingMatrix();
+  }, []);
+
+  const fetchPricingMatrix = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/intelligence/pricing-matrix');
+      if (!res.ok) throw new Error('Failed to load pricing matrix');
+      const data = await res.json();
+      setMatrixData(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const pricingCards = feedCards.filter(c => c.category === 'pricing change');
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Competitor Pricing & Tier Matrix</h1>
+          <p className="page-subtitle">Structured side-by-side pricing tier comparisons and fee shift timelines</p>
+        </div>
+        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} className="btn" onClick={fetchPricingMatrix}>
+          <RefreshCw size={16} /> Refresh Pricing Matrix
+        </motion.button>
+      </div>
+
+      {loading ? (
+        <div className="loading-container"><div className="spinner"></div><p>Fetching competitor pricing matrices...</p></div>
+      ) : (
+        <main style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* Side-by-side Pricing Matrix Table / Cards */}
+          <div className="glass-panel" style={{ padding: '24px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <TrendingUp size={20} color="#F4A261" /> Monitored Competitors Pricing Structure
+            </h3>
+
+            {competitors.length === 0 ? (
+              <p style={{ color: 'var(--text-secondary)' }}>No competitors monitored yet. Register a target to compare pricing tiers.</p>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                {matrixData?.competitorsPricing?.map(comp => (
+                  <div key={comp.id} style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '20px', padding: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                      <div>
+                        <h4 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>{comp.name}</h4>
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{comp.url}</span>
+                      </div>
+                      {comp.hasPriceShift && <span className="badge badge-warning">Price Shift Detected</span>}
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', margin: '14px 0' }}>
+                      <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Starter Tier:</span>
+                        <strong style={{ fontSize: '13px', color: '#059669' }}>{comp.starterTier}</strong>
+                      </div>
+                      <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Pro Tier:</span>
+                        <strong style={{ fontSize: '13px', color: '#D97706' }}>{comp.proTier}</strong>
+                      </div>
+                      <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Enterprise Tier:</span>
+                        <strong style={{ fontSize: '13px', color: '#7E22CE' }}>{comp.enterpriseTier}</strong>
+                      </div>
+                    </div>
+
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.4', background: '#FFF8EE', padding: '10px', borderRadius: '10px', border: '1px solid #F2E7D8' }}>
+                      {comp.notes}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Pricing Shift Audit Log */}
+          <div className="glass-panel" style={{ padding: '24px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '16px' }}>Pricing Shift Audit Log</h3>
+            {pricingCards.length === 0 ? (
+              <p style={{ color: 'var(--text-secondary)' }}>No pricing change events detected yet. Alerts will log automatically upon site inspection.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {pricingCards.map(c => (
+                  <div key={c.id} style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: '14px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <strong style={{ fontSize: '15px', color: 'var(--text-primary)' }}>{c.competitor_name}</strong>
+                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px' }}>{c.summary}</p>
+                    </div>
+                    <span className="badge badge-warning" style={{ whiteSpace: 'nowrap' }}>Score: {c.impact_score}/10</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </main>
+      )}
+    </div>
+  );
+}
+
 
 
 
