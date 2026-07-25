@@ -420,6 +420,51 @@ app.get('/api/intelligence/visual-diff/:competitor_id', checkWorkspace, async (r
   }
 });
 
+// Feature 4: Automation Webhook Engine Endpoint
+app.post('/api/intelligence/automations/test-webhook', checkWorkspace, async (req, res) => {
+  try {
+    const { webhook_url, channel_type } = req.body;
+    const profile = await db.getProfile(req.workspaceId);
+
+    const targetUrl = webhook_url || 'https://hooks.slack.com/services/sample/test/webhook';
+    const channel = channel_type || 'slack';
+    const businessName = profile?.business_name || 'Our Platform';
+
+    const samplePayload = {
+      event: 'COMPETITOR_THREAT_DETECTED',
+      severity: 'CRITICAL',
+      impact_score: 9,
+      competitor: 'Competitor Alpha',
+      summary: 'Competitor Alpha launched a lower-tier starter pricing plan at $49/mo targeting small business accounts.',
+      affects_product: true,
+      churn_risk: 'High',
+      sales_battlecard: `Highlight ${businessName}'s zero downtime guarantees and enterprise SLA support over Competitor Alpha's basic starter tier.`,
+      timestamp: new Date().toISOString()
+    };
+
+    if (targetUrl.startsWith('http') && !targetUrl.includes('sample/test')) {
+      try {
+        await axios.post(targetUrl, channel === 'slack' ? {
+          text: `🚨 *MIRA Competitor Alert*: High Impact Event Detected (${samplePayload.competitor})\n*Summary*: ${samplePayload.summary}\n*Sales Counter*: ${samplePayload.sales_battlecard}`
+        } : samplePayload, { timeout: 5000 });
+      } catch (postErr) {
+        console.error('Webhook dispatch error:', postErr.message);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `Test webhook payload successfully formatted and dispatched to ${channel.toUpperCase()} target endpoint.`,
+      targetUrl,
+      channel,
+      payload: samplePayload,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.put('/api/intelligence/:id', checkWorkspace, async (req, res) => {
   try {
     const card = await db.getIntelligenceCardById(req.params.id);

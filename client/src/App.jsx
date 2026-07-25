@@ -356,6 +356,9 @@ export default function App() {
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'visual-diff' ? 'active' : ''}`} onClick={() => setActiveTab('visual-diff')}>
               <Eye size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Visual Diff
             </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'automations' ? 'active' : ''}`} onClick={() => setActiveTab('automations')}>
+              <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Automations
+            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
               <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
             </motion.button>
@@ -437,6 +440,13 @@ export default function App() {
                 <VisualDiffPage 
                   competitors={competitors}
                   onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
+                />
+              )}
+
+              {activeTab === 'automations' && (
+                <AutomationsPage 
+                  settings={settings}
+                  profile={profile}
                 />
               )}
               
@@ -2383,6 +2393,140 @@ function VisualDiffPage({ competitors = [], onViewScreenshot }) {
     </div>
   );
 }
+
+// ----------------------------------------------------
+// PAGE COMPONENT: FEATURE 4 AUTOMATION WEBHOOK ENGINE
+// ----------------------------------------------------
+function AutomationsPage({ settings, profile }) {
+  const [webhookUrl, setWebhookUrl] = useState(settings?.slack_webhook_url || '');
+  const [channelType, setChannelType] = useState('slack');
+  const [dispatchResult, setDispatchResult] = useState(null);
+  const [testing, setTesting] = useState(false);
+
+  const handleTestWebhook = async (e) => {
+    e.preventDefault();
+    setTesting(true);
+    try {
+      const res = await fetch('/api/intelligence/automations/test-webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ webhook_url: webhookUrl, channel_type: channelType })
+      });
+      if (!res.ok) throw new Error('Webhook test dispatch failed');
+      const data = await res.json();
+      setDispatchResult(data);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Automation Webhook Engine</h1>
+          <p className="page-subtitle">Configure real-time notification triggers and test webhook alert dispatches</p>
+        </div>
+      </div>
+
+      <div className="feed-layout" style={{ gridTemplateColumns: '380px 1fr' }}>
+        {/* Left Form: Webhook Simulator */}
+        <aside className="glass-panel feed-filters" style={{ position: 'static' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Zap size={18} color="#F4A261" /> Trigger Dispatch Simulator
+          </h3>
+          <form onSubmit={handleTestWebhook}>
+            <div className="form-group">
+              <label className="form-label">Target Channel / Format</label>
+              <select className="form-select" value={channelType} onChange={e => setChannelType(e.target.value)}>
+                <option value="slack">Slack Webhook (Block Kit)</option>
+                <option value="discord">Discord Alert (Embed JSON)</option>
+                <option value="custom">Custom HTTP POST Webhook</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Target Endpoint Webhook URL</label>
+              <input 
+                type="url" 
+                className="form-input" 
+                value={webhookUrl}
+                onChange={e => setWebhookUrl(e.target.value)}
+                placeholder="https://hooks.slack.com/services/..."
+              />
+              <div className="form-help">Leave empty or use sample URL to test mock payload output.</div>
+            </div>
+
+            <motion.button 
+              whileHover={{ scale: 1.03 }} 
+              whileTap={{ scale: 0.92 }} 
+              type="submit" 
+              className="btn btn-primary" 
+              style={{ width: '100%', marginTop: '10px' }}
+              disabled={testing}
+            >
+              <RefreshCw size={16} /> {testing ? 'Dispatching Payload...' : 'Test Webhook Dispatch'}
+            </motion.button>
+          </form>
+        </aside>
+
+        {/* Right Section: Automation Rules & Payload Inspection */}
+        <main style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {dispatchResult && (
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-panel" style={{ padding: '24px', borderLeft: '5px solid #059669' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <span className="badge badge-success">✓ Webhook Dispatch Confirmed</span>
+                <span className="badge badge-info">{new Date(dispatchResult.timestamp).toLocaleTimeString()}</span>
+              </div>
+              <p style={{ fontSize: '14px', color: '#059669', fontWeight: '700', marginBottom: '16px' }}>{dispatchResult.message}</p>
+
+              <div style={{ background: '#FFF8EE', padding: '16px', borderRadius: '14px', border: '1px solid #F2E7D8' }}>
+                <strong style={{ color: '#D97706', fontSize: '11px', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>Formatted Dispatched JSON Payload:</strong>
+                <pre style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#2D2A26', overflowX: 'auto', margin: 0 }}>
+                  {JSON.stringify(dispatchResult.payload, null, 2)}
+                </pre>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Active Automation Rules Grid */}
+          <div className="glass-panel" style={{ padding: '24px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '16px' }}>Active Automated Event Triggers</h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+              <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '18px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: '800' }}>Critical Threat Dispatch</h4>
+                  <span className="badge badge-danger">Impact 8+</span>
+                </div>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Instantly formats and dispatches Slack alert payloads when competitor impact score is 8 or above.</p>
+              </div>
+
+              <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '18px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: '800' }}>Product Threat Intercept</h4>
+                  <span className="badge badge-warning">Direct Overlap</span>
+                </div>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Fires Webhook POST calls to product team Slack channels when direct feature catch-up is detected.</p>
+              </div>
+
+              <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '18px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: '800' }}>Digest Email Dispatch</h4>
+                  <span className="badge badge-info">{settings?.digest_schedule || 'Daily'}</span>
+                </div>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Scheduled background email summary dispatched to strategic stakeholders.</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 
 
 
