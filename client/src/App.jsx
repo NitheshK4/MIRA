@@ -342,28 +342,28 @@ export default function App() {
               <code style={{ background: '#FFF8EE', border: '1px solid #F2E7D8', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#D97706', fontWeight: 'bold' }}>{workspaceId}</code>
             </div>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-              <Activity size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Target Matrix
+              <Activity size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Dashboard
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}>
-              <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Signal Feed
+              <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Market Pulse
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'radar' ? 'active' : ''}`} onClick={() => setActiveTab('radar')}>
-              <BarChart3 size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Strategic Radar
+              <BarChart3 size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Executive Radar
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'battlecards' ? 'active' : ''}`} onClick={() => setActiveTab('battlecards')}>
-              <Swords size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Counter Tactics
+              <Swords size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Sales Objections Hub
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'visual-diff' ? 'active' : ''}`} onClick={() => setActiveTab('visual-diff')}>
               <Eye size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Visual Inspector
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'automations' ? 'active' : ''}`} onClick={() => setActiveTab('automations')}>
-              <Layers size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Trigger Relays
+              <Layers size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Automation Triggers
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'pricing-matrix' ? 'active' : ''}`} onClick={() => setActiveTab('pricing-matrix')}>
-              <TrendingUp size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Pricing Index
+              <TrendingUp size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Pricing Tracker
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
-              <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Engine Config
+              <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Workspace Settings
             </motion.button>
             {activeTab === 'details' && (
               <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="nav-link active">
@@ -681,7 +681,7 @@ function DashboardPage({ competitors, feedCards = [], onAddClick, onCheckNow, on
 
       <div className="page-header">
         <div>
-          <h1 className="page-title">Target Matrix & Control</h1>
+          <h1 className="page-title">Competitor Targets Dashboard</h1>
           <p className="page-subtitle">Manage automated web scraping targets and inspection schedules</p>
         </div>
         <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} className="btn btn-primary" onClick={onAddClick}>
@@ -807,7 +807,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
     <div>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Signal Intelligence Feed</h1>
+          <h1 className="page-title">Market Pulse Feed</h1>
           <p className="page-subtitle">Real-time alerts, product impact matrix, and CRM integration</p>
         </div>
         <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn" onClick={handleMarkAllRead}>
