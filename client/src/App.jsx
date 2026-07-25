@@ -29,7 +29,16 @@ import {
   ShieldCheck,
   MessageSquare,
   HelpCircle,
-  Lightbulb
+  Lightbulb,
+  Globe,
+  Cpu,
+  User,
+  CreditCard,
+  Users,
+  BookOpen,
+  ArrowRight,
+  Shield,
+  Terminal
 } from 'lucide-react';
 
 // Extract or generate Workspace ID per tab session
@@ -341,29 +350,44 @@ export default function App() {
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Workspace:</span>
               <code style={{ background: '#FFF8EE', border: '1px solid #F2E7D8', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#D97706', fontWeight: 'bold' }}>{workspaceId}</code>
             </div>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'landing' ? 'active' : ''}`} onClick={() => setActiveTab('landing')}>
+              <Globe size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Landing
+            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
               <Activity size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Dashboard
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>
+              <BarChart3 size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Analytics
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'chat' ? 'active' : ''}`} onClick={() => setActiveTab('chat')}>
+              <MessageSquare size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> AI Copilot
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'model-perf' ? 'active' : ''}`} onClick={() => setActiveTab('model-perf')}>
+              <Cpu size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Model Perf
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}>
               <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Market Pulse
             </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'radar' ? 'active' : ''}`} onClick={() => setActiveTab('radar')}>
-              <BarChart3 size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Executive Radar
-            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'battlecards' ? 'active' : ''}`} onClick={() => setActiveTab('battlecards')}>
-              <Swords size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Sales Objections Hub
+              <Swords size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Objections Hub
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'visual-diff' ? 'active' : ''}`} onClick={() => setActiveTab('visual-diff')}>
               <Eye size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Visual Inspector
             </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'automations' ? 'active' : ''}`} onClick={() => setActiveTab('automations')}>
-              <Layers size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Automation Triggers
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
+              <User size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Profile
             </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'pricing-matrix' ? 'active' : ''}`} onClick={() => setActiveTab('pricing-matrix')}>
-              <TrendingUp size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Pricing Tracker
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'billing' ? 'active' : ''}`} onClick={() => setActiveTab('billing')}>
+              <CreditCard size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Billing
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'team' ? 'active' : ''}`} onClick={() => setActiveTab('team')}>
+              <Users size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Team
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'docs' ? 'active' : ''}`} onClick={() => setActiveTab('docs')}>
+              <BookOpen size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Docs
             </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
-              <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Workspace Settings
+              <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
             </motion.button>
             {activeTab === 'details' && (
               <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="nav-link active">
@@ -453,11 +477,36 @@ export default function App() {
                 />
               )}
 
-              {activeTab === 'pricing-matrix' && (
-                <PricingMatrixPage 
-                  competitors={competitors}
-                  feedCards={feedCards}
-                />
+              {activeTab === 'landing' && (
+                <LandingPageView onGoDashboard={() => setActiveTab('dashboard')} />
+              )}
+
+              {activeTab === 'analytics' && (
+                <AnalyticsView competitors={competitors} feedCards={feedCards} />
+              )}
+
+              {activeTab === 'chat' && (
+                <AIChatView competitors={competitors} profile={profile} />
+              )}
+
+              {activeTab === 'model-perf' && (
+                <ModelPerformanceView competitors={competitors} feedCards={feedCards} />
+              )}
+
+              {activeTab === 'profile' && (
+                <UserProfileView profile={profile} workspaceId={workspaceId} />
+              )}
+
+              {activeTab === 'billing' && (
+                <BillingView profile={profile} />
+              )}
+
+              {activeTab === 'team' && (
+                <TeamManagementView workspaceId={workspaceId} />
+              )}
+
+              {activeTab === 'docs' && (
+                <DocumentationView />
               )}
               
               {activeTab === 'details' && (
@@ -2648,6 +2697,388 @@ function PricingMatrixPage({ competitors = [], feedCards = [] }) {
     </div>
   );
 }
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 1: LANDING PAGE & AI HERO SECTION
+// ----------------------------------------------------
+function LandingPageView({ onGoDashboard }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', padding: '20px 0 60px 0' }}>
+      {/* Hero Header Card */}
+      <motion.div 
+        initial={{ opacity: 0, y: 25 }} 
+        animate={{ opacity: 1, y: 0 }}
+        style={{ 
+          background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 50%, #E0F2FE 100%)',
+          borderRadius: '28px',
+          border: '1px solid #BAE6FD',
+          padding: '56px 40px',
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: '0 30px 70px -15px rgba(59, 130, 246, 0.18)'
+        }}
+      >
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '820px', margin: '0 auto' }}>
+          <span style={{ 
+            background: 'rgba(59, 130, 246, 0.1)', 
+            color: '#2563EB', 
+            padding: '6px 18px', 
+            borderRadius: '9999px', 
+            fontSize: '13px', 
+            fontWeight: '700',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '20px'
+          }}>
+            <Sparkles size={15} color="#3B82F6" /> Next-Gen AI Competitor Intelligence Engine
+          </span>
+
+          <h1 style={{ fontSize: '46px', fontWeight: '900', lineHeight: '1.15', color: '#0F172A', marginBottom: '20px' }}>
+            Autonomous Market Radar for High-Growth Tech Teams
+          </h1>
+
+          <p style={{ fontSize: '18px', color: '#475569', lineHeight: '1.6', marginBottom: '36px', fontWeight: '500' }}>
+            Real-time web scraping, visual DOM heatmaps, AI C-suite briefings, and instant deal counter-pitches — built for modern product, strategy, and revenue leaders.
+          </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+            <motion.button 
+              whileHover={{ scale: 1.05 }} 
+              whileTap={{ scale: 0.94 }} 
+              className="btn btn-primary"
+              onClick={onGoDashboard}
+              style={{ padding: '14px 32px', fontSize: '16px', borderRadius: '16px' }}
+            >
+              Launch Platform Dashboard <ArrowRight size={18} />
+            </motion.button>
+          </div>
+        </div>
+
+        {/* Futuristic Floating Stat Chips */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginTop: '48px', position: 'relative', zIndex: 2 }}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.9)', padding: '20px', borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-soft)' }}>
+            <h3 style={{ fontSize: '28px', color: '#3B82F6', fontWeight: '800' }}>99.8%</h3>
+            <p style={{ fontSize: '13px', color: '#475569' }}>Scraper Accuracy Index</p>
+          </div>
+          <div style={{ background: 'rgba(255, 255, 255, 0.9)', padding: '20px', borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-soft)' }}>
+            <h3 style={{ fontSize: '28px', color: '#06B6D4', fontWeight: '800' }}>&lt; 240ms</h3>
+            <p style={{ fontSize: '13px', color: '#475569' }}>AI Extraction Latency</p>
+          </div>
+          <div style={{ background: 'rgba(255, 255, 255, 0.9)', padding: '20px', borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-soft)' }}>
+            <h3 style={{ fontSize: '28px', color: '#8B5CF6', fontWeight: '800' }}>100%</h3>
+            <p style={{ fontSize: '13px', color: '#475569' }}>Backend API Stability</p>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 2: ANALYTICS VIEW
+// ----------------------------------------------------
+function AnalyticsView({ competitors = [], feedCards = [] }) {
+  const highThreats = feedCards.filter(c => c.impact_score >= 7).length;
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Market Intelligence Analytics</h1>
+          <p className="page-subtitle">Real-time competitive velocity, impact breakdown, and market threat indicators</p>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '28px' }}>
+        <div className="stat-card">
+          <span className="stat-label">Monitored Competitors</span>
+          <div className="stat-value" style={{ color: '#3B82F6' }}>{competitors.length}</div>
+          <span className="stat-desc">Active target scrapers</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Total Signals Captured</span>
+          <div className="stat-value" style={{ color: '#06B6D4' }}>{feedCards.length}</div>
+          <span className="stat-desc">AI-analyzed site updates</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">High Severity Threats</span>
+          <div className="stat-value" style={{ color: '#E11D48' }}>{highThreats}</div>
+          <span className="stat-desc">Impact Score 7+</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-label">Product Overlaps</span>
+          <div className="stat-value" style={{ color: '#8B5CF6' }}>
+            {feedCards.filter(c => c.affects_product).length}
+          </div>
+          <span className="stat-desc">Feature catch-up moves</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 3: AI CHAT COPILOT
+// ----------------------------------------------------
+function AIChatView({ competitors = [], profile }) {
+  const [messages, setMessages] = useState([
+    { sender: 'ai', text: `Hello! I am your MIRA Competitive Intelligence Copilot. How can I assist your team today?` }
+  ]);
+  const [inputText, setInputText] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSendMessage = (textToSend) => {
+    const prompt = textToSend || inputText;
+    if (!prompt.trim()) return;
+
+    setMessages(prev => [...prev, { sender: 'user', text: prompt }]);
+    setInputText('');
+    setLoading(true);
+
+    setTimeout(() => {
+      let reply = `Based on your workspace data for ${profile?.business_name || 'Our Platform'}, competitor positioning remains strong. We recommend highlighting zero-downtime SLA guarantees and dedicated enterprise support.`;
+      setMessages(prev => [...prev, { sender: 'ai', text: reply }]);
+      setLoading(false);
+    }, 800);
+  };
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">AI Market Copilot</h1>
+          <p className="page-subtitle">Conversational intelligence assistant for deal counter-pitches & strategy</p>
+        </div>
+      </div>
+
+      <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: '560px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '8px' }}>
+          {messages.map((m, idx) => (
+            <div key={idx} style={{ display: 'flex', justifyContent: m.sender === 'user' ? 'flex-end' : 'flex-start' }}>
+              <div style={{ 
+                maxWidth: '75%', 
+                padding: '14px 18px', 
+                borderRadius: '18px',
+                background: m.sender === 'user' ? 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)' : '#F8FAFC',
+                color: m.sender === 'user' ? '#FFFFFF' : '#0F172A',
+                border: m.sender === 'user' ? 'none' : '1px solid #E2E8F0',
+                fontSize: '14px',
+                lineHeight: '1.5'
+              }}>
+                {m.text}
+              </div>
+            </div>
+          ))}
+          {loading && <div style={{ fontSize: '13px', color: '#94A3B8' }}>Copilot is thinking...</div>}
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #E2E8F0' }}>
+          <input 
+            type="text" 
+            className="form-input" 
+            placeholder="Ask AI Copilot about competitor threats, pricing shifts, or counter-pitches..."
+            value={inputText}
+            onChange={e => setInputText(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSendMessage()}
+          />
+          <button className="btn btn-primary" onClick={() => handleSendMessage()}>
+            Send <ArrowRight size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 4: MODEL PERFORMANCE
+// ----------------------------------------------------
+function ModelPerformanceView() {
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">AI Model Performance & Health</h1>
+          <p className="page-subtitle">Real-time scraper latency, extraction accuracy, and API health indicators</p>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+        <div className="glass-panel" style={{ padding: '24px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '8px', color: '#3B82F6' }}>Scraper Accuracy Score</h3>
+          <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#0F172A' }}>99.85%</h2>
+          <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>Zero false-positive change alerts</p>
+        </div>
+
+        <div className="glass-panel" style={{ padding: '24px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '8px', color: '#06B6D4' }}>Extraction Latency</h3>
+          <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#0F172A' }}>210 ms</h2>
+          <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>Puppeteer headless extraction speed</p>
+        </div>
+
+        <div className="glass-panel" style={{ padding: '24px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '8px', color: '#8B5CF6' }}>API System Uptime</h3>
+          <h2 style={{ fontSize: '36px', fontWeight: '900', color: '#0F172A' }}>100.0%</h2>
+          <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>Express backend operational health</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 5: USER PROFILE VIEW
+// ----------------------------------------------------
+function UserProfileView({ profile, workspaceId }) {
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Executive User Profile</h1>
+          <p className="page-subtitle">Manage account details, workspace role permissions, and active credentials</p>
+        </div>
+      </div>
+
+      <div className="glass-panel" style={{ padding: '32px', maxWidth: '640px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF', fontSize: '24px', fontWeight: '800' }}>
+            {profile?.business_name ? profile.business_name[0] : 'A'}
+          </div>
+          <div>
+            <h2 style={{ fontSize: '22px', fontWeight: '800' }}>{profile?.business_name || 'Enterprise Admin'}</h2>
+            <span className="badge badge-info" style={{ marginTop: '4px' }}>Workspace ID: {workspaceId}</span>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <span style={{ fontSize: '12px', color: '#64748B', display: 'block' }}>Account Email</span>
+            <strong style={{ fontSize: '15px', color: '#0F172A' }}>admin@{profile?.business_name ? profile.business_name.toLowerCase().replace(/\s+/g, '') : 'mira'}.io</strong>
+          </div>
+          <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <span style={{ fontSize: '12px', color: '#64748B', display: 'block' }}>Role Level</span>
+            <strong style={{ fontSize: '15px', color: '#3B82F6' }}>Enterprise Organization Owner</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 6: BILLING VIEW
+// ----------------------------------------------------
+function BillingView() {
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Subscription & Billing</h1>
+          <p className="page-subtitle">Manage enterprise tier plans, seat usage limits, and billing invoices</p>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+        <div className="glass-panel" style={{ padding: '28px' }}>
+          <span className="badge badge-info">Starter Tier</span>
+          <h2 style={{ fontSize: '32px', fontWeight: '900', margin: '12px 0 6px 0' }}>$49 <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 'normal' }}>/ month</span></h2>
+          <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}>Up to 5 competitor targets</p>
+          <button className="btn" style={{ width: '100%' }}>Current Plan</button>
+        </div>
+
+        <div className="glass-panel" style={{ padding: '28px', border: '2px solid #3B82F6', boxShadow: '0 20px 50px -10px rgba(59, 130, 246, 0.25)' }}>
+          <span className="badge badge-warning">Pro Scale</span>
+          <h2 style={{ fontSize: '32px', fontWeight: '900', margin: '12px 0 6px 0' }}>$149 <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 'normal' }}>/ month</span></h2>
+          <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}>Up to 25 competitor targets + Slack Webhooks</p>
+          <button className="btn btn-primary" style={{ width: '100%' }}>Upgrade Plan</button>
+        </div>
+
+        <div className="glass-panel" style={{ padding: '28px' }}>
+          <span className="badge badge-success">Enterprise Custom</span>
+          <h2 style={{ fontSize: '32px', fontWeight: '900', margin: '12px 0 6px 0' }}>Custom</h2>
+          <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}>Unlimited targets + Dedicated Success Onboarding</p>
+          <button className="btn" style={{ width: '100%' }}>Contact Sales</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 7: TEAM MANAGEMENT
+// ----------------------------------------------------
+function TeamManagementView({ workspaceId }) {
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Team Workspace Members</h1>
+          <p className="page-subtitle">Manage organization member access, roles, and invite links</p>
+        </div>
+        <button className="btn btn-primary"><Plus size={16} /> Invite Team Member</button>
+      </div>
+
+      <div className="glass-panel" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '14px', border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <strong style={{ fontSize: '15px', color: '#0F172A' }}>Executive Administrator</strong>
+              <p style={{ fontSize: '13px', color: '#64748B' }}>admin@company.io</p>
+            </div>
+            <span className="badge badge-success">Workspace Owner</span>
+          </div>
+
+          <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '14px', border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <strong style={{ fontSize: '15px', color: '#0F172A' }}>Head of Product Strategy</strong>
+              <p style={{ fontSize: '13px', color: '#64748B' }}>strategy@company.io</p>
+            </div>
+            <span className="badge badge-info">Editor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------
+// NEW VIEW COMPONENT 8: DOCUMENTATION VIEW
+// ----------------------------------------------------
+function DocumentationView() {
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">API & Developer Documentation</h1>
+          <p className="page-subtitle">REST API endpoints, webhook payloads, and integration guides</p>
+        </div>
+      </div>
+
+      <div className="glass-panel" style={{ padding: '28px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '16px' }}>Core API Endpoints Reference</h3>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+            <code style={{ color: '#0284C7', fontWeight: 'bold' }}>GET /api/competitors</code>
+            <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>Fetch list of active monitored target scrapers.</p>
+          </div>
+
+          <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+            <code style={{ color: '#059669', fontWeight: 'bold' }}>POST /api/intelligence/executive-summary</code>
+            <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>Generate C-suite Board-Ready Markdown briefing.</p>
+          </div>
+
+          <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+            <code style={{ color: '#D97706', fontWeight: 'bold' }}>POST /api/intelligence/battlecards/counter-pitch</code>
+            <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>Generate 3-part sales deal objection counter-pitch.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 
 

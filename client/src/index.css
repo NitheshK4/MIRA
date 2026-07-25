@@ -1,43 +1,47 @@
 /* ==========================================================================
-   MIRA Warm Luxury Design System (Apple, Notion, Framer & Stripe Aesthetics)
+   MIRA Futuristic AI Platform Design System (OpenAI, Notion, Stripe & Linear Aesthetics)
    ========================================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
-  /* Warm Luxury Palette */
-  --bg-main: #FFFDF8;
+  /* Futuristic Light AI Palette */
+  --bg-main: #FFFFFF;
   --bg-surface: #FFFFFF;
-  --bg-secondary: #FFF8EE;
-  --bg-highlight: #FFE8B6;
+  --bg-secondary: #F8FAFC;
+  --bg-highlight: #EFF6FF;
   --bg-glass: rgba(255, 255, 255, 0.85);
 
-  --primary-accent: #F4A261;
-  --secondary-accent: #FFD166;
-  --primary-hover: #e7914f;
+  --primary-accent: #3B82F6;
+  --secondary-accent: #06B6D4;
+  --purple-accent: #8B5CF6;
+  --primary-hover: #2563EB;
 
-  --text-primary: #2D2A26;
-  --text-secondary: #6B6B6B;
-  --text-muted: #9E9E9E;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
 
-  --border-color: #F2E7D8;
-  --border-hover: #E6D5BF;
+  --border-color: #E2E8F0;
+  --border-hover: #CBD5E1;
 
   /* Gradients */
-  --bg-gradient: linear-gradient(180deg, #FFFDF8 0%, #FFF3E4 100%);
-  --surface-gradient: linear-gradient(135deg, #FFF8EE 0%, #FFFBEF 100%);
-  --cta-gradient: linear-gradient(135deg, #F4A261 0%, #FFD166 100%);
-  --cta-hover-gradient: linear-gradient(135deg, #e7914f 0%, #f6c04e 100%);
-  --hero-card-gradient: linear-gradient(180deg, #FFFFFF 0%, #FFF8EE 100%);
+  --bg-gradient: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 40%, #E0F2FE 100%);
+  --surface-gradient: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+  --cta-gradient: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+  --cta-hover-gradient: linear-gradient(135deg, #2563EB 0%, #0891B2 100%);
+  --hero-card-gradient: linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%);
+  --purple-gradient: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
 
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Plus Jakarta Sans', 'Manrope', sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Shadows */
-  --shadow-soft: 0 12px 40px rgba(45, 42, 38, 0.06);
-  --shadow-hover: 0 20px 50px rgba(45, 42, 38, 0.1);
-  --shadow-button: 0 8px 25px rgba(244, 162, 97, 0.3);
-  --shadow-modal: 0 30px 80px rgba(45, 42, 38, 0.15);
+  --shadow-soft: 0 20px 40px -15px rgba(59, 130, 246, 0.12), 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 25px 60px -12px rgba(59, 130, 246, 0.2);
+  --shadow-button: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+  --shadow-modal: 0 35px 90px -15px rgba(15, 23, 42, 0.18);
 
   /* 8px Spacing Grid */
   --space-1: 8px;
