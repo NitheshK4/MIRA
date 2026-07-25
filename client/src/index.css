@@ -1,49 +1,56 @@
 /* ==========================================================================
-   MIRA Futuristic AI Platform Design System (OpenAI, Notion, Stripe & Linear Aesthetics)
+   MIRA Minimalist Enterprise SaaS Design System (Vercel, Stripe, Linear & Notion Aesthetics)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Futuristic Light AI Palette */
+  /* Minimalist Enterprise Light Palette */
   --bg-main: #FFFFFF;
-  --bg-surface: #FFFFFF;
   --bg-secondary: #F8FAFC;
-  --bg-highlight: #EFF6FF;
-  --bg-glass: rgba(255, 255, 255, 0.85);
+  --bg-surface: #FFFFFF;
+  --bg-highlight: #F1F5F9;
+  --bg-glass: rgba(255, 255, 255, 0.95);
 
-  --primary-accent: #3B82F6;
-  --secondary-accent: #06B6D4;
+  --primary-accent: #2563EB;
+  --secondary-accent: #60A5FA;
   --purple-accent: #8B5CF6;
-  --primary-hover: #2563EB;
+  --primary-hover: #1D4ED8;
 
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #94A3B8;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
 
-  --border-color: #E2E8F0;
-  --border-hover: #CBD5E1;
+  --border-color: #E5E7EB;
+  --border-hover: #D1D5DB;
 
-  /* Gradients */
-  --bg-gradient: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 40%, #E0F2FE 100%);
-  --surface-gradient: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
-  --cta-gradient: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
-  --cta-hover-gradient: linear-gradient(135deg, #2563EB 0%, #0891B2 100%);
-  --hero-card-gradient: linear-gradient(180deg, #FFFFFF 0%, #F0F9FF 100%);
-  --purple-gradient: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+  --status-success: #22C55E;
+  --status-warning: #F59E0B;
+  --status-error: #EF4444;
+
+  /* Subtle Clean Gradients */
+  --bg-gradient: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  --surface-gradient: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  --cta-gradient: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  --cta-hover-gradient: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+  --hero-card-gradient: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
 
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Shadows */
-  --shadow-soft: 0 20px 40px -15px rgba(59, 130, 246, 0.12), 0 4px 12px rgba(0, 0, 0, 0.03);
-  --shadow-hover: 0 25px 60px -12px rgba(59, 130, 246, 0.2);
-  --shadow-button: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
-  --shadow-modal: 0 35px 90px -15px rgba(15, 23, 42, 0.18);
+  /* Subtle Shadows & Soft Micro-Interactions */
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.06);
+  --shadow-button: 0 4px 14px rgba(37, 99, 235, 0.2);
+  --shadow-modal: 0 25px 70px -15px rgba(17, 24, 39, 0.12);
 
-  /* 8px Spacing Grid */
+  /* 8px Grid System & 14px Rounded Corners */
+  --radius-card: 14px;
+  --radius-btn: 10px;
+  --radius-input: 10px;
+
   --space-1: 8px;
   --space-2: 16px;
   --space-3: 24px;
@@ -107,26 +114,24 @@ h1, h2, h3, h4, h5, h6 {
   min-height: calc(100vh - 90px);
 }
 
-/* Glassmorphic Panels & Luxury Cards */
+/* Glassmorphic Panels & Minimalist Cards */
 .glass-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #FFFFFF;
   border: 1px solid var(--border-color);
-  border-radius: 24px;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-soft);
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 250ms cubic-bezier(0.16, 1, 0.3, 1), border-color 250ms ease;
 }
 
 .glass-panel:hover {
   border-color: var(--border-hover);
   box-shadow: var(--shadow-hover);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
-/* Floating Sticky Luxury Navbar */
+/* Floating Sticky Minimalist Navbar */
 .navbar {
   position: sticky;
   top: 16px;
@@ -137,12 +142,12 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   align-items: center;
   padding: 12px 28px;
-  background: rgba(255, 253, 248, 0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
-  border-radius: 9999px;
-  box-shadow: 0 10px 30px rgba(45, 42, 38, 0.05);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
 }
 
 .nav-brand {
