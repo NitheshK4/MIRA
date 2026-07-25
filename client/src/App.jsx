@@ -377,9 +377,6 @@ export default function App() {
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
               <User size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Profile
             </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'billing' ? 'active' : ''}`} onClick={() => setActiveTab('billing')}>
-              <CreditCard size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Billing
-            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'team' ? 'active' : ''}`} onClick={() => setActiveTab('team')}>
               <Users size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Team
             </motion.button>
@@ -495,10 +492,6 @@ export default function App() {
 
               {activeTab === 'profile' && (
                 <UserProfileView profile={profile} workspaceId={workspaceId} />
-              )}
-
-              {activeTab === 'billing' && (
-                <BillingView profile={profile} />
               )}
 
               {activeTab === 'team' && (
@@ -2967,43 +2960,7 @@ function UserProfileView({ profile, workspaceId }) {
 }
 
 // ----------------------------------------------------
-// NEW VIEW COMPONENT 6: BILLING VIEW
-// ----------------------------------------------------
-function BillingView() {
-  return (
-    <div>
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Subscription & Billing</h1>
-          <p className="page-subtitle">Manage enterprise tier plans, seat usage limits, and billing invoices</p>
-        </div>
-      </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-        <div className="glass-panel" style={{ padding: '28px' }}>
-          <span className="badge badge-info">Starter Tier</span>
-          <h2 style={{ fontSize: '32px', fontWeight: '900', margin: '12px 0 6px 0' }}>$49 <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 'normal' }}>/ month</span></h2>
-          <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}>Up to 5 competitor targets</p>
-          <button className="btn" style={{ width: '100%' }}>Current Plan</button>
-        </div>
-
-        <div className="glass-panel" style={{ padding: '28px', border: '2px solid #3B82F6', boxShadow: '0 20px 50px -10px rgba(59, 130, 246, 0.25)' }}>
-          <span className="badge badge-warning">Pro Scale</span>
-          <h2 style={{ fontSize: '32px', fontWeight: '900', margin: '12px 0 6px 0' }}>$149 <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 'normal' }}>/ month</span></h2>
-          <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}>Up to 25 competitor targets + Slack Webhooks</p>
-          <button className="btn btn-primary" style={{ width: '100%' }}>Upgrade Plan</button>
-        </div>
-
-        <div className="glass-panel" style={{ padding: '28px' }}>
-          <span className="badge badge-success">Enterprise Custom</span>
-          <h2 style={{ fontSize: '32px', fontWeight: '900', margin: '12px 0 6px 0' }}>Custom</h2>
-          <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}>Unlimited targets + Dedicated Success Onboarding</p>
-          <button className="btn" style={{ width: '100%' }}>Contact Sales</button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ----------------------------------------------------
 // NEW VIEW COMPONENT 7: TEAM MANAGEMENT
