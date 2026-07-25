@@ -26,7 +26,10 @@ import {
   Copy,
   Printer,
   Download,
-  ShieldCheck
+  ShieldCheck,
+  MessageSquare,
+  HelpCircle,
+  Lightbulb
 } from 'lucide-react';
 
 // Extract or generate Workspace ID per tab session
@@ -347,6 +350,9 @@ export default function App() {
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'radar' ? 'active' : ''}`} onClick={() => setActiveTab('radar')}>
               <BarChart3 size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Executive Radar
             </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'battlecards' ? 'active' : ''}`} onClick={() => setActiveTab('battlecards')}>
+              <Swords size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Battlecards
+            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
               <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
             </motion.button>
@@ -412,6 +418,14 @@ export default function App() {
                 <ExecutiveRadarPage 
                   feedCards={feedCards}
                   competitors={competitors}
+                  profile={profile}
+                />
+              )}
+
+              {activeTab === 'battlecards' && (
+                <BattlecardsPage 
+                  competitors={competitors}
+                  feedCards={feedCards}
                   profile={profile}
                 />
               )}
@@ -2083,4 +2097,169 @@ function ExecutiveRadarPage({ feedCards = [], competitors = [], profile }) {
     </div>
   );
 }
+
+// ----------------------------------------------------
+// PAGE COMPONENT: FEATURE 2 SALES BATTLECARDS & OBJECTIONS HUB
+// ----------------------------------------------------
+function BattlecardsPage({ competitors = [], feedCards = [], profile }) {
+  const [selectedComp, setSelectedComp] = useState(competitors[0]?.id || '');
+  const [objectionText, setObjectionText] = useState('');
+  const [pitchResult, setPitchResult] = useState(null);
+  const [loadingPitch, setLoadingPitch] = useState(false);
+  const [copiedPitch, setCopiedPitch] = useState(false);
+
+  const handleGeneratePitch = async (e) => {
+    e.preventDefault();
+    setLoadingPitch(true);
+    try {
+      const res = await fetch('/api/intelligence/battlecards/counter-pitch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ competitor_id: selectedComp, objection_text: objectionText })
+      });
+      if (!res.ok) throw new Error('Failed to generate sales counter pitch');
+      const data = await res.json();
+      setPitchResult(data);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoadingPitch(false);
+    }
+  };
+
+  const handleCopyPitch = () => {
+    if (pitchResult) {
+      const textToCopy = `Counter-Argument: ${pitchResult.counterArgument}\n\nOur Differentiator: ${pitchResult.differentiator}\n\nLandmine Question to Ask Buyer: ${pitchResult.landmineQuestion}`;
+      navigator.clipboard.writeText(textToCopy);
+      setCopiedPitch(true);
+      setTimeout(() => setCopiedPitch(false), 2500);
+    }
+  };
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Sales Battlecard & Objections Hub</h1>
+          <p className="page-subtitle">Interactive buyer objection counter-pitcher and competitor win-loss strategies</p>
+        </div>
+      </div>
+
+      <div className="feed-layout" style={{ gridTemplateColumns: '360px 1fr' }}>
+        {/* Left Form: Prospect Objection Counter-Pitcher */}
+        <aside className="glass-panel feed-filters" style={{ position: 'static' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Swords size={18} color="#F4A261" /> Sales Objection Counter-Pitcher
+          </h3>
+          <form onSubmit={handleGeneratePitch}>
+            <div className="form-group">
+              <label className="form-label">Target Competitor</label>
+              <select className="form-select" value={selectedComp} onChange={e => setSelectedComp(e.target.value)}>
+                <option value="">Select Competitor</option>
+                {competitors.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Prospect Objection / Claim</label>
+              <textarea 
+                className="form-input" 
+                rows="4"
+                value={objectionText}
+                onChange={e => setObjectionText(e.target.value)}
+                placeholder="E.g., Competitor Alpha is offering their starter tier at $49/mo with unlimited seats. Why should we pay more for your solution?"
+                required
+              ></textarea>
+            </div>
+
+            <motion.button 
+              whileHover={{ scale: 1.03 }} 
+              whileTap={{ scale: 0.92 }} 
+              type="submit" 
+              className="btn btn-primary" 
+              style={{ width: '100%', marginTop: '10px' }}
+              disabled={loadingPitch}
+            >
+              <Sparkles size={16} /> {loadingPitch ? 'Generating Pitch...' : 'Generate Sales Counter Pitch'}
+            </motion.button>
+          </form>
+        </aside>
+
+        {/* Right Section: Sales Pitch Results & Competitor Battlecards */}
+        <main style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {pitchResult && (
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-panel" style={{ padding: '24px', borderLeft: '5px solid #F4A261' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <span className="badge badge-warning">🎯 Deal Pitch Response vs {pitchResult.competitorName}</span>
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn" onClick={handleCopyPitch}>
+                  {copiedPitch ? <CheckCircle2 size={15} color="#059669" /> : <Copy size={15} />} {copiedPitch ? 'Copied Pitch!' : 'Copy Sales Pitch'}
+                </motion.button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ background: '#FFF8EE', padding: '16px', borderRadius: '14px', border: '1px solid #F2E7D8' }}>
+                  <strong style={{ color: '#D97706', fontSize: '11px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <MessageSquare size={14} /> Direct Counter-Argument (What to Say):
+                  </strong>
+                  <p style={{ color: '#2D2A26', margin: '6px 0 0 0', fontSize: '14px', lineHeight: '1.5', fontWeight: '500' }}>{pitchResult.counterArgument}</p>
+                </div>
+
+                <div style={{ background: '#E0F2FE', padding: '16px', borderRadius: '14px', border: '1px solid #BAE6FD' }}>
+                  <strong style={{ color: '#0284C7', fontSize: '11px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <ShieldCheck size={14} /> Platform Superiority Highlight:
+                  </strong>
+                  <p style={{ color: '#0369A1', margin: '6px 0 0 0', fontSize: '14px', lineHeight: '1.5', fontWeight: '500' }}>{pitchResult.differentiator}</p>
+                </div>
+
+                <div style={{ background: '#FEF3C7', padding: '16px', borderRadius: '14px', border: '1px solid #FDE68A' }}>
+                  <strong style={{ color: '#B45309', fontSize: '11px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Lightbulb size={14} /> Landmine Question to Ask the Buyer:
+                  </strong>
+                  <p style={{ color: '#78350F', margin: '6px 0 0 0', fontSize: '14px', lineHeight: '1.5', fontWeight: '600' }}>"{pitchResult.landmineQuestion}"</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Competitor Battlecard Library */}
+          <div className="glass-panel" style={{ padding: '24px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '16px' }}>Monitored Competitor Battlecards</h3>
+            {competitors.length === 0 ? (
+              <p style={{ color: 'var(--text-secondary)' }}>No competitors monitored yet. Register a target to view live battlecard positioning.</p>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                {competitors.map(c => {
+                  const compCards = feedCards.filter(card => card.competitor_id === c.id);
+                  const threatCards = compCards.filter(card => card.affects_product === 1 || card.affects_product === true);
+                  return (
+                    <div key={c.id} style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '18px' }}>
+                      <h4 style={{ fontSize: '17px', fontWeight: '800', color: 'var(--text-primary)' }}>{c.name}</h4>
+                      <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '4px 0 12px 0' }}>{c.url}</p>
+                      
+                      <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
+                        <span className="badge badge-info">{compCards.length} Events</span>
+                        <span className="badge badge-danger">{threatCards.length} Threats</span>
+                      </div>
+
+                      {threatCards[0]?.battlecard_counter ? (
+                        <p style={{ fontSize: '13px', color: '#2D2A26', lineHeight: '1.4', background: '#FFFFFF', padding: '10px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                          "{threatCards[0].battlecard_counter}"
+                        </p>
+                      ) : (
+                        <p style={{ fontSize: '12px', color: 'var(--text-secondary)', italic: 'true' }}>No sales battlecard counters logged yet.</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 

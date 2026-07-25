@@ -367,6 +367,37 @@ ${recentHighlights}
   }
 });
 
+// Feature 2: Interactive Sales Objection Counter-Pitch Endpoint
+app.post('/api/intelligence/battlecards/counter-pitch', checkWorkspace, async (req, res) => {
+  try {
+    const { competitor_id, objection_text } = req.body;
+    const profile = await db.getProfile(req.workspaceId);
+    let comp = null;
+    if (competitor_id) {
+      comp = await db.getCompetitorById(competitor_id);
+    }
+
+    const compName = comp?.name || 'the competitor';
+    const objection = objection_text || 'Why should we choose your product over theirs?';
+    const businessName = profile?.business_name || 'Our Platform';
+
+    const counterArgument = `While ${compName} offers aggressive marketing visibility, ${businessName} provides deeper architectural reliability, automated workflow integration, and dedicated enterprise support that eliminates hidden scaling overhead.`;
+    const differentiator = `Unlike ${compName}, ${businessName} ensures complete data privacy, customized API webhooks, and seamless multi-channel capabilities tailored to your exact team workflow without forcing seat tier upgrades.`;
+    const landmineQuestion = `Ask ${compName} if their starter tier includes full SLA guarantees, custom webhooks, and dedicated customer success onboarding without hidden usage overage fees.`;
+
+    res.json({
+      competitorName: compName,
+      objection,
+      counterArgument,
+      differentiator,
+      landmineQuestion,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.put('/api/intelligence/:id', checkWorkspace, async (req, res) => {
   try {
     const card = await db.getIntelligenceCardById(req.params.id);
