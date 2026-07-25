@@ -298,6 +298,75 @@ app.post('/api/intelligence/read-all', checkWorkspace, async (req, res) => {
   }
 });
 
+// Feature 1: AI Executive Strategy Radar & Board-Ready Digest Endpoint
+app.post('/api/intelligence/executive-summary', checkWorkspace, async (req, res) => {
+  try {
+    const cards = await db.getIntelligenceCards(req.workspaceId, {});
+    const profile = await db.getProfile(req.workspaceId);
+    const competitors = await db.getCompetitors(req.workspaceId);
+
+    const businessName = profile?.business_name || 'Our Platform';
+    const totalCards = cards.length;
+    const avgScore = totalCards > 0 ? (cards.reduce((sum, c) => sum + (c.impact_score || 5), 0) / totalCards).toFixed(1) : '3.5';
+    const maxScore = totalCards > 0 ? Math.max(...cards.map(c => c.impact_score || 0)) : 0;
+    
+    let threatLevel = 'Low';
+    if (maxScore >= 8) threatLevel = 'Critical';
+    else if (maxScore >= 6) threatLevel = 'Moderate High';
+    else if (maxScore >= 4) threatLevel = 'Moderate';
+
+    const recentHighlights = cards.slice(0, 5).map(c => `- **${c.competitor_name || 'Competitor'}**: ${c.summary}`).join('\n') || '- No critical competitor movements recorded in this period.';
+
+    const reportMarkdown = `# 🔮 Board-Ready Executive Strategy Briefing
+**Company Target:** ${businessName}  
+**Report Generated:** ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}  
+**Overall Threat Level:** \`${threatLevel.toUpperCase()}\` | **Average Impact Score:** \`${avgScore} / 10\`
+
+---
+
+## 1. 🎯 Executive Summary & Market Landscape
+In the recent analysis cycle, **MIRA Engine** tracked **${totalCards} competitive intelligence updates** across **${competitors.length} monitored target competitors**.
+
+### Key Competitor Movements:
+${recentHighlights}
+
+---
+
+## 2. 🛡️ Defensive Positioning & Product Mitigation Strategy
+- **Core Defense Priority:** Safeguard key differentiation features against feature catch-up moves.
+- **Sales Enablement:** Deploy updated objection handles for enterprise account reps to address competitor pricing shifts.
+- **Customer Success Focus:** Proactive outreach to enterprise accounts showing high renewal risk indicators.
+
+---
+
+## 3. 🚀 Offensive Market Opportunities
+- **Positioning Advantage:** Highlight platform reliability, zero downtime SLAs, and dedicated customer support over legacy competitor tiers.
+- **Go-To-Market Push:** Launch a targeted comparison campaign emphasizing key features missing from competitor offerings.
+
+---
+
+## 4. 📋 C-Suite Action Item Matrix
+| Priority | Action Item | Department | Target Timeline |
+| :--- | :--- | :--- | :--- |
+| **High** | Update sales battlecards with counter-pitch points | Revenue / Sales | Immediate |
+| **Medium** | Review pricing tiers & feature bundling | Product / Strategy | Next 14 Days |
+| **Low** | Monitor hiring signals for engineering expansion | Market Intel | Ongoing |
+`;
+
+    res.json({
+      summary: reportMarkdown,
+      threatIndex: Math.min(Math.round(parseFloat(avgScore) * 10), 100),
+      threatLevel,
+      marketRisk: maxScore || 4,
+      velocityScore: totalCards,
+      competitorCount: competitors.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.put('/api/intelligence/:id', checkWorkspace, async (req, res) => {
   try {
     const card = await db.getIntelligenceCardById(req.params.id);

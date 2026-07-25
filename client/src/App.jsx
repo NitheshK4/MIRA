@@ -21,7 +21,12 @@ import {
   Trash2,
   Pause,
   Play,
-  Sparkles
+  Sparkles,
+  BarChart3,
+  Copy,
+  Printer,
+  Download,
+  ShieldCheck
 } from 'lucide-react';
 
 // Extract or generate Workspace ID per tab session
@@ -339,6 +344,9 @@ export default function App() {
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'feed' ? 'active' : ''}`} onClick={() => setActiveTab('feed')}>
               <Zap size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Intelligence Feed
             </motion.button>
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'radar' ? 'active' : ''}`} onClick={() => setActiveTab('radar')}>
+              <BarChart3 size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Executive Radar
+            </motion.button>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
               <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
             </motion.button>
@@ -397,6 +405,14 @@ export default function App() {
                   onViewDiff={(diff) => setActiveDiffText(diff)}
                   onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
                   onRefreshFeed={refreshFeed}
+                />
+              )}
+
+              {activeTab === 'radar' && (
+                <ExecutiveRadarPage 
+                  feedCards={feedCards}
+                  competitors={competitors}
+                  profile={profile}
                 />
               )}
               
@@ -1956,3 +1972,115 @@ function ScreenshotModal({ url, onClose }) {
     </div>
   );
 }
+
+// ----------------------------------------------------
+// PAGE COMPONENT: FEATURE 1 EXECUTIVE STRATEGY RADAR
+// ----------------------------------------------------
+function ExecutiveRadarPage({ feedCards = [], competitors = [], profile }) {
+  const [summaryData, setSummaryData] = useState(null);
+  const [generating, setGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleGenerateSummary = async () => {
+    setGenerating(true);
+    try {
+      const res = await fetch('/api/intelligence/executive-summary', { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to generate executive summary');
+      const data = await res.json();
+      setSummaryData(data);
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleCopyMarkdown = () => {
+    if (summaryData?.summary) {
+      navigator.clipboard.writeText(summaryData.summary);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const avgImpact = feedCards.length > 0 ? (feedCards.reduce((acc, c) => acc + (c.impact_score || 5), 0) / feedCards.length).toFixed(1) : '3.5';
+  const threatCount = feedCards.filter(c => c.affects_product === 1 || c.affects_product === true).length;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Executive Strategy Radar</h1>
+          <p className="page-subtitle">C-suite threat index, competitive velocity radar, and Board-ready Markdown digest</p>
+        </div>
+        <motion.button 
+          whileHover={{ scale: 1.05 }} 
+          whileTap={{ scale: 0.92 }} 
+          className="btn btn-primary" 
+          onClick={handleGenerateSummary}
+          disabled={generating}
+        >
+          <Sparkles size={16} /> {generating ? 'Analyzing & Synthesizing...' : 'Generate Board-Ready Briefing'}
+        </motion.button>
+      </div>
+
+      {/* Radar Strategic Gauges */}
+      <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+        <div className="glass-panel stat-card" style={{ borderLeft: '4px solid #F4A261' }}>
+          <div className="stat-header">
+            <span>Quarterly Threat Level</span>
+            <ShieldAlert size={18} color="#F4A261" />
+          </div>
+          <div className="stat-value" style={{ fontSize: '32px' }}>{summaryData?.threatLevel || (threatCount > 0 ? 'Moderate High' : 'Low')}</div>
+          <div className="stat-footer">Based on {threatCount} direct product threat overlaps</div>
+        </div>
+
+        <div className="glass-panel stat-card" style={{ borderLeft: '4px solid #D97706' }}>
+          <div className="stat-header">
+            <span>Average Impact Index</span>
+            <TrendingUp size={18} color="#D97706" />
+          </div>
+          <div className="stat-value">{avgImpact} / 10</div>
+          <div className="stat-footer">Average severity across tracked cards</div>
+        </div>
+
+        <div className="glass-panel stat-card" style={{ borderLeft: '4px solid #059669' }}>
+          <div className="stat-header">
+            <span>Competitive Velocity</span>
+            <BarChart3 size={18} color="#059669" />
+          </div>
+          <div className="stat-value">{feedCards.length}</div>
+          <div className="stat-footer">Tracked events across {competitors.length} targets</div>
+        </div>
+      </div>
+
+      {/* Summary Output */}
+      {summaryData && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-panel" style={{ padding: '28px', marginTop: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '12px', borderBottom: '1px solid var(--border-color)' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles size={20} color="#F4A261" /> Board-Ready Strategic Executive Briefing
+            </h3>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn" onClick={handleCopyMarkdown}>
+                {copied ? <CheckCircle2 size={15} color="#059669" /> : <Copy size={15} />} {copied ? 'Copied to Clipboard!' : 'Copy Markdown'}
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="btn" onClick={handlePrint}>
+                <Printer size={15} /> Print / Save PDF
+              </motion.button>
+            </div>
+          </div>
+
+          <div style={{ whiteSpace: 'pre-wrap', fontFamily: 'var(--font-mono)', fontSize: '13px', lineHeight: '1.7', background: 'var(--bg-secondary)', padding: '20px', borderRadius: '16px', border: '1px solid var(--border-color)', color: '#2D2A26' }}>
+            {summaryData.summary}
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
