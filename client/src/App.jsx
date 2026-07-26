@@ -38,7 +38,9 @@ import {
   BookOpen,
   ArrowRight,
   Shield,
-  Terminal
+  Terminal,
+  Menu,
+  X
 } from 'lucide-react';
 
 // Extract or generate Workspace ID per tab session
@@ -70,6 +72,7 @@ window.fetch = function (url, options = {}) {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'feed', 'settings', 'details', 'onboarding'
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [onboarded, setOnboarded] = useState(true);
   const [profile, setProfile] = useState(null);
   const [competitors, setCompetitors] = useState([]);
@@ -338,17 +341,42 @@ export default function App() {
     <div>
       {/* Top Sticky Header Navbar */}
       <header className="navbar">
-        <div className="nav-brand" onClick={() => onboarded && setActiveTab('dashboard')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ background: 'var(--cta-gradient)', padding: '8px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(244, 162, 97, 0.35)' }}>
-            <Bot size={22} color="#2D2A26" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Top Left-Hand Corner 3-Lines Menu Button */}
+          <motion.button 
+            whileHover={{ scale: 1.05 }} 
+            whileTap={{ scale: 0.92 }} 
+            onClick={() => setIsSideMenuOpen(!isSideMenuOpen)}
+            style={{ 
+              padding: '8px 12px', 
+              background: isSideMenuOpen ? '#EFF6FF' : '#FFFFFF', 
+              border: '1px solid #E5E7EB', 
+              borderRadius: '10px',
+              color: '#111827',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
+            }}
+            title="Open Side Menu"
+          >
+            {isSideMenuOpen ? <X size={20} color="#2563EB" /> : <Menu size={20} color="#111827" />}
+          </motion.button>
+
+          <div className="nav-brand" onClick={() => onboarded && setActiveTab('dashboard')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ background: 'var(--cta-gradient)', padding: '8px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(37, 99, 235, 0.25)' }}>
+              <Bot size={22} color="#FFFFFF" />
+            </div>
+            <span style={{ color: '#111827', fontWeight: '800', fontSize: '18px' }}>MIRA Engine</span>
           </div>
-          <span style={{ color: '#2D2A26', fontWeight: '800' }}>MIRA Engine</span>
         </div>
+
         {onboarded && (
           <nav className="nav-links">
             <div className="workspace-indicator" style={{ marginRight: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Workspace:</span>
-              <code style={{ background: '#FFF8EE', border: '1px solid #F2E7D8', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#D97706', fontWeight: 'bold' }}>{workspaceId}</code>
+              <code style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#2563EB', fontWeight: 'bold' }}>{workspaceId}</code>
             </div>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'landing' ? 'active' : ''}`} onClick={() => setActiveTab('landing')}>
               <Globe size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Landing
@@ -374,26 +402,179 @@ export default function App() {
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'visual-diff' ? 'active' : ''}`} onClick={() => setActiveTab('visual-diff')}>
               <Eye size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Visual Inspector
             </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
-              <User size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Profile
-            </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'team' ? 'active' : ''}`} onClick={() => setActiveTab('team')}>
-              <Users size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Team
-            </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'docs' ? 'active' : ''}`} onClick={() => setActiveTab('docs')}>
-              <BookOpen size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Docs
-            </motion.button>
-            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
-              <Settings size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Settings
-            </motion.button>
-            {activeTab === 'details' && (
-              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className="nav-link active">
-                <FileText size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Detail
-              </motion.button>
-            )}
           </nav>
         )}
       </header>
+
+      {/* Slide-out Left Navigation Drawer for Profile, Team, Docs, Settings */}
+      <AnimatePresence>
+        {isSideMenuOpen && (
+          <>
+            {/* Backdrop Overlay */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSideMenuOpen(false)}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                background: 'rgba(17, 24, 39, 0.4)',
+                backdropFilter: 'blur(4px)',
+                zIndex: 999
+              }}
+            />
+
+            {/* Left Side Drawer */}
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 280 }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '320px',
+                height: '100vh',
+                background: '#FFFFFF',
+                borderRight: '1px solid #E5E7EB',
+                boxShadow: '0 25px 70px rgba(0, 0, 0, 0.15)',
+                zIndex: 1000,
+                padding: '24px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}
+            >
+              <div>
+                {/* Drawer Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid #E5E7EB' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', padding: '8px', borderRadius: '10px', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Bot size={20} />
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#111827', margin: 0 }}>MIRA Portal</h3>
+                      <span style={{ fontSize: '12px', color: '#6B7280' }}>System & Setup</span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setIsSideMenuOpen(false)} 
+                    style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                  >
+                    <X size={18} color="#6B7280" />
+                  </button>
+                </div>
+
+                {/* Navigation Links: Profile, Team, Docs, Settings */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: '700', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                    Account & Configuration
+                  </span>
+
+                  <motion.button 
+                    whileHover={{ x: 4 }} 
+                    onClick={() => { setActiveTab('profile'); setIsSideMenuOpen(false); }}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      width: '100%', 
+                      padding: '12px 16px', 
+                      borderRadius: '10px', 
+                      background: activeTab === 'profile' ? '#EFF6FF' : 'transparent',
+                      color: activeTab === 'profile' ? '#2563EB' : '#111827',
+                      border: activeTab === 'profile' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <User size={18} color={activeTab === 'profile' ? '#2563EB' : '#6B7280'} /> Profile
+                  </motion.button>
+
+                  <motion.button 
+                    whileHover={{ x: 4 }} 
+                    onClick={() => { setActiveTab('team'); setIsSideMenuOpen(false); }}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      width: '100%', 
+                      padding: '12px 16px', 
+                      borderRadius: '10px', 
+                      background: activeTab === 'team' ? '#EFF6FF' : 'transparent',
+                      color: activeTab === 'team' ? '#2563EB' : '#111827',
+                      border: activeTab === 'team' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <Users size={18} color={activeTab === 'team' ? '#2563EB' : '#6B7280'} /> Team
+                  </motion.button>
+
+                  <motion.button 
+                    whileHover={{ x: 4 }} 
+                    onClick={() => { setActiveTab('docs'); setIsSideMenuOpen(false); }}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      width: '100%', 
+                      padding: '12px 16px', 
+                      borderRadius: '10px', 
+                      background: activeTab === 'docs' ? '#EFF6FF' : 'transparent',
+                      color: activeTab === 'docs' ? '#2563EB' : '#111827',
+                      border: activeTab === 'docs' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <BookOpen size={18} color={activeTab === 'docs' ? '#2563EB' : '#6B7280'} /> Docs
+                  </motion.button>
+
+                  <motion.button 
+                    whileHover={{ x: 4 }} 
+                    onClick={() => { setActiveTab('settings'); setIsSideMenuOpen(false); }}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      width: '100%', 
+                      padding: '12px 16px', 
+                      borderRadius: '10px', 
+                      background: activeTab === 'settings' ? '#EFF6FF' : 'transparent',
+                      color: activeTab === 'settings' ? '#2563EB' : '#111827',
+                      border: activeTab === 'settings' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <Settings size={18} color={activeTab === 'settings' ? '#2563EB' : '#6B7280'} /> Settings
+                  </motion.button>
+                </div>
+              </div>
+
+              {/* Footer Workspace Info */}
+              <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                <span style={{ fontSize: '11px', color: '#6B7280', display: 'block' }}>Active Workspace</span>
+                <code style={{ fontSize: '12px', color: '#2563EB', fontWeight: 'bold' }}>{workspaceId}</code>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Main Content Area */}
       <main className="app-container">
