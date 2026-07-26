@@ -491,8 +491,132 @@ ${userPrompt}<|im_end|>
   });
 }
 
+async function generateBattlecardData(competitor, recentScrapes = [], intelCards = [], businessProfile = null, geminiApiKey = null) {
+  const compName = competitor.name || competitor.url || 'Competitor';
+  const compUrl = competitor.url || '';
+
+  const profileContext = businessProfile ? `
+Our Business Name: ${businessProfile.business_name || 'Our Company'}
+Our Product & Services: ${businessProfile.product_desc || 'General Software Services'}
+Our Target Audience: ${businessProfile.customers || 'Businesses & Consumers'}
+Our Price Point: ${businessProfile.price_point || 'Standard pricing'}
+` : 'Our business profile is not specified.';
+
+  const scrapeSnippet = recentScrapes.map(s => (s.text_content || '').substring(0, 1000)).join('\n---\n');
+  const intelSummary = intelCards.map(c => `- [${c.category}] (Impact: ${c.impact_score}/10): ${c.summary}`).join('\n');
+
+  const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
+
+  if (activeGeminiKey) {
+    try {
+      console.log(`Generating AI Battlecard for ${compName} using Gemini API...`);
+      const systemInstruction = `You are a Senior Competitive Intelligence & Sales Enablement Strategist.
+Your task is to generate a comprehensive sales battlecard comparing "Our Business" vs "${compName}".
+
+Respond ONLY with a valid JSON object wrapped inside <json> ... </json> tags matching this exact structure:
+{
+  "overview": "A crisp 2-3 sentence overview of ${compName}, their positioning, and target market.",
+  "strengths": ["Strength 1", "Strength 2", "Strength 3"],
+  "weaknesses": ["Vulnerability 1", "Vulnerability 2", "Vulnerability 3"],
+  "why_we_win": ["Key Differentiator 1", "Key Differentiator 2", "Key Differentiator 3"],
+  "pricing_comparison": "Analysis comparing our pricing structure vs ${compName}'s pricing.",
+  "objection_handling": [
+    { "objection": "Common prospect objection regarding ${compName}", "response": "Winning counter-script for our sales team" },
+    { "objection": "Second objection", "response": "Winning counter-script" },
+    { "objection": "Third objection", "response": "Winning counter-script" }
+  ],
+  "landmines": ["Landmine question reps should ask prospects", "Landmine question 2", "Landmine question 3"]
+}`;
+
+      const promptText = `
+Here is our business profile:
+${profileContext}
+
+Competitor Name: ${compName}
+Competitor URL: ${compUrl}
+
+Recent Website Scrapes / Snippets:
+${scrapeSnippet || 'No recent scrapes recorded.'}
+
+Recent Intelligence Signals Detected:
+${intelSummary || 'No recent intelligence cards.'}
+
+Generate the tactical AI sales battlecard for ${compName} now. Format inside <json> tags.
+`;
+
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        {
+          contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
+        },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 45000 }
+      );
+
+      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const jsonMatch = text.match(/<json>([\s\S]*?)<\/json>/) || text.match(/```json\s*([\s\S]*?)\s*```/) || [null, text];
+      const jsonString = (jsonMatch[1] || text).trim();
+
+      try {
+        const parsed = JSON.parse(jsonString);
+        return {
+          overview: parsed.overview || `${compName} operates in the same space as ${businessProfile?.business_name || 'our company'}.`,
+          strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
+          weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses : [],
+          why_we_win: Array.isArray(parsed.why_we_win) ? parsed.why_we_win : [],
+          pricing_comparison: parsed.pricing_comparison || 'Pricing details are being evaluated against our price tier.',
+          objection_handling: Array.isArray(parsed.objection_handling) ? parsed.objection_handling : [],
+          landmines: Array.isArray(parsed.landmines) ? parsed.landmines : []
+        };
+      } catch (e) {
+        console.warn('Failed to parse Gemini JSON output for battlecard. Raw text:', text);
+      }
+    } catch (err) {
+      console.error('Gemini API error during battlecard generation:', err.message);
+    }
+  }
+
+  // Robust Heuristic Fallback
+  console.log(`Using fallback heuristic battlecard generator for ${compName}...`);
+  return {
+    overview: `${compName} (${compUrl}) is a direct market competitor offering solutions in this domain.`,
+    strengths: [
+      `Established brand presence at ${compUrl}`,
+      'Active content and product positioning updates',
+      'Broad targeted customer base'
+    ],
+    weaknesses: [
+      'May lack our tailored business features & personalized support',
+      'Potential rigidity in custom integration requirements',
+      'Pricing opacity compared to transparent value tiers'
+    ],
+    why_we_win: [
+      `Faster implementation and agility tailored to ${businessProfile?.customers || 'target prospects'}`,
+      'Superior customer support and direct relationship management',
+      `More competitive total cost of ownership vs ${compName}`
+    ],
+    pricing_comparison: `Our price point (${businessProfile?.price_point || 'Flexible pricing'}) provides higher ROI compared to ${compName}'s standard offerings.`,
+    objection_handling: [
+      {
+        objection: `"${compName} has been in the market longer."`,
+        response: `"While they have legacy presence, our platform is purpose-built for modern workflows, providing faster deployment and greater feature responsiveness."`
+      },
+      {
+        objection: `"${compName} offers similar core features."`,
+        response: `"Core features may look similar on paper, but our platform delivers significantly better usability, lower total cost of ownership, and dedicated customer success."`
+      }
+    ],
+    landmines: [
+      `"How fast can ${compName} implement custom workflow requirements for your team?"`,
+      `"Does ${compName}'s pricing include all platform features, or are key modules locked behind enterprise add-ons?"`,
+      `"What is ${compName}'s response time SLA for critical support issues?"`
+    ]
+  };
+}
+
 module.exports = {
   downloadLlamaCli,
   downloadModel,
-  analyzeChange
+  analyzeChange,
+  generateBattlecardData
 };
+

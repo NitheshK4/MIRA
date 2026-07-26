@@ -51,6 +51,7 @@ import Sidebar from './components/Sidebar.jsx';
 import TopBar from './components/TopBar.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
 import VisualDiffModal from './components/VisualDiffModal.jsx';
+import BattlecardsView from './components/BattlecardsView.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
 // Extract or generate Workspace ID per tab session
@@ -509,6 +510,13 @@ export default function App() {
                   onDelete={handleDeleteCompetitor}
                   onCheckNow={handleCheckNow}
                   onUpdateCompetitor={refreshCompetitors}
+                />
+              )}
+
+              {activeTab === 'battlecards' && (
+                <BattlecardsView 
+                  workspaceId={workspaceId}
+                  competitors={competitors}
                 />
               )}
               

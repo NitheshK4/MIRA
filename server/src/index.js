@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const db = require('./db');
 const queue = require('./queue');
+const llm = require('./llm');
 const { sendDigestEmail } = require('./mailer');
 const { syncCard } = require('./crm');
 
@@ -432,6 +433,82 @@ app.post('/api/intelligence/:id/retry', checkWorkspace, async (req, res) => {
     } else {
       res.status(500).json({ error: syncRes.error });
     }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ----------------------------------------------------
+// BATTLECARDS MANAGEMENT API
+// ----------------------------------------------------
+
+// Get all battlecards for current workspace
+app.get('/api/battlecards', checkWorkspace, async (req, res) => {
+  try {
+    const cards = await db.getBattlecards(req.workspaceId);
+    res.json(cards);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get battlecard by competitor ID
+app.get('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const card = await db.getBattlecardByCompetitor(req.workspaceId, req.params.competitorId);
+    if (!card) {
+      return res.status(404).json({ error: 'Battlecard not found.' });
+    }
+    res.json(card);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Generate or refresh AI battlecard for competitor
+app.post('/api/battlecards/:competitorId/generate', checkWorkspace, async (req, res) => {
+  try {
+    const competitorId = req.params.competitorId;
+    const competitor = await db.getCompetitorById(req.workspaceId, competitorId);
+    if (!competitor) {
+      return res.status(404).json({ error: 'Competitor not found.' });
+    }
+
+    const recentScrapes = await db.getScrapeHistory(competitorId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId, competitorId);
+    const profile = await db.getProfile(req.workspaceId);
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting);
+    const savedCard = await db.saveBattlecard(req.workspaceId, competitorId, generatedData);
+
+    res.json(savedCard);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Manually update battlecard
+app.put('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const competitorId = req.params.competitorId;
+    const competitor = await db.getCompetitorById(req.workspaceId, competitorId);
+    if (!competitor) {
+      return res.status(404).json({ error: 'Competitor not found.' });
+    }
+
+    const updatedCard = await db.saveBattlecard(req.workspaceId, competitorId, req.body);
+    res.json(updatedCard);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete battlecard
+app.delete('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const result = await db.deleteBattlecard(req.workspaceId, req.params.competitorId);
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

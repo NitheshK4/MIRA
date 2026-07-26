@@ -249,6 +249,22 @@ async function getDb() {
       value TEXT,
       PRIMARY KEY(workspace_id, key)
     );
+
+    CREATE TABLE IF NOT EXISTS battlecards (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      workspace_id TEXT DEFAULT 'default',
+      competitor_id INTEGER NOT NULL,
+      overview TEXT,
+      strengths TEXT,
+      weaknesses TEXT,
+      why_we_win TEXT,
+      pricing_comparison TEXT,
+      objection_handling TEXT,
+      landmines TEXT,
+      last_generated_at TEXT,
+      UNIQUE(workspace_id, competitor_id),
+      FOREIGN KEY(competitor_id) REFERENCES competitors(id) ON DELETE CASCADE
+    );
   `);
 
   // Try adding enrichment_data column to competitors table dynamically
@@ -321,9 +337,18 @@ async function getCompetitors(workspaceId = null) {
   }
 }
 
-async function getCompetitorById(id) {
+async function getCompetitorById(workspaceId = 'default', id) {
+  let finalWorkspaceId = workspaceId;
+  let finalId = id;
+  if (id === undefined) {
+    finalId = workspaceId;
+    finalWorkspaceId = null;
+  }
   const db = await getDb();
-  return await db.get('SELECT * FROM competitors WHERE id = ?', [id]);
+  if (finalWorkspaceId) {
+    return await db.get('SELECT * FROM competitors WHERE id = ? AND workspace_id = ?', [finalId, finalWorkspaceId]);
+  }
+  return await db.get('SELECT * FROM competitors WHERE id = ?', [finalId]);
 }
 
 async function getCompetitorByUrl(workspaceId = 'default', url) {
@@ -674,6 +699,68 @@ async function setSetting(workspaceId = 'global', key, value) {
   return finalValue;
 }
 
+// Battlecard operations
+async function getBattlecards(workspaceId = 'default') {
+  const db = await getDb();
+  return await db.all(`
+    SELECT b.*, c.name as competitor_name, c.url as competitor_url
+    FROM battlecards b
+    JOIN competitors c ON b.competitor_id = c.id
+    WHERE b.workspace_id = ?
+    ORDER BY c.name ASC
+  `, [workspaceId]);
+}
+
+async function getBattlecardByCompetitor(workspaceId = 'default', competitorId) {
+  const db = await getDb();
+  return await db.get(`
+    SELECT b.*, c.name as competitor_name, c.url as competitor_url
+    FROM battlecards b
+    JOIN competitors c ON b.competitor_id = c.id
+    WHERE b.workspace_id = ? AND b.competitor_id = ?
+  `, [workspaceId, competitorId]);
+}
+
+async function saveBattlecard(workspaceId = 'default', competitorId, data) {
+  const db = await getDb();
+  const now = new Date().toISOString();
+
+  await db.run(`
+    INSERT INTO battlecards (
+      workspace_id, competitor_id, overview, strengths, weaknesses,
+      why_we_win, pricing_comparison, objection_handling, landmines, last_generated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(workspace_id, competitor_id) DO UPDATE SET
+      overview = excluded.overview,
+      strengths = excluded.strengths,
+      weaknesses = excluded.weaknesses,
+      why_we_win = excluded.why_we_win,
+      pricing_comparison = excluded.pricing_comparison,
+      objection_handling = excluded.objection_handling,
+      landmines = excluded.landmines,
+      last_generated_at = excluded.last_generated_at
+  `, [
+    workspaceId,
+    competitorId,
+    data.overview || '',
+    typeof data.strengths === 'string' ? data.strengths : JSON.stringify(data.strengths || []),
+    typeof data.weaknesses === 'string' ? data.weaknesses : JSON.stringify(data.weaknesses || []),
+    typeof data.why_we_win === 'string' ? data.why_we_win : JSON.stringify(data.why_we_win || []),
+    data.pricing_comparison || '',
+    typeof data.objection_handling === 'string' ? data.objection_handling : JSON.stringify(data.objection_handling || []),
+    typeof data.landmines === 'string' ? data.landmines : JSON.stringify(data.landmines || []),
+    now
+  ]);
+
+  return await getBattlecardByCompetitor(workspaceId, competitorId);
+}
+
+async function deleteBattlecard(workspaceId = 'default', competitorId) {
+  const db = await getDb();
+  await db.run('DELETE FROM battlecards WHERE workspace_id = ? AND competitor_id = ?', [workspaceId, competitorId]);
+  return { success: true };
+}
+
 module.exports = {
   getDb,
   getProfile,
@@ -696,5 +783,10 @@ module.exports = {
   getCrmQueue,
   removeFromCrmQueue,
   getSetting,
-  setSetting
+  setSetting,
+  getBattlecards,
+  getBattlecardByCompetitor,
+  saveBattlecard,
+  deleteBattlecard
 };
+
