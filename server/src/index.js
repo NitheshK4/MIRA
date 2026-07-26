@@ -77,6 +77,62 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ----------------------------------------------------
+// SERVER-SENT EVENTS (SSE) REAL-TIME STREAMING
+// ----------------------------------------------------
+const sseClients = new Set();
+
+app.get('/api/stream/events', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (res.flushHeaders) res.flushHeaders();
+
+  sseClients.add(res);
+
+  const handshake = JSON.stringify({
+    type: 'connected',
+    timestamp: new Date().toISOString(),
+    message: 'MIRA Real-Time Intel SSE Stream Active'
+  });
+  res.write(`data: ${handshake}\n\n`);
+
+  req.on('close', () => {
+    sseClients.delete(res);
+  });
+});
+
+function broadcastSSE(type, data = {}) {
+  const payload = JSON.stringify({
+    type,
+    timestamp: new Date().toISOString(),
+    ...data
+  });
+  const msg = `data: ${payload}\n\n`;
+
+  for (const client of sseClients) {
+    try {
+      client.write(msg);
+    } catch (_) {
+      sseClients.delete(client);
+    }
+  }
+}
+
+// 25-second keep-alive ping loop
+setInterval(() => {
+  for (const client of sseClients) {
+    try {
+      client.write(':ping\n\n');
+    } catch (_) {
+      sseClients.delete(client);
+    }
+  }
+}, 25000);
+
+global.broadcastSSE = broadcastSSE;
+
 // Business Profile (Onboarding)
 app.get('/api/profile', checkWorkspace, async (req, res) => {
   try {
@@ -157,6 +213,10 @@ app.post('/api/competitors', checkWorkspace, async (req, res) => {
     // Run first check automatically
     queue.addJob(comp.id);
 
+    if (global.broadcastSSE) {
+      global.broadcastSSE('competitor-added', { competitor: comp });
+    }
+
     res.status(201).json(comp);
   } catch (err) {
     if (err.message && (err.message.includes('SQLITE_CONSTRAINT') || err.message.includes('UNIQUE constraint failed'))) {
@@ -216,6 +276,11 @@ app.delete('/api/competitors/:id', checkWorkspace, async (req, res) => {
     }
 
     await db.deleteCompetitor(req.params.id);
+
+    if (global.broadcastSSE) {
+      global.broadcastSSE('competitor-deleted', { competitorId: req.params.id });
+    }
+
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -233,6 +298,11 @@ app.post('/api/competitors/:id/check', checkWorkspace, async (req, res) => {
     await db.updateCompetitor(comp.id, { status: 'active' });
 
     queue.addJob(comp.id);
+
+    if (global.broadcastSSE) {
+      global.broadcastSSE('scan-triggered', { competitorId: comp.id, name: comp.name });
+    }
+
     res.json({ success: true, message: 'Check enqueued successfully.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -311,6 +381,35 @@ app.put('/api/intelligence/:id', checkWorkspace, async (req, res) => {
     
     const updated = await db.updateIntelligenceCard(req.params.id, updates);
     res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/intelligence/:id/diff-snapshots', checkWorkspace, async (req, res) => {
+  try {
+    const card = await db.getIntelligenceCardById(req.params.id);
+    if (!card || card.workspace_id !== req.workspaceId) {
+      return res.status(404).json({ error: 'Intelligence card not found.' });
+    }
+
+    const competitor = await db.getCompetitorById(card.competitor_id);
+    const scrapes = await db.getScrapeHistory(card.competitor_id);
+
+    let currentScrape = scrapes.find(s => s.timestamp === card.timestamp) || scrapes[0] || null;
+    let previousScrape = null;
+
+    if (currentScrape) {
+      const idx = scrapes.findIndex(s => s.id === currentScrape.id);
+      previousScrape = scrapes[idx + 1] || null;
+    }
+
+    res.json({
+      card,
+      competitor: competitor ? { id: competitor.id, name: competitor.name, url: competitor.url } : null,
+      currentScrape,
+      previousScrape
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

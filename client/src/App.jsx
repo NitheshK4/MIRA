@@ -50,6 +50,7 @@ import {
 import Sidebar from './components/Sidebar.jsx';
 import TopBar from './components/TopBar.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
+import VisualDiffModal from './components/VisualDiffModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
 // Extract or generate Workspace ID per tab session
@@ -97,6 +98,80 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDiffText, setActiveDiffText] = useState(null);
   const [activeScreenshotUrl, setActiveScreenshotUrl] = useState(null);
+  const [activeVisualDiffCardId, setActiveVisualDiffCardId] = useState(null);
+  
+  // Real-Time Claymorphism Toast State
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (toast) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newToast = { id, ...toast };
+    setToasts(prev => [newToast, ...prev].slice(0, 4));
+
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 6000);
+  };
+
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
+
+  // Real-Time Server-Sent Events (SSE) Listener
+  useEffect(() => {
+    let eventSource;
+    try {
+      eventSource = new EventSource('/api/stream/events');
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          
+          if (data.type === 'intel-card-created' && data.card) {
+            setFeedCards(prev => [data.card, ...prev]);
+            addToast({
+              type: 'rose',
+              title: `Alert: ${data.card.competitor_name || 'Competitor'} Update`,
+              desc: data.card.summary || 'Meaningful market update detected.'
+            });
+          } else if (data.type === 'competitor-added') {
+            refreshCompetitors();
+            addToast({
+              type: 'cyan',
+              title: 'Competitor Monitored',
+              desc: `Now tracking ${data.competitor?.name || 'new target'}.`
+            });
+          } else if (data.type === 'scan-triggered') {
+            addToast({
+              type: 'violet',
+              title: 'Scrape Enqueued',
+              desc: `Scanning page for ${data.name || 'competitor'}...`
+            });
+          } else if (data.type === 'scan-completed') {
+            refreshCompetitors();
+            refreshFeed();
+            addToast({
+              type: 'emerald',
+              title: 'Scan Finished',
+              desc: `Scrape finished for ${data.name || 'competitor'}.`
+            });
+          }
+        } catch (e) {
+          console.warn('Error parsing SSE event:', e);
+        }
+      };
+
+      eventSource.onerror = () => {
+        // Soft error handler for browser reconnection retry
+      };
+    } catch (e) {
+      console.error('Failed to initialize SSE EventSource:', e);
+    }
+
+    return () => {
+      if (eventSource) eventSource.close();
+    };
+  }, []);
 
   // Listen to custom command palette open event
   useEffect(() => {
@@ -419,6 +494,7 @@ export default function App() {
                   onRetryCrm={handleRetryCrm}
                   onViewDiff={(diff) => setActiveDiffText(diff)}
                   onViewScreenshot={(url) => setActiveScreenshotUrl(url)}
+                  onViewVisualDiff={(cardId) => setActiveVisualDiffCardId(cardId)}
                   onRefreshFeed={refreshFeed}
                 />
               )}
@@ -482,13 +558,31 @@ export default function App() {
         />
       )}
 
-      {/* Screenshot Modal */}
-      {activeScreenshotUrl && (
-        <ScreenshotModal 
-          url={activeScreenshotUrl}
-          onClose={() => setActiveScreenshotUrl(null)}
+      {/* Visual Snapshot & DOM Diff Modal */}
+      {activeVisualDiffCardId && (
+        <VisualDiffModal 
+          cardId={activeVisualDiffCardId}
+          onClose={() => setActiveVisualDiffCardId(null)}
         />
       )}
+
+      {/* Real-Time Claymorphism Toast Container */}
+      <div className="clay-toast-container">
+        {toasts.map(toast => (
+          <div 
+            key={toast.id} 
+            className={`clay-toast clay-toast-${toast.type || 'cyan'}`}
+            onClick={() => removeToast(toast.id)}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="toast-live-dot" />
+            <div style={{ flex: 1 }}>
+              <div className="toast-title">{toast.title}</div>
+              <div className="toast-desc">{toast.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -956,7 +1050,7 @@ function DashboardPage({
 // ----------------------------------------------------
 // PAGE COMPONENT: INTELLIGENCE STREAM FEED
 // ----------------------------------------------------
-function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot, onRefreshFeed }) {
+function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot, onViewVisualDiff, onRefreshFeed }) {
   const [selectedComp, setSelectedComp] = useState('all');
   const [selectedCat, setSelectedCat] = useState('all');
   const [unreadOnly, setUnreadOnly] = useState(false);
@@ -1168,6 +1262,14 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                       Page Capture
                     </button>
                   )}
+
+                  <button 
+                    className="mira-btn mira-btn-cyan text-xs font-extrabold"
+                    onClick={() => onViewVisualDiff && onViewVisualDiff(card.id)}
+                  >
+                    <Sliders className="w-3.5 h-3.5" />
+                    Visual Snapshot Diff
+                  </button>
 
                   <button 
                     className="mira-btn mira-btn-primary text-xs font-extrabold"
