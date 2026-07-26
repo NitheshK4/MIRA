@@ -116,6 +116,15 @@ async function processNextJob() {
 
       await db.saveIntelligenceCard(newCard);
 
+      if (global.broadcastSSE) {
+        global.broadcastSSE('intel-card-created', {
+          card: {
+            ...newCard,
+            competitor_name: competitor.name
+          }
+        });
+      }
+
       // Send real-time Slack notification for high impact changes (score >= 8)
       if (newCard.impact_score >= 8) {
         try {
@@ -154,6 +163,14 @@ async function processNextJob() {
       status: 'active',
       last_checked: now
     });
+
+    if (global.broadcastSSE) {
+      global.broadcastSSE('scan-completed', {
+        competitorId,
+        name: competitor.name,
+        timestamp: now
+      });
+    }
 
   } catch (err) {
     console.error(`Pipeline execution failed for Competitor ID ${competitorId}:`, err.message);

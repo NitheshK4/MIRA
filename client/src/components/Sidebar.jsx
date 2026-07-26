@@ -6,7 +6,6 @@ import {
   Layers, 
   Copy, 
   Check, 
-  Zap,
   ChevronRight,
   ShieldCheck,
   X
@@ -74,9 +73,6 @@ export default function Sidebar({
               className="sidebar-brand"
               style={{ flex:1 }}
             >
-              <div className="sidebar-brand-icon">
-                <Zap size={20} color="#FFE500" />
-              </div>
               <div>
                 <div className="sidebar-brand-name">MIRA</div>
                 <div className="sidebar-brand-sub">Intelligence Layer</div>
@@ -90,10 +86,11 @@ export default function Sidebar({
               className="mobile-only-btn"
               style={{
                 padding: '6px',
-                border: '2px solid #0A0A0A',
-                borderRadius: '6px',
-                background: '#fff',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: '8px',
+                background: 'rgba(255,255,255,0.08)',
                 cursor: 'pointer',
+                color: '#fff',
                 marginLeft: '8px',
                 flexShrink: 0
               }}
@@ -161,14 +158,14 @@ export default function Sidebar({
                 style={{
                   marginLeft:'auto',
                   display:'flex', alignItems:'center', gap:'4px',
-                  background: 'rgba(255,229,0,0.25)',
-                  border: '1.5px solid #FFE500',
+                  background: 'rgba(6,182,212,0.15)',
+                  border: '1px solid rgba(6,182,212,0.35)',
                   borderRadius: '4px',
-                  padding: '1px 8px',
+                  padding: '2px 8px',
                   cursor: 'pointer',
-                  color: '#FFE500',
+                  color: '#38BDF8',
                   fontSize: '9px',
-                  fontWeight: 900,
+                  fontWeight: 800,
                   textTransform:'uppercase',
                   letterSpacing: '0.05em'
                 }}

@@ -34,9 +34,9 @@ export default function TopBar({
           className="mobile-only-btn"
           style={{
             padding:'7px',
-            border:'2px solid #fff',
-            borderRadius:'6px',
-            background:'rgba(255,255,255,0.15)',
+            border:'1px solid rgba(255,255,255,0.15)',
+            borderRadius:'8px',
+            background:'rgba(255,255,255,0.08)',
             cursor:'pointer',
             color:'#fff'
           }}
@@ -58,7 +58,7 @@ export default function TopBar({
         className="top-bar-search"
         style={{ maxWidth: 380 }}
       >
-        <Search size={14} color="#888" />
+        <Search size={14} color="#94A3B8" />
         <span className="top-bar-search-placeholder">
           Search competitors, alerts…
         </span>
