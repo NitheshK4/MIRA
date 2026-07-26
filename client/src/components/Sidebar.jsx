@@ -3,6 +3,7 @@ import {
   LayoutDashboard, 
   Activity, 
   Settings as SettingsIcon, 
+  Swords,
   Layers, 
   Copy, 
   Check, 
@@ -42,6 +43,12 @@ export default function Sidebar({
       icon: Activity, 
       badge: unreadCount > 0 ? unreadCount : null,
       activeClass: 'active-feed',
+    },
+    { 
+      id: 'battlecards', 
+      label: 'Battlecards', 
+      icon: Swords,
+      activeClass: 'active-battlecards',
     },
     { 
       id: 'settings', 

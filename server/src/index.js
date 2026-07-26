@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const db = require('./db');
 const queue = require('./queue');
+const llm = require('./llm');
 const { sendDigestEmail } = require('./mailer');
 const { syncCard } = require('./crm');
 
@@ -437,6 +438,82 @@ app.post('/api/intelligence/:id/retry', checkWorkspace, async (req, res) => {
   }
 });
 
+// ----------------------------------------------------
+// BATTLECARDS MANAGEMENT API
+// ----------------------------------------------------
+
+// Get all battlecards for current workspace
+app.get('/api/battlecards', checkWorkspace, async (req, res) => {
+  try {
+    const cards = await db.getBattlecards(req.workspaceId);
+    res.json(cards);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get battlecard by competitor ID
+app.get('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const card = await db.getBattlecardByCompetitor(req.workspaceId, req.params.competitorId);
+    if (!card) {
+      return res.status(404).json({ error: 'Battlecard not found.' });
+    }
+    res.json(card);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Generate or refresh AI battlecard for competitor
+app.post('/api/battlecards/:competitorId/generate', checkWorkspace, async (req, res) => {
+  try {
+    const competitorId = req.params.competitorId;
+    const competitor = await db.getCompetitorById(req.workspaceId, competitorId);
+    if (!competitor) {
+      return res.status(404).json({ error: 'Competitor not found.' });
+    }
+
+    const recentScrapes = await db.getScrapeHistory(competitorId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId, competitorId);
+    const profile = await db.getProfile(req.workspaceId);
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting);
+    const savedCard = await db.saveBattlecard(req.workspaceId, competitorId, generatedData);
+
+    res.json(savedCard);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Manually update battlecard
+app.put('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const competitorId = req.params.competitorId;
+    const competitor = await db.getCompetitorById(req.workspaceId, competitorId);
+    if (!competitor) {
+      return res.status(404).json({ error: 'Competitor not found.' });
+    }
+
+    const updatedCard = await db.saveBattlecard(req.workspaceId, competitorId, req.body);
+    res.json(updatedCard);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete battlecard
+app.delete('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const result = await db.deleteBattlecard(req.workspaceId, req.params.competitorId);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Settings Management
 app.get('/api/settings', checkWorkspace, async (req, res) => {
   try {
@@ -447,12 +524,14 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
     const crmConfigStr = await db.getSetting(req.workspaceId, 'crm_config');
     const semantic_threshold = await db.getSetting(req.workspaceId, 'semantic_threshold') || '0.85';
     const slack_webhook_url = await db.getSetting(req.workspaceId, 'slack_webhook_url') || '';
+    const outbound_webhook_url = await db.getSetting(req.workspaceId, 'outbound_webhook_url') || '';
 
     res.json({
       api_key,
       digest_schedule,
       last_digest_sent,
       slack_webhook_url,
+      outbound_webhook_url,
       semantic_threshold: parseFloat(semantic_threshold),
       email_config: emailConfigStr ? JSON.parse(emailConfigStr) : {},
       crm_config: crmConfigStr ? JSON.parse(crmConfigStr) : {}
@@ -464,12 +543,13 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
 
 app.post('/api/settings', checkWorkspace, async (req, res) => {
   try {
-    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url } = req.body;
+    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url, outbound_webhook_url } = req.body;
 
     if (api_key) await db.setSetting(req.workspaceId, 'api_key', api_key);
     if (digest_schedule) await db.setSetting(req.workspaceId, 'digest_schedule', digest_schedule);
     if (semantic_threshold) await db.setSetting(req.workspaceId, 'semantic_threshold', semantic_threshold.toString());
     if (slack_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'slack_webhook_url', slack_webhook_url);
+    if (outbound_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'outbound_webhook_url', outbound_webhook_url);
     
     if (email_config) {
       await db.setSetting(req.workspaceId, 'email_config', JSON.stringify(email_config));
