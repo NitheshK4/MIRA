@@ -1707,6 +1707,7 @@ function SettingsPage({
   const [threshold, setThreshold] = useState(settings?.semantic_threshold || 0.85);
   const [schedule, setSchedule] = useState(settings?.digest_schedule || 'daily');
   const [slackWebhookUrl, setSlackWebhookUrl] = useState(settings?.slack_webhook_url || '');
+  const [outboundWebhookUrl, setOutboundWebhookUrl] = useState(settings?.outbound_webhook_url || '');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [copiedKey, setCopiedKey] = useState(false);
 
@@ -1742,6 +1743,7 @@ function SettingsPage({
       setThreshold(settings.semantic_threshold ?? 0.85);
       setSchedule(settings.digest_schedule || 'daily');
       setSlackWebhookUrl(settings.slack_webhook_url || '');
+      setOutboundWebhookUrl(settings.outbound_webhook_url || '');
     }
   }, [settings]);
 
@@ -1758,7 +1760,8 @@ function SettingsPage({
       semantic_threshold: threshold,
       email_config: emailForm,
       crm_config: crmForm,
-      slack_webhook_url: slackWebhookUrl
+      slack_webhook_url: slackWebhookUrl,
+      outbound_webhook_url: outboundWebhookUrl
     });
   };
 
@@ -1935,6 +1938,18 @@ function SettingsPage({
                   value={slackWebhookUrl}
                   onChange={e => setSlackWebhookUrl(e.target.value)}
                   placeholder="https://hooks.slack.com/services/..."
+                />
+              </div>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">Outbound Webhook URL</label>
+                <p className="text-slate-500 text-[10px] mb-1.5">Fires on every detected change · Compatible with Zapier, Make, n8n, Discord, and any HTTP endpoint</p>
+                <input 
+                  type="url" 
+                  className="mira-input text-xs font-semibold"
+                  value={outboundWebhookUrl}
+                  onChange={e => setOutboundWebhookUrl(e.target.value)}
+                  placeholder="https://hooks.zapier.com/hooks/catch/..."
                 />
               </div>
             </div>

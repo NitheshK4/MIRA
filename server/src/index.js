@@ -447,12 +447,14 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
     const crmConfigStr = await db.getSetting(req.workspaceId, 'crm_config');
     const semantic_threshold = await db.getSetting(req.workspaceId, 'semantic_threshold') || '0.85';
     const slack_webhook_url = await db.getSetting(req.workspaceId, 'slack_webhook_url') || '';
+    const outbound_webhook_url = await db.getSetting(req.workspaceId, 'outbound_webhook_url') || '';
 
     res.json({
       api_key,
       digest_schedule,
       last_digest_sent,
       slack_webhook_url,
+      outbound_webhook_url,
       semantic_threshold: parseFloat(semantic_threshold),
       email_config: emailConfigStr ? JSON.parse(emailConfigStr) : {},
       crm_config: crmConfigStr ? JSON.parse(crmConfigStr) : {}
@@ -464,12 +466,13 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
 
 app.post('/api/settings', checkWorkspace, async (req, res) => {
   try {
-    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url } = req.body;
+    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url, outbound_webhook_url } = req.body;
 
     if (api_key) await db.setSetting(req.workspaceId, 'api_key', api_key);
     if (digest_schedule) await db.setSetting(req.workspaceId, 'digest_schedule', digest_schedule);
     if (semantic_threshold) await db.setSetting(req.workspaceId, 'semantic_threshold', semantic_threshold.toString());
     if (slack_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'slack_webhook_url', slack_webhook_url);
+    if (outbound_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'outbound_webhook_url', outbound_webhook_url);
     
     if (email_config) {
       await db.setSetting(req.workspaceId, 'email_config', JSON.stringify(email_config));

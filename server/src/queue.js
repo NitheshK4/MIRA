@@ -4,6 +4,7 @@ const { analyzeChange } = require('./llm');
 const { syncCard, runRetryQueue } = require('./crm');
 const { getEnrichmentData } = require('./enrichment');
 const { sendSlackNotification } = require('./slack');
+const { sendWebhookNotification } = require('./webhook');
 const db = require('./db');
 const { v4: uuidv4 } = require('uuid');
 
@@ -138,6 +139,19 @@ async function processNextJob() {
         } catch (slackErr) {
           console.error('Slack notification dispatch failed:', slackErr.message);
         }
+      }
+
+      // Fire generic outbound webhook for every detected change
+      try {
+        const outboundWebhookUrl = await db.getSetting(competitor.workspace_id, 'outbound_webhook_url');
+        if (outboundWebhookUrl) {
+          await sendWebhookNotification({
+            ...newCard,
+            competitor_url: competitor.url
+          }, competitor.name, outboundWebhookUrl);
+        }
+      } catch (webhookErr) {
+        console.error('Outbound webhook dispatch failed:', webhookErr.message);
       }
 
       // 6. Push to CRM
