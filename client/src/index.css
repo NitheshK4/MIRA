@@ -1,52 +1,51 @@
 /* ==========================================================================
-   MIRA Autonomous AI Studio - Ultra-Premium Luxury Enterprise Design System
+   MIRA Autonomous AI Studio - Sky Blue & Light Yellow Luxury Enterprise Design System
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Ultra-Premium Obsidian & Glowing Ambient Light Palette */
-  --bg-main: #090D16;
-  --bg-secondary: #0F172A;
-  --bg-surface: rgba(15, 23, 42, 0.75);
-  --bg-highlight: rgba(30, 41, 59, 0.6);
-  --bg-glass: rgba(15, 23, 42, 0.85);
+  /* Sky Blue & Light Yellow Luxury Palette */
+  --bg-main: #FAFAF9;
+  --bg-secondary: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-highlight: #F0F9FF;
+  --bg-glass: rgba(255, 255, 255, 0.92);
 
-  --primary-accent: #3B82F6;
-  --secondary-accent: #06B6D4;
-  --purple-accent: #8B5CF6;
-  --emerald-accent: #10B981;
-  --primary-hover: #2563EB;
+  --primary-accent: #0284C7;
+  --secondary-accent: #38BDF8;
+  --yellow-accent: #F59E0B;
+  --yellow-bg: #FEF9C3;
+  --primary-hover: #0369A1;
 
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
 
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(59, 130, 246, 0.4);
+  --border-color: #E2E8F0;
+  --border-hover: #BAE6FD;
 
   --status-success: #10B981;
-  --status-warning: #F59E0B;
+  --status-warning: #D97706;
   --status-error: #EF4444;
 
-  /* Luxury Glowing Gradients */
-  --bg-gradient: radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.15), transparent 45%), radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.15), transparent 45%), #090D16;
-  --surface-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
-  --cta-gradient: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
-  --cta-hover-gradient: linear-gradient(135deg, #2563EB 0%, #0891B2 100%);
-  --purple-gradient: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
-  --emerald-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  /* Sky Blue & Sunshine Ambient Mesh Gradients */
+  --bg-gradient: radial-gradient(circle at 10% 10%, rgba(224, 242, 254, 0.75), transparent 50%), radial-gradient(circle at 90% 90%, rgba(254, 249, 195, 0.65), transparent 50%), #FAFAF9;
+  --surface-gradient: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  --cta-gradient: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
+  --cta-hover-gradient: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+  --yellow-gradient: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
 
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Glowing Micro-Shadows & Glassmorphism */
-  --shadow-soft: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.08);
-  --shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.2);
-  --shadow-button: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
-  --shadow-modal: 0 35px 90px -15px rgba(0, 0, 0, 0.8);
+  /* Soft Micro-Shadows & Glassmorphism */
+  --shadow-soft: 0 10px 30px -10px rgba(56, 189, 248, 0.12), 0 4px 12px rgba(0, 0, 0, 0.02);
+  --shadow-hover: 0 20px 40px -10px rgba(56, 189, 248, 0.2), 0 8px 20px rgba(0, 0, 0, 0.04);
+  --shadow-button: 0 8px 20px -4px rgba(2, 132, 199, 0.35);
+  --shadow-modal: 0 35px 90px -15px rgba(15, 23, 42, 0.15);
 
   /* Rounded Corners & Layout Spacing */
   --radius-card: 18px;
@@ -62,7 +61,7 @@
   --space-8: 64px;
   
   font-family: var(--font-body);
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -116,11 +115,11 @@ h1, h2, h3, h4, h5, h6 {
   min-height: calc(100vh - 90px);
 }
 
-/* Glassmorphic Obsidian Panels & Studio Cards */
+/* Glassmorphic Light Panels & Luxury Cards */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-soft);
@@ -135,7 +134,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
-/* Floating Sticky Obsidian Header Toolbar */
+/* Floating Sticky Light Luxury Navbar */
 .navbar {
   position: sticky;
   top: 16px;
@@ -146,12 +145,12 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   align-items: center;
   padding: 12px 28px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid #BAE6FD;
   border-radius: 16px;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.15), 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .nav-brand {
