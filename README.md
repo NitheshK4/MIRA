@@ -12,8 +12,9 @@
 <br/><br/>
 
 <!-- Primary Badges -->
-[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Node.js](https://img.shields.io/badge/Node.js_20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Gemini](https://img.shields.io/badge/Gemini_2.5-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
 [![HuggingFace](https://img.shields.io/badge/🤗_ONNX-FFD21E?style=for-the-badge)](https://huggingface.co)
 [![Chrome MV3](https://img.shields.io/badge/Chrome_MV3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com)
@@ -44,6 +45,7 @@
 <summary>Click to expand</summary>
 
 - [Overview](#-overview)
+- [Live Demo](#-live-demo)
 - [System Architecture](#️-system-architecture)
 - [ML Pipeline](#-ml-pipeline)
 - [Chrome Extension](#-chrome-extension)
@@ -127,6 +129,14 @@ Isolated workspaces with per-workspace settings, API keys, and competitor lists.
 </td>
 </tr>
 </table>
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+
+## 🚀 Live Demo
+
+> The app is deployed on Railway and publicly accessible:
+
+**👉 [https://autonomous-competitor-intelligence-engine-production.up.railway.app/](https://autonomous-competitor-intelligence-engine-production.up.railway.app/)**
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
@@ -358,6 +368,21 @@ graph LR
 
 </details>
 
+<details>
+<summary><b>🖥️ Rich Dashboard UI</b></summary>
+<br/>
+
+Built with **React 18 + Tailwind CSS + Vite**, the dashboard features:
+
+- 🔍 **Command Palette** — `Cmd/Ctrl + K` global search & quick navigation
+- 📊 **Intel Feed** — Card-based timeline of all detected changes, filterable by impact
+- 🗂️ **Visual Diff Modal** — Side-by-side content diff viewer for every scrape
+- 🔔 **Live Badge** — Unread intel count synced with the Chrome Extension badge
+- ⚙️ **Settings Panel** — Per-workspace CRM keys, SMTP, Slack webhook, and API key management
+- 💀 **Skeleton Loaders** — Smooth loading states throughout the UI
+
+</details>
+
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🤖 Model Configurations
@@ -373,7 +398,7 @@ graph LR
 
 </div>
 
-> 💡 Set `GEMINI_API_KEY` in `.env` for cloud inference. Without it, MIRA auto-falls back to local GGUF → heuristics.
+> 💡 Configure your Gemini API key and other integration credentials via the **dashboard Settings tab** — no `.env` changes needed.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
@@ -382,7 +407,7 @@ graph LR
 ### Prerequisites
 
 ```
-✅ Node.js    v18+
+✅ Node.js    v20+
 ✅ NPM        v10+
 ✅ OS         macOS / Linux / Windows (WSL)
 ```
@@ -403,7 +428,8 @@ npm run install:all
 
 ```bash
 cp .env.example .env
-# Edit .env — see Environment Variables below
+# Only PORT and NODE_ENV are needed — all API keys (Gemini, Slack,
+# Notion, Airtable, SMTP) are configured via the dashboard Settings tab.
 ```
 
 ### 3️⃣ Launch
@@ -429,17 +455,15 @@ npm test
 
 ## 🔐 Environment Variables
 
-Create a `.env` in the project root. Only `PORT` is required.
+Create a `.env` in the project root (copy from `.env.example`). Only `PORT` is strictly required — all integration credentials are managed via the **dashboard Settings tab** and persisted in SQLite.
 
 | Variable | Required | Default | Description |
 |:---|:---:|:---:|:---|
 | `PORT` | ✅ | `3000` | Express server port |
 | `NODE_ENV` | — | `development` | `production` for optimized builds |
-| `GEMINI_API_KEY` | — | — | Gemini 2.5 Flash API key · [Get one →](https://ai.google.dev) |
-| `SLACK_WEBHOOK_URL` | — | — | Slack Incoming Webhook URL |
-| `PUPPETEER_EXECUTABLE_PATH` | — | bundled | Override Chrome binary path |
+| `PUPPETEER_EXECUTABLE_PATH` | — | bundled | Override Chrome binary (e.g. `/usr/bin/google-chrome-stable`) |
 
-> **Note:** Notion, Airtable, and SMTP credentials are configured via the **dashboard Settings tab** — no `.env` needed.
+> **Note:** `GEMINI_API_KEY`, `SLACK_WEBHOOK_URL`, Notion, Airtable, and SMTP credentials are all configured through the **dashboard Settings tab** — no `.env` entry needed.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
@@ -552,7 +576,7 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 
 <div align="center">
 
-<img src="https://skillicons.dev/icons?i=nodejs,react,vite,sqlite,docker,html,css,js&theme=dark" alt="Tech Stack" />
+<img src="https://skillicons.dev/icons?i=nodejs,react,vite,tailwind,sqlite,docker,html,css,js&theme=dark" alt="Tech Stack" />
 
 </div>
 
@@ -560,9 +584,9 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 
 | Layer | Technologies |
 |:---|:---|
-| 🖥️ **Backend** | Node.js 18+, Express 4, SQLite, UUID |
-| 🎨 **Frontend** | React 18, Vite 5 |
-| 🕸️ **Scraping** | Axios, Cheerio, Puppeteer |
+| 🖥️ **Backend** | Node.js 20, Express 4, SQLite (`sqlite3`), UUID |
+| 🎨 **Frontend** | React 18, Vite 5, Tailwind CSS 3, Lucide React |
+| 🕸️ **Scraping** | Axios, Cheerio, Puppeteer (headless Chromium) |
 | 🧠 **AI / ML** | HuggingFace Transformers (ONNX), Gemini 2.5 Flash, Qwen GGUF |
 | 🔌 **Integrations** | Notion SDK, Airtable REST, Slack Webhooks, Nodemailer |
 | 🧩 **Extension** | Chrome Manifest V3, Service Workers |
@@ -575,18 +599,25 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 ```
 📦 MIRA
 │
-├── 📂 client/                     # React + Vite dashboard
+├── 📂 client/                     # React + Vite + Tailwind CSS dashboard
 │   ├── src/
-│   │   ├── App.jsx                # Root dashboard application
-│   │   ├── index.css              # Global styles
-│   │   └── main.jsx               # React entry point
+│   │   ├── App.jsx                # Root dashboard application (all views)
+│   │   ├── index.css              # Global + Tailwind styles
+│   │   ├── main.jsx               # React entry point
+│   │   └── components/
+│   │       ├── CommandPalette.jsx # Cmd+K global search & quick actions
+│   │       ├── Sidebar.jsx        # Navigation sidebar
+│   │       ├── SkeletonLoader.jsx # Loading state placeholders
+│   │       ├── TopBar.jsx         # Top navigation bar
+│   │       └── VisualDiffModal.jsx# Side-by-side content diff viewer
 │   ├── index.html
-│   └── vite.config.js             # Vite config with API proxy
+│   ├── tailwind.config.js         # Tailwind theme configuration
+│   └── vite.config.js             # Vite config with API proxy to :3000
 │
 ├── 📂 server/                     # Node.js + Express backend
 │   └── src/
 │       ├── index.js               # Express server, routes, scheduler
-│       ├── scraper.js             # Double-engine scraper
+│       ├── scraper.js             # Double-engine scraper (Axios + Puppeteer)
 │       ├── detector.js            # Semantic change detection (ONNX)
 │       ├── llm.js                 # LLM inference (Gemini / Qwen / fallback)
 │       ├── crm.js                 # Notion & Airtable CRM adapter
@@ -599,14 +630,17 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 │
 ├── 📂 extension/                  # Chrome Extension (MV3)
 │   ├── manifest.json
-│   ├── popup.html / popup.js      # One-click registration
-│   ├── options.html / options.js  # Server config
-│   ├── background.js              # Badge polling worker
+│   ├── popup.html / popup.js      # One-click competitor registration
+│   ├── options.html / options.js  # Server URL & API key config
+│   ├── background.js              # Badge polling service worker
 │   └── icon*.png                  # Icons (16, 48, 128)
 │
 ├── 📂 docs/                       # Documentation & screenshots
+│   ├── images/
+│   ├── railway_deployment_guide.md
+│   └── walkthrough.md
 ├── data_exporter.py               # CSV/Markdown export utility
-├── Dockerfile                     # Production container
+├── Dockerfile                     # Production container (Node 20 + Chrome)
 ├── package.json                   # Workspace orchestrator
 └── .env.example                   # Environment template
 ```
@@ -617,12 +651,14 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 
 ### Railway (Recommended)
 
-The `Dockerfile` handles Chrome, model downloads, Vite build, and Express routing automatically.
+The `Dockerfile` installs Google Chrome Stable, downloads ONNX models, builds the Vite client, and starts Express — all automatically.
 
 1. Create a project on [**Railway**](https://railway.app)
 2. Link your GitHub repo
-3. Set env vars: `PORT=3000`, `GEMINI_API_KEY=...`
+3. Set env vars: `PORT=3000`, `NODE_ENV=production`
 4. Deploy 🚀
+
+> All integration credentials (Gemini, Slack, Notion, etc.) are configured via the dashboard Settings after deploy — no extra env vars needed.
 
 ### Docker (Manual)
 
