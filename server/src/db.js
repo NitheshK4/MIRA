@@ -138,6 +138,8 @@ async function runMigrations(db) {
           ['default', row.key, row.value]
         );
       }
+      // Ensure default keys
+      await db.run('INSERT OR IGNORE INTO settings (workspace_id, key, value) VALUES (?, ?, ?)', ['default', 'outbound_webhook_url', '']);
     } catch (err) {
       console.warn('Settings table migration failed. Recreating...', err.message);
       await db.exec('DROP TABLE IF EXISTS settings');
@@ -557,6 +559,7 @@ async function getSetting(workspaceId = 'global', key) {
       digest_schedule: 'daily',
       last_digest_sent: '',
       slack_webhook_url: process.env.SLACK_WEBHOOK_URL || '',
+      outbound_webhook_url: '',
       email_config: JSON.stringify({
         provider: 'resend',
         smtp_host: process.env.SMTP_HOST || 'smtp.gmail.com',

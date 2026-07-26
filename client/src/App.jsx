@@ -360,6 +360,8 @@ export default function App() {
         const data = await res.json();
         throw new Error(data.error || 'Failed to save settings');
       }
+      // Immediately reflect saved values in UI so fields don't clear during refetch
+      setSettings(prev => ({ ...prev, ...formSettings }));
       alert('Settings saved successfully.');
       const settingsRes = await fetch('/api/settings');
       const settingsData = await settingsRes.json();
