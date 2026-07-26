@@ -341,7 +341,7 @@ export default function App() {
     <div>
       {/* Top Sticky Header Navbar */}
       <header className="navbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {/* Top Left-Hand Corner 3-Lines Menu Button */}
           <motion.button 
             whileHover={{ scale: 1.05 }} 
@@ -349,34 +349,34 @@ export default function App() {
             onClick={() => setIsSideMenuOpen(!isSideMenuOpen)}
             style={{ 
               padding: '8px 12px', 
-              background: isSideMenuOpen ? '#EFF6FF' : '#FFFFFF', 
-              border: '1px solid #E5E7EB', 
+              background: isSideMenuOpen ? 'rgba(59, 130, 246, 0.15)' : 'rgba(30, 41, 59, 0.7)', 
+              border: '1px solid rgba(255, 255, 255, 0.1)', 
               borderRadius: '10px',
-              color: '#111827',
+              color: '#F8FAFC',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
             }}
             title="Open Side Menu"
           >
-            {isSideMenuOpen ? <X size={20} color="#2563EB" /> : <Menu size={20} color="#111827" />}
+            {isSideMenuOpen ? <X size={20} color="#3B82F6" /> : <Menu size={20} color="#F8FAFC" />}
           </motion.button>
 
           <div className="nav-brand" onClick={() => onboarded && setActiveTab('dashboard')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ background: 'var(--cta-gradient)', padding: '8px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(37, 99, 235, 0.25)' }}>
+            <div style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)', padding: '8px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(59, 130, 246, 0.35)' }}>
               <Bot size={22} color="#FFFFFF" />
             </div>
-            <span style={{ color: '#111827', fontWeight: '800', fontSize: '18px' }}>MIRA Engine</span>
+            <span style={{ color: '#F8FAFC', fontWeight: '800', fontSize: '18px', letterSpacing: '-0.02em' }}>MIRA AI Studio</span>
           </div>
         </div>
 
         {onboarded && (
           <nav className="nav-links">
             <div className="workspace-indicator" style={{ marginRight: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Workspace:</span>
-              <code style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#2563EB', fontWeight: 'bold' }}>{workspaceId}</code>
+              <span style={{ fontSize: '12px', color: '#94A3B8' }}>Workspace:</span>
+              <code style={{ background: 'rgba(59, 130, 246, 0.12)', border: '1px solid rgba(59, 130, 246, 0.3)', padding: '4px 12px', borderRadius: '9999px', fontSize: '12px', color: '#60A5FA', fontWeight: 'bold' }}>{workspaceId}</code>
             </div>
             <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.92 }} className={`nav-link ${activeTab === 'landing' ? 'active' : ''}`} onClick={() => setActiveTab('landing')}>
               <Globe size={15} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Landing
@@ -422,8 +422,8 @@ export default function App() {
                 left: 0,
                 width: '100vw',
                 height: '100vh',
-                background: 'rgba(17, 24, 39, 0.4)',
-                backdropFilter: 'blur(4px)',
+                background: 'rgba(9, 13, 22, 0.7)',
+                backdropFilter: 'blur(8px)',
                 zIndex: 999
               }}
             />
@@ -440,9 +440,10 @@ export default function App() {
                 left: 0,
                 width: '320px',
                 height: '100vh',
-                background: '#FFFFFF',
-                borderRight: '1px solid #E5E7EB',
-                boxShadow: '0 25px 70px rgba(0, 0, 0, 0.15)',
+                background: 'rgba(15, 23, 42, 0.95)',
+                backdropFilter: 'blur(24px)',
+                borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 25px 70px rgba(0, 0, 0, 0.8)',
                 zIndex: 1000,
                 padding: '24px',
                 display: 'flex',
@@ -452,27 +453,27 @@ export default function App() {
             >
               <div>
                 {/* Drawer Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid #E5E7EB' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', padding: '8px', borderRadius: '10px', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)', padding: '8px', borderRadius: '10px', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Bot size={20} />
                     </div>
                     <div>
-                      <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#111827', margin: 0 }}>MIRA Portal</h3>
-                      <span style={{ fontSize: '12px', color: '#6B7280' }}>System & Setup</span>
+                      <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#F8FAFC', margin: 0 }}>MIRA Studio</h3>
+                      <span style={{ fontSize: '12px', color: '#94A3B8' }}>System & Setup</span>
                     </div>
                   </div>
                   <button 
                     onClick={() => setIsSideMenuOpen(false)} 
-                    style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                    style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', padding: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                   >
-                    <X size={18} color="#6B7280" />
+                    <X size={18} color="#94A3B8" />
                   </button>
                 </div>
 
                 {/* Navigation Links: Profile, Team, Docs, Settings */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '700', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: '700', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                     Account & Configuration
                   </span>
 
@@ -486,16 +487,16 @@ export default function App() {
                       width: '100%', 
                       padding: '12px 16px', 
                       borderRadius: '10px', 
-                      background: activeTab === 'profile' ? '#EFF6FF' : 'transparent',
-                      color: activeTab === 'profile' ? '#2563EB' : '#111827',
-                      border: activeTab === 'profile' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      background: activeTab === 'profile' ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                      color: activeTab === 'profile' ? '#60A5FA' : '#F8FAFC',
+                      border: activeTab === 'profile' ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid transparent',
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: 'pointer',
                       textAlign: 'left'
                     }}
                   >
-                    <User size={18} color={activeTab === 'profile' ? '#2563EB' : '#6B7280'} /> Profile
+                    <User size={18} color={activeTab === 'profile' ? '#60A5FA' : '#94A3B8'} /> Profile Account
                   </motion.button>
 
                   <motion.button 
@@ -508,16 +509,16 @@ export default function App() {
                       width: '100%', 
                       padding: '12px 16px', 
                       borderRadius: '10px', 
-                      background: activeTab === 'team' ? '#EFF6FF' : 'transparent',
-                      color: activeTab === 'team' ? '#2563EB' : '#111827',
-                      border: activeTab === 'team' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      background: activeTab === 'team' ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                      color: activeTab === 'team' ? '#60A5FA' : '#F8FAFC',
+                      border: activeTab === 'team' ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid transparent',
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: 'pointer',
                       textAlign: 'left'
                     }}
                   >
-                    <Users size={18} color={activeTab === 'team' ? '#2563EB' : '#6B7280'} /> Team
+                    <Users size={18} color={activeTab === 'team' ? '#60A5FA' : '#94A3B8'} /> Team Workspace
                   </motion.button>
 
                   <motion.button 
@@ -530,16 +531,16 @@ export default function App() {
                       width: '100%', 
                       padding: '12px 16px', 
                       borderRadius: '10px', 
-                      background: activeTab === 'docs' ? '#EFF6FF' : 'transparent',
-                      color: activeTab === 'docs' ? '#2563EB' : '#111827',
-                      border: activeTab === 'docs' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      background: activeTab === 'docs' ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                      color: activeTab === 'docs' ? '#60A5FA' : '#F8FAFC',
+                      border: activeTab === 'docs' ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid transparent',
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: 'pointer',
                       textAlign: 'left'
                     }}
                   >
-                    <BookOpen size={18} color={activeTab === 'docs' ? '#2563EB' : '#6B7280'} /> Docs
+                    <BookOpen size={18} color={activeTab === 'docs' ? '#60A5FA' : '#94A3B8'} /> Documentation
                   </motion.button>
 
                   <motion.button 
@@ -552,24 +553,24 @@ export default function App() {
                       width: '100%', 
                       padding: '12px 16px', 
                       borderRadius: '10px', 
-                      background: activeTab === 'settings' ? '#EFF6FF' : 'transparent',
-                      color: activeTab === 'settings' ? '#2563EB' : '#111827',
-                      border: activeTab === 'settings' ? '1px solid #BFDBFE' : '1px solid transparent',
+                      background: activeTab === 'settings' ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                      color: activeTab === 'settings' ? '#60A5FA' : '#F8FAFC',
+                      border: activeTab === 'settings' ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid transparent',
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: 'pointer',
                       textAlign: 'left'
                     }}
                   >
-                    <Settings size={18} color={activeTab === 'settings' ? '#2563EB' : '#6B7280'} /> Settings
+                    <Settings size={18} color={activeTab === 'settings' ? '#60A5FA' : '#94A3B8'} /> Engine Settings
                   </motion.button>
                 </div>
               </div>
 
               {/* Footer Workspace Info */}
-              <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
-                <span style={{ fontSize: '11px', color: '#6B7280', display: 'block' }}>Active Workspace</span>
-                <code style={{ fontSize: '12px', color: '#2563EB', fontWeight: 'bold' }}>{workspaceId}</code>
+              <div style={{ background: 'rgba(30, 41, 59, 0.6)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block' }}>Active Workspace</span>
+                <code style={{ fontSize: '12px', color: '#60A5FA', fontWeight: 'bold' }}>{workspaceId}</code>
               </div>
             </motion.aside>
           </>
@@ -2878,27 +2879,28 @@ function PricingMatrixPage({ competitors = [], feedCards = [] }) {
 function LandingPageView({ onGoDashboard }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', padding: '20px 0 60px 0' }}>
-      {/* Floq Hero Header Card */}
+      {/* Dark Obsidian Hero Card */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         style={{ 
-          background: '#FFFFFF',
-          borderRadius: '20px',
-          border: '1px solid #E5E2DC',
+          background: 'rgba(15, 23, 42, 0.75)',
+          backdropFilter: 'blur(24px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
           padding: '64px 40px',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.02)'
+          boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.12)'
         }}
       >
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '840px', margin: '0 auto' }}>
           <span style={{ 
-            background: '#F2F0EB', 
-            color: '#111111', 
-            border: '1px solid #E5E2DC',
+            background: 'rgba(59, 130, 246, 0.12)', 
+            color: '#60A5FA', 
+            border: '1px solid rgba(59, 130, 246, 0.3)',
             padding: '8px 22px', 
             borderRadius: '9999px', 
             fontSize: '13px', 
@@ -2908,14 +2910,14 @@ function LandingPageView({ onGoDashboard }) {
             gap: '8px',
             marginBottom: '24px'
           }}>
-            <Sparkles size={15} color="#111111" /> Autonomous AI Competitor Intelligence Engine
+            <Sparkles size={15} color="#60A5FA" /> Autonomous AI Competitor Intelligence Engine
           </span>
 
-          <h1 style={{ fontSize: '48px', fontWeight: '900', lineHeight: '1.15', color: '#111111', marginBottom: '24px', letterSpacing: '-0.03em' }}>
-            Real-Time Market Radar & Strategy Engine for Modern Teams
+          <h1 style={{ fontSize: '48px', fontWeight: '900', lineHeight: '1.15', color: '#F8FAFC', marginBottom: '24px', letterSpacing: '-0.03em' }}>
+            Real-Time Market Radar & Strategy Studio for Modern Teams
           </h1>
 
-          <p style={{ fontSize: '18px', color: '#555555', lineHeight: '1.6', marginBottom: '40px', fontWeight: '400', maxWidth: '720px', margin: '0 auto 40px auto' }}>
+          <p style={{ fontSize: '18px', color: '#94A3B8', lineHeight: '1.6', marginBottom: '40px', fontWeight: '400', maxWidth: '720px', margin: '0 auto 40px auto' }}>
             Automated web scraping, visual DOM heatmaps, AI C-suite briefings, and instant deal counter-pitches — built for high-growth tech platforms.
           </p>
 
@@ -2925,26 +2927,26 @@ function LandingPageView({ onGoDashboard }) {
               whileTap={{ scale: 0.96 }} 
               className="btn btn-primary"
               onClick={onGoDashboard}
-              style={{ padding: '14px 34px', fontSize: '15px', borderRadius: '9999px', background: '#111111', color: '#FFFFFF', border: '1px solid #111111', fontWeight: '600', boxShadow: '0 4px 14px rgba(0,0,0,0.15)' }}
+              style={{ padding: '14px 34px', fontSize: '15px', borderRadius: '12px', background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)', color: '#FFFFFF', border: '1px solid rgba(59, 130, 246, 0.4)', fontWeight: '600', boxShadow: '0 10px 25px -5px rgba(59, 130, 246, 0.4)' }}
             >
-              Launch Platform Dashboard <ArrowRight size={18} />
+              Launch Studio Dashboard <ArrowRight size={18} />
             </motion.button>
           </div>
         </div>
 
-        {/* Floq Minimalist Floating Stat Chips */}
+        {/* Floating Stat Chips */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '56px', position: 'relative', zIndex: 2 }}>
-          <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E2DC', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-            <h3 style={{ fontSize: '32px', color: '#111111', fontWeight: '900' }}>99.8%</h3>
-            <p style={{ fontSize: '13px', color: '#555555', marginTop: '4px', fontWeight: '500' }}>Scraper Accuracy Index</p>
+          <div style={{ background: 'rgba(30, 41, 59, 0.6)', padding: '24px', borderRadius: '18px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}>
+            <h3 style={{ fontSize: '32px', color: '#3B82F6', fontWeight: '900' }}>99.8%</h3>
+            <p style={{ fontSize: '13px', color: '#94A3B8', marginTop: '4px', fontWeight: '500' }}>Scraper Accuracy Index</p>
           </div>
-          <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E2DC', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-            <h3 style={{ fontSize: '32px', color: '#2563EB', fontWeight: '900' }}>&lt; 240ms</h3>
-            <p style={{ fontSize: '13px', color: '#555555', marginTop: '4px', fontWeight: '500' }}>AI Extraction Latency</p>
+          <div style={{ background: 'rgba(30, 41, 59, 0.6)', padding: '24px', borderRadius: '18px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}>
+            <h3 style={{ fontSize: '32px', color: '#06B6D4', fontWeight: '900' }}>&lt; 240ms</h3>
+            <p style={{ fontSize: '13px', color: '#94A3B8', marginTop: '4px', fontWeight: '500' }}>AI Extraction Latency</p>
           </div>
-          <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E2DC', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-            <h3 style={{ fontSize: '32px', color: '#059669', fontWeight: '900' }}>100%</h3>
-            <p style={{ fontSize: '13px', color: '#555555', marginTop: '4px', fontWeight: '500' }}>Backend API Stability</p>
+          <div style={{ background: 'rgba(30, 41, 59, 0.6)', padding: '24px', borderRadius: '18px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}>
+            <h3 style={{ fontSize: '32px', color: '#10B981', fontWeight: '900' }}>100%</h3>
+            <p style={{ fontSize: '13px', color: '#94A3B8', marginTop: '4px', fontWeight: '500' }}>Backend API Stability</p>
           </div>
         </div>
       </motion.div>

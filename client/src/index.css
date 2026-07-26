@@ -1,54 +1,56 @@
 /* ==========================================================================
-   MIRA Hostinger "Floq" Template Design System (Warm Minimalist Agency & Tech Aesthetic)
+   MIRA Autonomous AI Studio - Ultra-Premium Luxury Enterprise Design System
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Hostinger Floq Template Warm Minimalist Palette */
-  --bg-main: #F9F8F6;
-  --bg-secondary: #F2F0EB;
-  --bg-surface: #FFFFFF;
-  --bg-highlight: #EAE6DF;
-  --bg-glass: rgba(249, 248, 246, 0.92);
+  /* Ultra-Premium Obsidian & Glowing Ambient Light Palette */
+  --bg-main: #090D16;
+  --bg-secondary: #0F172A;
+  --bg-surface: rgba(15, 23, 42, 0.75);
+  --bg-highlight: rgba(30, 41, 59, 0.6);
+  --bg-glass: rgba(15, 23, 42, 0.85);
 
-  --primary-accent: #111111;
-  --secondary-accent: #2563EB;
-  --emerald-accent: #059669;
-  --primary-hover: #000000;
+  --primary-accent: #3B82F6;
+  --secondary-accent: #06B6D4;
+  --purple-accent: #8B5CF6;
+  --emerald-accent: #10B981;
+  --primary-hover: #2563EB;
 
-  --text-primary: #111111;
-  --text-secondary: #555555;
-  --text-muted: #888888;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
 
-  --border-color: #E5E2DC;
-  --border-hover: #D0CCC4;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(59, 130, 246, 0.4);
 
-  --status-success: #059669;
-  --status-warning: #D97706;
-  --status-error: #DC2626;
+  --status-success: #10B981;
+  --status-warning: #F59E0B;
+  --status-error: #EF4444;
 
-  /* Floq Clean Warm Gradients */
-  --bg-gradient: linear-gradient(180deg, #F9F8F6 0%, #F2F0EB 100%);
-  --surface-gradient: linear-gradient(180deg, #FFFFFF 0%, #F9F8F6 100%);
-  --cta-gradient: linear-gradient(135deg, #111111 0%, #262626 100%);
-  --cta-hover-gradient: linear-gradient(135deg, #000000 0%, #171717 100%);
-  --hero-card-gradient: linear-gradient(180deg, #FFFFFF 0%, #F9F8F6 100%);
+  /* Luxury Glowing Gradients */
+  --bg-gradient: radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.15), transparent 45%), radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.15), transparent 45%), #090D16;
+  --surface-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+  --cta-gradient: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+  --cta-hover-gradient: linear-gradient(135deg, #2563EB 0%, #0891B2 100%);
+  --purple-gradient: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+  --emerald-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
 
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Micro-Shadows & Soft Elevation */
-  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.02);
-  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.05);
-  --shadow-button: 0 4px 14px rgba(0, 0, 0, 0.15);
-  --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.1);
+  /* Glowing Micro-Shadows & Glassmorphism */
+  --shadow-soft: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.08);
+  --shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.2);
+  --shadow-button: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+  --shadow-modal: 0 35px 90px -15px rgba(0, 0, 0, 0.8);
 
-  /* Floq Pill Shapes & 16px Cards */
-  --radius-card: 16px;
-  --radius-btn: 9999px;
+  /* Rounded Corners & Layout Spacing */
+  --radius-card: 18px;
+  --radius-btn: 12px;
   --radius-input: 12px;
 
   --space-1: 8px;
@@ -60,7 +62,7 @@
   --space-8: 64px;
   
   font-family: var(--font-body);
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * {
@@ -114,9 +116,11 @@ h1, h2, h3, h4, h5, h6 {
   min-height: calc(100vh - 90px);
 }
 
-/* Glassmorphic Panels & Minimalist Cards */
+/* Glassmorphic Obsidian Panels & Studio Cards */
 .glass-panel {
-  background: #FFFFFF;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-soft);
@@ -131,23 +135,23 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
-/* Floating Sticky Minimalist Navbar */
+/* Floating Sticky Obsidian Header Toolbar */
 .navbar {
   position: sticky;
   top: 16px;
   z-index: 100;
-  max-width: 1280px;
+  max-width: 1380px;
   margin: 16px auto 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 28px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.1);
 }
 
 .nav-brand {
@@ -282,19 +286,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: #111111;
-  border: 1px solid #111111;
+  background: var(--cta-gradient);
+  border: 1px solid rgba(59, 130, 246, 0.4);
   color: #FFFFFF;
   font-weight: 600;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-button);
 }
 
 .btn-primary:hover {
-  background: #000000;
-  border-color: #000000;
+  background: var(--cta-hover-gradient);
+  border-color: rgba(59, 130, 246, 0.6);
   color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.45);
 }
 
 .btn-danger {
