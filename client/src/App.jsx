@@ -2878,73 +2878,73 @@ function PricingMatrixPage({ competitors = [], feedCards = [] }) {
 function LandingPageView({ onGoDashboard }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', padding: '20px 0 60px 0' }}>
-      {/* Hero Header Card */}
+      {/* Floq Hero Header Card */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         style={{ 
           background: '#FFFFFF',
-          borderRadius: '16px',
-          border: '1px solid #E5E7EB',
-          padding: '56px 40px',
+          borderRadius: '20px',
+          border: '1px solid #E5E2DC',
+          padding: '64px 40px',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)'
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.02)'
         }}
       >
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '820px', margin: '0 auto' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '840px', margin: '0 auto' }}>
           <span style={{ 
-            background: '#F8FAFC', 
-            color: '#2563EB', 
-            border: '1px solid #E5E7EB',
-            padding: '6px 18px', 
+            background: '#F2F0EB', 
+            color: '#111111', 
+            border: '1px solid #E5E2DC',
+            padding: '8px 22px', 
             borderRadius: '9999px', 
             fontSize: '13px', 
             fontWeight: '600',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            marginBottom: '20px'
+            marginBottom: '24px'
           }}>
-            <Sparkles size={15} color="#2563EB" /> Enterprise AI Competitor Intelligence Engine
+            <Sparkles size={15} color="#111111" /> Autonomous AI Competitor Intelligence Engine
           </span>
 
-          <h1 style={{ fontSize: '44px', fontWeight: '800', lineHeight: '1.18', color: '#111827', marginBottom: '20px', letterSpacing: '-0.025em' }}>
-            Autonomous Market Radar for High-Growth Teams
+          <h1 style={{ fontSize: '48px', fontWeight: '900', lineHeight: '1.15', color: '#111111', marginBottom: '24px', letterSpacing: '-0.03em' }}>
+            Real-Time Market Radar & Strategy Engine for Modern Teams
           </h1>
 
-          <p style={{ fontSize: '17px', color: '#6B7280', lineHeight: '1.6', marginBottom: '36px', fontWeight: '400' }}>
-            Real-time web scraping, visual DOM heatmaps, AI C-suite briefings, and instant deal counter-pitches — built for modern product, strategy, and revenue leaders.
+          <p style={{ fontSize: '18px', color: '#555555', lineHeight: '1.6', marginBottom: '40px', fontWeight: '400', maxWidth: '720px', margin: '0 auto 40px auto' }}>
+            Automated web scraping, visual DOM heatmaps, AI C-suite briefings, and instant deal counter-pitches — built for high-growth tech platforms.
           </p>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
             <motion.button 
-              whileHover={{ scale: 1.02, y: -1 }} 
+              whileHover={{ scale: 1.03, y: -2 }} 
               whileTap={{ scale: 0.96 }} 
               className="btn btn-primary"
               onClick={onGoDashboard}
-              style={{ padding: '12px 28px', fontSize: '15px', borderRadius: '10px' }}
+              style={{ padding: '14px 34px', fontSize: '15px', borderRadius: '9999px', background: '#111111', color: '#FFFFFF', border: '1px solid #111111', fontWeight: '600', boxShadow: '0 4px 14px rgba(0,0,0,0.15)' }}
             >
               Launch Platform Dashboard <ArrowRight size={18} />
             </motion.button>
           </div>
         </div>
 
-        {/* Minimalist Floating Stat Chips */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginTop: '48px', position: 'relative', zIndex: 2 }}>
-          <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <h3 style={{ fontSize: '28px', color: '#2563EB', fontWeight: '800' }}>99.8%</h3>
-            <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '4px' }}>Scraper Accuracy Index</p>
+        {/* Floq Minimalist Floating Stat Chips */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '56px', position: 'relative', zIndex: 2 }}>
+          <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E2DC', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+            <h3 style={{ fontSize: '32px', color: '#111111', fontWeight: '900' }}>99.8%</h3>
+            <p style={{ fontSize: '13px', color: '#555555', marginTop: '4px', fontWeight: '500' }}>Scraper Accuracy Index</p>
           </div>
-          <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <h3 style={{ fontSize: '28px', color: '#60A5FA', fontWeight: '800' }}>&lt; 240ms</h3>
-            <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '4px' }}>AI Extraction Latency</p>
+          <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E2DC', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+            <h3 style={{ fontSize: '32px', color: '#2563EB', fontWeight: '900' }}>&lt; 240ms</h3>
+            <p style={{ fontSize: '13px', color: '#555555', marginTop: '4px', fontWeight: '500' }}>AI Extraction Latency</p>
           </div>
-          <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <h3 style={{ fontSize: '28px', color: '#8B5CF6', fontWeight: '800' }}>100%</h3>
-            <p style={{ fontSize: '13px', color: '#6B7280', marginTop: '4px' }}>Backend API Stability</p>
+          <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1px solid #E5E2DC', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+            <h3 style={{ fontSize: '32px', color: '#059669', fontWeight: '900' }}>100%</h3>
+            <p style={{ fontSize: '13px', color: '#555555', marginTop: '4px', fontWeight: '500' }}>Backend API Stability</p>
           </div>
         </div>
       </motion.div>

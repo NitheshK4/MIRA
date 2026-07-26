@@ -1,55 +1,55 @@
 /* ==========================================================================
-   MIRA Minimalist Enterprise SaaS Design System (Vercel, Stripe, Linear & Notion Aesthetics)
+   MIRA Hostinger "Floq" Template Design System (Warm Minimalist Agency & Tech Aesthetic)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Minimalist Enterprise Light Palette */
-  --bg-main: #FFFFFF;
-  --bg-secondary: #F8FAFC;
+  /* Hostinger Floq Template Warm Minimalist Palette */
+  --bg-main: #F9F8F6;
+  --bg-secondary: #F2F0EB;
   --bg-surface: #FFFFFF;
-  --bg-highlight: #F1F5F9;
-  --bg-glass: rgba(255, 255, 255, 0.95);
+  --bg-highlight: #EAE6DF;
+  --bg-glass: rgba(249, 248, 246, 0.92);
 
-  --primary-accent: #2563EB;
-  --secondary-accent: #60A5FA;
-  --purple-accent: #8B5CF6;
-  --primary-hover: #1D4ED8;
+  --primary-accent: #111111;
+  --secondary-accent: #2563EB;
+  --emerald-accent: #059669;
+  --primary-hover: #000000;
 
-  --text-primary: #111827;
-  --text-secondary: #6B7280;
-  --text-muted: #9CA3AF;
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --text-muted: #888888;
 
-  --border-color: #E5E7EB;
-  --border-hover: #D1D5DB;
+  --border-color: #E5E2DC;
+  --border-hover: #D0CCC4;
 
-  --status-success: #22C55E;
-  --status-warning: #F59E0B;
-  --status-error: #EF4444;
+  --status-success: #059669;
+  --status-warning: #D97706;
+  --status-error: #DC2626;
 
-  /* Subtle Clean Gradients */
-  --bg-gradient: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
-  --surface-gradient: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
-  --cta-gradient: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-  --cta-hover-gradient: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
-  --hero-card-gradient: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  /* Floq Clean Warm Gradients */
+  --bg-gradient: linear-gradient(180deg, #F9F8F6 0%, #F2F0EB 100%);
+  --surface-gradient: linear-gradient(180deg, #FFFFFF 0%, #F9F8F6 100%);
+  --cta-gradient: linear-gradient(135deg, #111111 0%, #262626 100%);
+  --cta-hover-gradient: linear-gradient(135deg, #000000 0%, #171717 100%);
+  --hero-card-gradient: linear-gradient(180deg, #FFFFFF 0%, #F9F8F6 100%);
 
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Subtle Shadows & Soft Micro-Interactions */
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.03);
-  --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.06);
-  --shadow-button: 0 4px 14px rgba(37, 99, 235, 0.2);
-  --shadow-modal: 0 25px 70px -15px rgba(17, 24, 39, 0.12);
+  /* Micro-Shadows & Soft Elevation */
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.02);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.05);
+  --shadow-button: 0 4px 14px rgba(0, 0, 0, 0.15);
+  --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.1);
 
-  /* 8px Grid System & 14px Rounded Corners */
-  --radius-card: 14px;
-  --radius-btn: 10px;
-  --radius-input: 10px;
+  /* Floq Pill Shapes & 16px Cards */
+  --radius-card: 16px;
+  --radius-btn: 9999px;
+  --radius-input: 12px;
 
   --space-1: 8px;
   --space-2: 16px;
@@ -282,17 +282,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: var(--cta-gradient);
-  border: none;
-  color: #2D2A26;
-  font-weight: 700;
-  box-shadow: var(--shadow-button);
+  background: #111111;
+  border: 1px solid #111111;
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:hover {
-  background: var(--cta-hover-gradient);
+  background: #000000;
+  border-color: #000000;
+  color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(244, 162, 97, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .btn-danger {
