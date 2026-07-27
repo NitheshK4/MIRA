@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const db = require('./db');
 const queue = require('./queue');
+const llm = require('./llm');
 const { sendDigestEmail } = require('./mailer');
 const { syncCard } = require('./crm');
 
@@ -76,6 +77,62 @@ async function checkExtensionAuth(req, res, next) {
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// ----------------------------------------------------
+// SERVER-SENT EVENTS (SSE) REAL-TIME STREAMING
+// ----------------------------------------------------
+const sseClients = new Set();
+
+app.get('/api/stream/events', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (res.flushHeaders) res.flushHeaders();
+
+  sseClients.add(res);
+
+  const handshake = JSON.stringify({
+    type: 'connected',
+    timestamp: new Date().toISOString(),
+    message: 'MIRA Real-Time Intel SSE Stream Active'
+  });
+  res.write(`data: ${handshake}\n\n`);
+
+  req.on('close', () => {
+    sseClients.delete(res);
+  });
+});
+
+function broadcastSSE(type, data = {}) {
+  const payload = JSON.stringify({
+    type,
+    timestamp: new Date().toISOString(),
+    ...data
+  });
+  const msg = `data: ${payload}\n\n`;
+
+  for (const client of sseClients) {
+    try {
+      client.write(msg);
+    } catch (_) {
+      sseClients.delete(client);
+    }
+  }
+}
+
+// 25-second keep-alive ping loop
+setInterval(() => {
+  for (const client of sseClients) {
+    try {
+      client.write(':ping\n\n');
+    } catch (_) {
+      sseClients.delete(client);
+    }
+  }
+}, 25000);
+
+global.broadcastSSE = broadcastSSE;
 
 // Business Profile (Onboarding)
 app.get('/api/profile', checkWorkspace, async (req, res) => {
@@ -157,6 +214,10 @@ app.post('/api/competitors', checkWorkspace, async (req, res) => {
     // Run first check automatically
     queue.addJob(comp.id);
 
+    if (global.broadcastSSE) {
+      global.broadcastSSE('competitor-added', { competitor: comp });
+    }
+
     res.status(201).json(comp);
   } catch (err) {
     if (err.message && (err.message.includes('SQLITE_CONSTRAINT') || err.message.includes('UNIQUE constraint failed'))) {
@@ -216,6 +277,11 @@ app.delete('/api/competitors/:id', checkWorkspace, async (req, res) => {
     }
 
     await db.deleteCompetitor(req.params.id);
+
+    if (global.broadcastSSE) {
+      global.broadcastSSE('competitor-deleted', { competitorId: req.params.id });
+    }
+
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -233,6 +299,11 @@ app.post('/api/competitors/:id/check', checkWorkspace, async (req, res) => {
     await db.updateCompetitor(comp.id, { status: 'active' });
 
     queue.addJob(comp.id);
+
+    if (global.broadcastSSE) {
+      global.broadcastSSE('scan-triggered', { competitorId: comp.id, name: comp.name });
+    }
+
     res.json({ success: true, message: 'Check enqueued successfully.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -518,6 +589,35 @@ app.put('/api/intelligence/:id', checkWorkspace, async (req, res) => {
   }
 });
 
+app.get('/api/intelligence/:id/diff-snapshots', checkWorkspace, async (req, res) => {
+  try {
+    const card = await db.getIntelligenceCardById(req.params.id);
+    if (!card || card.workspace_id !== req.workspaceId) {
+      return res.status(404).json({ error: 'Intelligence card not found.' });
+    }
+
+    const competitor = await db.getCompetitorById(card.competitor_id);
+    const scrapes = await db.getScrapeHistory(card.competitor_id);
+
+    let currentScrape = scrapes.find(s => s.timestamp === card.timestamp) || scrapes[0] || null;
+    let previousScrape = null;
+
+    if (currentScrape) {
+      const idx = scrapes.findIndex(s => s.id === currentScrape.id);
+      previousScrape = scrapes[idx + 1] || null;
+    }
+
+    res.json({
+      card,
+      competitor: competitor ? { id: competitor.id, name: competitor.name, url: competitor.url } : null,
+      currentScrape,
+      previousScrape
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/intelligence/:id/retry', checkWorkspace, async (req, res) => {
   try {
     const card = await db.getIntelligenceCardById(req.params.id);
@@ -540,6 +640,138 @@ app.post('/api/intelligence/:id/retry', checkWorkspace, async (req, res) => {
   }
 });
 
+// ----------------------------------------------------
+// BATTLECARDS MANAGEMENT API
+// ----------------------------------------------------
+
+// Get all battlecards for current workspace
+app.get('/api/battlecards', checkWorkspace, async (req, res) => {
+  try {
+    const cards = await db.getBattlecards(req.workspaceId);
+    res.json(cards);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get battlecard by competitor ID
+app.get('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const card = await db.getBattlecardByCompetitor(req.workspaceId, req.params.competitorId);
+    if (!card) {
+      return res.status(404).json({ error: 'Battlecard not found.' });
+    }
+    res.json(card);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Generate or refresh AI battlecard for competitor
+app.post('/api/battlecards/:competitorId/generate', checkWorkspace, async (req, res) => {
+  try {
+    const competitorId = req.params.competitorId;
+    const competitor = await db.getCompetitorById(req.workspaceId, competitorId);
+    if (!competitor) {
+      return res.status(404).json({ error: 'Competitor not found.' });
+    }
+
+    const recentScrapes = await db.getScrapeHistory(competitorId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId, competitorId);
+    const profile = await db.getProfile(req.workspaceId);
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting);
+    const savedCard = await db.saveBattlecard(req.workspaceId, competitorId, generatedData);
+
+    res.json(savedCard);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Manually update battlecard
+app.put('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const competitorId = req.params.competitorId;
+    const competitor = await db.getCompetitorById(req.workspaceId, competitorId);
+    if (!competitor) {
+      return res.status(404).json({ error: 'Competitor not found.' });
+    }
+
+    const updatedCard = await db.saveBattlecard(req.workspaceId, competitorId, req.body);
+    res.json(updatedCard);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete battlecard
+app.delete('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
+  try {
+    const result = await db.deleteBattlecard(req.workspaceId, req.params.competitorId);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ----------------------------------------------------
+// AI STRATEGY CO-PILOT ("MIRA ORACLE") & WAR ROOM API
+// ----------------------------------------------------
+app.post('/api/oracle/chat', checkWorkspace, async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required.' });
+    }
+
+    const profile = await db.getProfile(req.workspaceId);
+    const competitors = await db.getCompetitors(req.workspaceId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId);
+    const battlecards = await db.getBattlecards(req.workspaceId);
+
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const reply = await llm.generateStrategyCopilotResponse(
+      message, 
+      history || [], 
+      { profile, competitors, intelCards, battlecards }, 
+      geminiKeySetting
+    );
+
+    res.json({ reply });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/warroom/simulate', checkWorkspace, async (req, res) => {
+  try {
+    const { move } = req.body;
+    if (!move) {
+      return res.status(400).json({ error: 'Strategic move description is required.' });
+    }
+
+    const profile = await db.getProfile(req.workspaceId);
+    const competitors = await db.getCompetitors(req.workspaceId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId);
+    const battlecards = await db.getBattlecards(req.workspaceId);
+
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const simulation = await llm.runWarRoomSimulation(
+      move, 
+      { profile, competitors, intelCards, battlecards }, 
+      geminiKeySetting
+    );
+
+    res.json(simulation);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Settings Management
 app.get('/api/settings', checkWorkspace, async (req, res) => {
   try {
@@ -550,12 +782,14 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
     const crmConfigStr = await db.getSetting(req.workspaceId, 'crm_config');
     const semantic_threshold = await db.getSetting(req.workspaceId, 'semantic_threshold') || '0.85';
     const slack_webhook_url = await db.getSetting(req.workspaceId, 'slack_webhook_url') || '';
+    const outbound_webhook_url = await db.getSetting(req.workspaceId, 'outbound_webhook_url') || '';
 
     res.json({
       api_key,
       digest_schedule,
       last_digest_sent,
       slack_webhook_url,
+      outbound_webhook_url,
       semantic_threshold: parseFloat(semantic_threshold),
       email_config: emailConfigStr ? JSON.parse(emailConfigStr) : {},
       crm_config: crmConfigStr ? JSON.parse(crmConfigStr) : {}
@@ -567,12 +801,13 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
 
 app.post('/api/settings', checkWorkspace, async (req, res) => {
   try {
-    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url } = req.body;
+    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url, outbound_webhook_url } = req.body;
 
     if (api_key) await db.setSetting(req.workspaceId, 'api_key', api_key);
     if (digest_schedule) await db.setSetting(req.workspaceId, 'digest_schedule', digest_schedule);
     if (semantic_threshold) await db.setSetting(req.workspaceId, 'semantic_threshold', semantic_threshold.toString());
     if (slack_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'slack_webhook_url', slack_webhook_url);
+    if (outbound_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'outbound_webhook_url', outbound_webhook_url);
     
     if (email_config) {
       await db.setSetting(req.workspaceId, 'email_config', JSON.stringify(email_config));

@@ -6,8 +6,14 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': 'http://127.0.0.1:3000',
-      '/screenshots': 'http://127.0.0.1:3000'
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      },
+      '/screenshots': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      }
     }
   }
 });

@@ -491,8 +491,345 @@ ${userPrompt}<|im_end|>
   });
 }
 
+async function generateBattlecardData(competitor, recentScrapes = [], intelCards = [], businessProfile = null, geminiApiKey = null) {
+  const compName = competitor.name || competitor.url || 'Competitor';
+  const compUrl = competitor.url || '';
+
+  const profileContext = businessProfile ? `
+Our Business Name: ${businessProfile.business_name || 'Our Company'}
+Our Product & Services: ${businessProfile.product_desc || 'General Software Services'}
+Our Target Audience: ${businessProfile.customers || 'Businesses & Consumers'}
+Our Price Point: ${businessProfile.price_point || 'Standard pricing'}
+` : 'Our business profile is not specified.';
+
+  const scrapeSnippet = recentScrapes.map(s => (s.text_content || '').substring(0, 1000)).join('\n---\n');
+  const intelSummary = intelCards.map(c => `- [${c.category}] (Impact: ${c.impact_score}/10): ${c.summary}`).join('\n');
+
+  const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
+
+  if (activeGeminiKey) {
+    try {
+      console.log(`Generating AI Battlecard for ${compName} using Gemini API...`);
+      const systemInstruction = `You are a Senior Competitive Intelligence & Sales Enablement Strategist.
+Your task is to generate a comprehensive sales battlecard comparing "Our Business" vs "${compName}".
+
+Respond ONLY with a valid JSON object wrapped inside <json> ... </json> tags matching this exact structure:
+{
+  "overview": "A crisp 2-3 sentence overview of ${compName}, their positioning, and target market.",
+  "strengths": ["Strength 1", "Strength 2", "Strength 3"],
+  "weaknesses": ["Vulnerability 1", "Vulnerability 2", "Vulnerability 3"],
+  "why_we_win": ["Key Differentiator 1", "Key Differentiator 2", "Key Differentiator 3"],
+  "pricing_comparison": "Analysis comparing our pricing structure vs ${compName}'s pricing.",
+  "objection_handling": [
+    { "objection": "Common prospect objection regarding ${compName}", "response": "Winning counter-script for our sales team" },
+    { "objection": "Second objection", "response": "Winning counter-script" },
+    { "objection": "Third objection", "response": "Winning counter-script" }
+  ],
+  "landmines": ["Landmine question reps should ask prospects", "Landmine question 2", "Landmine question 3"]
+}`;
+
+      const promptText = `
+Here is our business profile:
+${profileContext}
+
+Competitor Name: ${compName}
+Competitor URL: ${compUrl}
+
+Recent Website Scrapes / Snippets:
+${scrapeSnippet || 'No recent scrapes recorded.'}
+
+Recent Intelligence Signals Detected:
+${intelSummary || 'No recent intelligence cards.'}
+
+Generate the tactical AI sales battlecard for ${compName} now. Format inside <json> tags.
+`;
+
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        {
+          contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
+        },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 45000 }
+      );
+
+      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const jsonMatch = text.match(/<json>([\s\S]*?)<\/json>/) || text.match(/```json\s*([\s\S]*?)\s*```/) || [null, text];
+      const jsonString = (jsonMatch[1] || text).trim();
+
+      try {
+        const parsed = JSON.parse(jsonString);
+        return {
+          overview: parsed.overview || `${compName} operates in the same space as ${businessProfile?.business_name || 'our company'}.`,
+          strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
+          weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses : [],
+          why_we_win: Array.isArray(parsed.why_we_win) ? parsed.why_we_win : [],
+          pricing_comparison: parsed.pricing_comparison || 'Pricing details are being evaluated against our price tier.',
+          objection_handling: Array.isArray(parsed.objection_handling) ? parsed.objection_handling : [],
+          landmines: Array.isArray(parsed.landmines) ? parsed.landmines : []
+        };
+      } catch (e) {
+        console.warn('Failed to parse Gemini JSON output for battlecard. Raw text:', text);
+      }
+    } catch (err) {
+      console.error('Gemini API error during battlecard generation:', err.message);
+    }
+  }
+
+  // Robust Heuristic Fallback
+  console.log(`Using fallback heuristic battlecard generator for ${compName}...`);
+  return {
+    overview: `${compName} (${compUrl}) is a direct market competitor offering solutions in this domain.`,
+    strengths: [
+      `Established brand presence at ${compUrl}`,
+      'Active content and product positioning updates',
+      'Broad targeted customer base'
+    ],
+    weaknesses: [
+      'May lack our tailored business features & personalized support',
+      'Potential rigidity in custom integration requirements',
+      'Pricing opacity compared to transparent value tiers'
+    ],
+    why_we_win: [
+      `Faster implementation and agility tailored to ${businessProfile?.customers || 'target prospects'}`,
+      'Superior customer support and direct relationship management',
+      `More competitive total cost of ownership vs ${compName}`
+    ],
+    pricing_comparison: `Our price point (${businessProfile?.price_point || 'Flexible pricing'}) provides higher ROI compared to ${compName}'s standard offerings.`,
+    objection_handling: [
+      {
+        objection: `"${compName} has been in the market longer."`,
+        response: `"While they have legacy presence, our platform is purpose-built for modern workflows, providing faster deployment and greater feature responsiveness."`
+      },
+      {
+        objection: `"${compName} offers similar core features."`,
+        response: `"Core features may look similar on paper, but our platform delivers significantly better usability, lower total cost of ownership, and dedicated customer success."`
+      }
+    ],
+    landmines: [
+      `"How fast can ${compName} implement custom workflow requirements for your team?"`,
+      `"Does ${compName}'s pricing include all platform features, or are key modules locked behind enterprise add-ons?"`,
+      `"What is ${compName}'s response time SLA for critical support issues?"`
+    ]
+  };
+}
+
+/**
+ * AI Strategy Co-Pilot ("MIRA Oracle") response generator
+ */
+async function generateStrategyCopilotResponse(userMessage, conversationHistory = [], workspaceContext = {}, geminiApiKey = null) {
+  const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
+  const { profile, competitors = [], intelCards = [], battlecards = [] } = workspaceContext;
+
+  const profileSummary = profile ? `
+Our Business Name: ${profile.business_name || 'Our Company'}
+Our Product: ${profile.product_desc || 'SaaS / Digital Service'}
+Target Audience: ${profile.customers || 'General Businesses'}
+Pricing Tier: ${profile.price_point || 'Standard Pricing'}
+` : 'Our business profile is not configured.';
+
+  const competitorsSummary = competitors.length > 0 
+    ? competitors.map(c => `- ${c.name} (${c.url}) - Status: ${c.status}`).join('\n')
+    : 'No competitors registered in radar yet.';
+
+  const cardsSummary = intelCards.length > 0
+    ? intelCards.slice(0, 10).map(c => `- [${c.category}] (Impact ${c.impact_score}/10): ${c.summary}`).join('\n')
+    : 'No recent change signals detected.';
+
+  if (activeGeminiKey) {
+    try {
+      console.log('Generating AI Strategy Co-Pilot response using Gemini API...');
+      const systemInstruction = `You are "MIRA Oracle", a top-tier Chief Competitive Intelligence Strategist.
+You assist product leaders, sales teams, and executives in analyzing competitors, identifying market opportunities, and executing counter-strategies.
+Be direct, sharp, highly tactical, and professional. Use markdown formatting with bold headings, bullet points, and key takeaways.
+
+CONTEXT ON OUR BUSINESS & MARKET RADAR:
+${profileSummary}
+
+REGISTERED COMPETITOR TARGETS:
+${competitorsSummary}
+
+RECENT INTELLIGENCE SIGNALS:
+${cardsSummary}`;
+
+      const historyFormatted = conversationHistory.map(m => `${m.role === 'user' ? 'User' : 'MIRA Oracle'}: ${m.text}`).join('\n');
+      const fullPrompt = `${systemInstruction}\n\nCONVERSATION HISTORY:\n${historyFormatted}\n\nUser Question: ${userMessage}\n\nMIRA Oracle Response:`;
+
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        {
+          contents: [{ parts: [{ text: fullPrompt }] }],
+          generationConfig: { temperature: 0.4 }
+        },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 30000 }
+      );
+
+      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) {
+        return text;
+      }
+    } catch (err) {
+      console.error('Gemini API error during Strategy Copilot response:', err.message);
+    }
+  }
+
+  // Fallback intelligent response builder
+  const compCount = competitors.length;
+  const highImpactCards = intelCards.filter(c => c.impact_score >= 7);
+
+  return `### 🔮 MIRA Strategic Intelligence Report
+
+Based on live telemetry across your **${compCount} monitored competitors** and **${intelCards.length} market signals**:
+
+1. **Market Positioning Overview**
+   - Your profile (**${profile?.business_name || 'Our Company'}**) is currently competing against key targets: ${competitors.slice(0, 3).map(c => c.name).join(', ') || 'registered targets'}.
+   - Recent signals indicate ${highImpactCards.length > 0 ? `${highImpactCards.length} high-impact competitor moves detected this week.` : 'stable competitor activity over the current window.'}
+
+2. **Strategic Recommendation for "${userMessage.substring(0, 40)}..."**
+   - **Sales Enablement**: Ensure sales reps emphasize ROI and feature depth against ${competitors[0]?.name || 'competitors'}.
+   - **Product Differentiation**: Focus on rapid integration and direct customer support SLAs where larger rivals struggle with rigidity.
+   - **Pricing Agility**: Monitor pricing changes closely before initiating price reductions.
+
+*Note: For deeper multi-agent scenario modelling, run a hypothesis in the **War Room** tab.*`;
+}
+
+/**
+ * Interactive War Room ("What-If Market Simulator")
+ */
+async function runWarRoomSimulation(proposedMove, workspaceContext = {}, geminiApiKey = null) {
+  const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
+  const { profile, competitors = [], intelCards = [], battlecards = [] } = workspaceContext;
+
+  const profileSummary = profile ? `
+Business Name: ${profile.business_name || 'Our Company'}
+Product Description: ${profile.product_desc || 'SaaS Platform'}
+Target Segment: ${profile.customers || 'B2B Software Buyers'}
+Current Pricing: ${profile.price_point || 'Standard Tier'}
+` : 'Business profile not set.';
+
+  const compList = competitors.map(c => `- ${c.name} (${c.url})`).join('\n') || '- Generic Industry Competitors';
+
+  if (activeGeminiKey) {
+    try {
+      console.log(`Running War Room simulation for proposed move: "${proposedMove}" using Gemini API...`);
+      const systemInstruction = `You are an AI Multi-Agent Market & Game Theory Simulator.
+Your role is to simulate competitive market reactions to a proposed strategic move by our company.
+
+Respond ONLY with a valid JSON object wrapped inside <json> ... </json> tags matching this exact structure:
+{
+  "scenario": "Short descriptive title of the proposed move",
+  "risk_score": 7,
+  "risk_level": "HIGH",
+  "market_impact_summary": "2-3 sentences explaining market dynamics, buyer response, and revenue potential.",
+  "competitor_responses": [
+    {
+      "competitor_name": "Competitor Name",
+      "predicted_action": "Exact predicted reaction (e.g. price cut, ad blast, feature release)",
+      "likelihood_pct": 85,
+      "timeframe": "1-2 Weeks",
+      "threat_severity": "High"
+    }
+  ],
+  "counter_offensive_playbook": [
+    {
+      "step": 1,
+      "phase": "Immediate (Days 1-7)",
+      "action": "Actionable tactical move",
+      "details": "Execution guidelines for reps or product team"
+    },
+    {
+      "step": 2,
+      "phase": "Mid-term (Weeks 2-4)",
+      "action": "Secondary strategic offensive",
+      "details": "Execution guidelines"
+    }
+  ],
+  "strategic_verdict": "PROCEED WITH CAUTION"
+}`;
+
+      const promptText = `
+OUR BUSINESS CONTEXT:
+${profileSummary}
+
+MONITORED COMPETITORS:
+${compList}
+
+PROPOSED STRATEGIC MARKET MOVE TO SIMULATE:
+"${proposedMove}"
+
+Simulate market reaction and generate the simulation report wrapped in <json> tags.
+`;
+
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        {
+          contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
+        },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 45000 }
+      );
+
+      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const jsonMatch = text.match(/<json>([\s\S]*?)<\/json>/) || text.match(/```json\s*([\s\S]*?)\s*```/) || [null, text];
+      const jsonString = (jsonMatch[1] || text).trim();
+
+      try {
+        const parsed = JSON.parse(jsonString);
+        return {
+          scenario: parsed.scenario || proposedMove,
+          risk_score: typeof parsed.risk_score === 'number' ? parsed.risk_score : 6,
+          risk_level: parsed.risk_level || 'MEDIUM',
+          market_impact_summary: parsed.market_impact_summary || 'The proposed move will disrupt competitor positioning and force defensive responses.',
+          competitor_responses: Array.isArray(parsed.competitor_responses) ? parsed.competitor_responses : [],
+          counter_offensive_playbook: Array.isArray(parsed.counter_offensive_playbook) ? parsed.counter_offensive_playbook : [],
+          strategic_verdict: parsed.strategic_verdict || 'HIGH DISRUPTIVE POTENTIAL'
+        };
+      } catch (e) {
+        console.warn('Failed to parse Gemini JSON output for War Room simulation. Raw text:', text);
+      }
+    } catch (err) {
+      console.error('Gemini API error during War Room simulation:', err.message);
+    }
+  }
+
+  // Fallback Simulation Engine
+  const targetCompNames = competitors.length > 0 ? competitors.map(c => c.name) : ['Primary Rival', 'Secondary Competitor'];
+  
+  return {
+    scenario: proposedMove,
+    risk_score: 6,
+    risk_level: 'MEDIUM',
+    market_impact_summary: `Simulated execution of "${proposedMove}" across ${targetCompNames.length} competitor ecosystems. Expect initial market friction followed by competitive alignment within 14 days.`,
+    competitor_responses: targetCompNames.map((name, i) => ({
+      competitor_name: name,
+      predicted_action: i === 0 ? `Initiate defensive feature announcement & match promotional pricing.` : `Launch targeted campaign pointing out legacy feature gaps.`,
+      likelihood_pct: 80 - i * 15,
+      timeframe: `${i + 1}-${i + 3} Weeks`,
+      threat_severity: i === 0 ? 'High' : 'Moderate'
+    })),
+    counter_offensive_playbook: [
+      {
+        step: 1,
+        phase: "Immediate (Days 1-7)",
+        action: "Sales Battlecard & Objection Script Distribution",
+        details: "Equip SDRs and AEs with comparison sheets before competitors adjust messaging."
+      },
+      {
+        step: 2,
+        phase: "Mid-Term (Weeks 2-4)",
+        action: "Customer Value Proof Campaign",
+        details: "Publish customer success case studies to reinforce market authority."
+      }
+    ],
+    strategic_verdict: "STRATEGICALLY SOUND (MEDIUM RISK)"
+  };
+}
+
 module.exports = {
   downloadLlamaCli,
   downloadModel,
-  analyzeChange
+  analyzeChange,
+  generateBattlecardData,
+  generateStrategyCopilotResponse,
+  runWarRoomSimulation
 };
+
+

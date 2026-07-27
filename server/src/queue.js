@@ -4,6 +4,7 @@ const { analyzeChange } = require('./llm');
 const { syncCard, runRetryQueue } = require('./crm');
 const { getEnrichmentData } = require('./enrichment');
 const { sendSlackNotification } = require('./slack');
+const { sendWebhookNotification } = require('./webhook');
 const db = require('./db');
 const { v4: uuidv4 } = require('uuid');
 
@@ -116,6 +117,15 @@ async function processNextJob() {
 
       await db.saveIntelligenceCard(newCard);
 
+      if (global.broadcastSSE) {
+        global.broadcastSSE('intel-card-created', {
+          card: {
+            ...newCard,
+            competitor_name: competitor.name
+          }
+        });
+      }
+
       // Send real-time Slack notification for high impact changes (score >= 8)
       if (newCard.impact_score >= 8) {
         try {
@@ -129,6 +139,19 @@ async function processNextJob() {
         } catch (slackErr) {
           console.error('Slack notification dispatch failed:', slackErr.message);
         }
+      }
+
+      // Fire generic outbound webhook for every detected change
+      try {
+        const outboundWebhookUrl = await db.getSetting(competitor.workspace_id, 'outbound_webhook_url');
+        if (outboundWebhookUrl) {
+          await sendWebhookNotification({
+            ...newCard,
+            competitor_url: competitor.url
+          }, competitor.name, outboundWebhookUrl);
+        }
+      } catch (webhookErr) {
+        console.error('Outbound webhook dispatch failed:', webhookErr.message);
       }
 
       // 6. Push to CRM
@@ -154,6 +177,14 @@ async function processNextJob() {
       status: 'active',
       last_checked: now
     });
+
+    if (global.broadcastSSE) {
+      global.broadcastSSE('scan-completed', {
+        competitorId,
+        name: competitor.name,
+        timestamp: now
+      });
+    }
 
   } catch (err) {
     console.error(`Pipeline execution failed for Competitor ID ${competitorId}:`, err.message);
