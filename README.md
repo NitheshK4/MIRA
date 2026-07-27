@@ -1023,7 +1023,7 @@ Licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-**Built with ❤️ and 🧠 by [Nithesh K](https://github.com/NitheshK4)**
+
 
 <br/>
 
