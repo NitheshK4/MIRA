@@ -514,6 +514,62 @@ app.delete('/api/battlecards/:competitorId', checkWorkspace, async (req, res) =>
   }
 });
 
+// ----------------------------------------------------
+// AI STRATEGY CO-PILOT ("MIRA ORACLE") & WAR ROOM API
+// ----------------------------------------------------
+app.post('/api/oracle/chat', checkWorkspace, async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required.' });
+    }
+
+    const profile = await db.getProfile(req.workspaceId);
+    const competitors = await db.getCompetitors(req.workspaceId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId);
+    const battlecards = await db.getBattlecards(req.workspaceId);
+
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const reply = await llm.generateStrategyCopilotResponse(
+      message, 
+      history || [], 
+      { profile, competitors, intelCards, battlecards }, 
+      geminiKeySetting
+    );
+
+    res.json({ reply });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/warroom/simulate', checkWorkspace, async (req, res) => {
+  try {
+    const { move } = req.body;
+    if (!move) {
+      return res.status(400).json({ error: 'Strategic move description is required.' });
+    }
+
+    const profile = await db.getProfile(req.workspaceId);
+    const competitors = await db.getCompetitors(req.workspaceId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId);
+    const battlecards = await db.getBattlecards(req.workspaceId);
+
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const simulation = await llm.runWarRoomSimulation(
+      move, 
+      { profile, competitors, intelCards, battlecards }, 
+      geminiKeySetting
+    );
+
+    res.json(simulation);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Settings Management
 app.get('/api/settings', checkWorkspace, async (req, res) => {
   try {

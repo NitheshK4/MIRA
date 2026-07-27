@@ -9,6 +9,8 @@ import {
   Check, 
   ChevronRight,
   ShieldCheck,
+  Brain,
+  Sparkles,
   X
 } from 'lucide-react';
 
@@ -19,7 +21,8 @@ export default function Sidebar({
   profile, 
   isOpen, 
   onClose,
-  unreadCount 
+  unreadCount,
+  onOpenOracle
 }) {
   const [copied, setCopied] = React.useState(false);
 
@@ -49,6 +52,12 @@ export default function Sidebar({
       label: 'Battlecards', 
       icon: Swords,
       activeClass: 'active-battlecards',
+    },
+    { 
+      id: 'warroom', 
+      label: 'War Room ⚔️', 
+      icon: Swords,
+      activeClass: 'active-warroom',
     },
     { 
       id: 'settings', 
@@ -155,6 +164,28 @@ export default function Sidebar({
 
         {/* BOTTOM: Workspace + Profile */}
         <div className="sidebar-bottom">
+          {/* MIRA Oracle AI Trigger Button */}
+          {onOpenOracle && (
+            <button
+              type="button"
+              onClick={onOpenOracle}
+              className="w-full mb-3 p-3 rounded-xl bg-gradient-to-r from-violet-600/20 via-sky-600/20 to-violet-600/20 border border-violet-500/30 hover:border-violet-500 text-white flex items-center justify-between group transition-all shadow-lg"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-violet-500/20 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
+                  <Brain size={14} />
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-bold text-white flex items-center gap-1 font-['Outfit']">
+                    MIRA Oracle <Sparkles size={10} className="text-amber-400" />
+                  </div>
+                  <div className="text-[10px] text-slate-400">AI Strategy Co-Pilot</div>
+                </div>
+              </div>
+              <ChevronRight size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          )}
+
           {/* Workspace box */}
           <div className="workspace-box">
             <div className="workspace-box-title">
