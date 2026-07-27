@@ -1,15 +1,18 @@
 <div align="center">
 
-<!-- Animated Header -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=230&section=header&text=M%20I%20R%20A&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Market%20Intelligence%20and%20Research%20Automation&descSize=18&descAlignY=58&descAlign=50" width="100%" />
+<!-- Animated Banner -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/banner.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/banner.svg">
+  <img src="docs/images/banner.svg" alt="MIRA — Autonomous Competitor Intelligence Engine" width="100%" />
+</picture>
 
 <!-- Typing Animation -->
-<br/>
 <a href="#-overview">
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&multiline=true&repeat=true&width=820&height=80&lines=Scrape+%E2%86%92+Detect+%E2%86%92+Analyze+%E2%86%92+Simulate+%E2%86%92+Dominate;Autonomous+Competitor+Intelligence+Engine+with+AI+War+Room" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&multiline=true&repeat=true&width=750&height=60&lines=Scrape+%E2%86%92+Detect+%E2%86%92+Analyze+%E2%86%92+Simulate+%E2%86%92+Dominate;AI-Powered+Competitive+Intelligence+with+War+Room+Simulator" alt="Typing SVG" />
 </a>
 
-<br/><br/>
+<br/>
 
 <!-- Primary Badges -->
 [![Node.js](https://img.shields.io/badge/Node.js_20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
@@ -1015,8 +1018,8 @@ Licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 
 <br/>
 
-<!-- Animated Footer -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=120&section=footer&animation=twinkling" width="100%" />
+<!-- Footer Accent -->
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 <div align="center">
 
