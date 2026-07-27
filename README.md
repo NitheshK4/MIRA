@@ -1,12 +1,12 @@
 <div align="center">
 
 <!-- Animated Header -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F0C29,25:302B63,50:7C3AED,75:EC4899,100:24243e&height=250&section=header&text=M%20I%20R%20A&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=32&desc=Market%20Intelligence%20%26%20Research%20Automation&descSize=20&descAlignY=56&descAlign=50" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=230&section=header&text=M%20I%20R%20A&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Market%20Intelligence%20and%20Research%20Automation&descSize=18&descAlignY=58&descAlign=50" width="100%" />
 
 <!-- Typing Animation -->
 <br/>
 <a href="#-overview">
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&multiline=true&repeat=true&width=820&height=80&lines=Scrape+→+Detect+→+Analyze+→+Simulate+→+Dominate;Autonomous+Competitor+Intelligence+Engine+with+AI+War+Room" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&multiline=true&repeat=true&width=820&height=80&lines=Scrape+%E2%86%92+Detect+%E2%86%92+Analyze+%E2%86%92+Simulate+%E2%86%92+Dominate;Autonomous+Competitor+Intelligence+Engine+with+AI+War+Room" alt="Typing SVG" />
 </a>
 
 <br/><br/>
@@ -1016,7 +1016,7 @@ Licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 <br/>
 
 <!-- Animated Footer -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0F0C29,25:302B63,50:7C3AED,75:EC4899,100:24243e&height=130&section=footer&animation=twinkling" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4F46E5,50:7C3AED,100:EC4899&height=120&section=footer&animation=twinkling" width="100%" />
 
 <div align="center">
 
