@@ -74,6 +74,13 @@ export default function CommandPalette({
       action: () => { onClose(); onNavigateTab('feed'); }
     },
     {
+      id: 'nav-warroom',
+      title: 'Open Competitive War Room ⚔️',
+      subtitle: 'Simulate market moves and predicted competitor reactions',
+      icon: LayoutDashboard,
+      action: () => { onClose(); onNavigateTab('warroom'); }
+    },
+    {
       id: 'nav-[#07090E]',
       title: 'Open System Settings',
       subtitle: 'Manage Chrome Extension API Key, SMTP, and CRM integration',

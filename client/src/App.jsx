@@ -52,6 +52,8 @@ import TopBar from './components/TopBar.jsx';
 import CommandPalette from './components/CommandPalette.jsx';
 import VisualDiffModal from './components/VisualDiffModal.jsx';
 import BattlecardsView from './components/BattlecardsView.jsx';
+import WarRoomView from './components/WarRoomView.jsx';
+import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
 // Extract or generate Workspace ID per tab session
@@ -96,6 +98,7 @@ export default function App() {
   // Modals & Drawers State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isOracleOpen, setIsOracleOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDiffText, setActiveDiffText] = useState(null);
   const [activeScreenshotUrl, setActiveScreenshotUrl] = useState(null);
@@ -428,6 +431,7 @@ export default function App() {
           isOpen={isMobileMenuOpen}
           onClose={() => setIsMobileMenuOpen(false)}
           unreadCount={unreadCount}
+          onOpenOracle={() => setIsOracleOpen(true)}
         />
       )}
 
@@ -519,6 +523,13 @@ export default function App() {
                   competitors={competitors}
                 />
               )}
+
+              {activeTab === 'warroom' && (
+                <WarRoomView 
+                  competitors={competitors}
+                  profile={profile}
+                />
+              )}
               
               {activeTab === 'settings' && (
                 <SettingsPage 
@@ -545,6 +556,13 @@ export default function App() {
           onSubmit={handleAddCompetitor}
         />
       )}
+
+      {/* MIRA Oracle Strategy Co-Pilot Modal */}
+      <StrategyCopilotModal 
+        isOpen={isOracleOpen}
+        onClose={() => setIsOracleOpen(false)}
+        onLaunchWarRoom={() => setActiveTab('warroom')}
+      />
 
       {/* Command Palette Modal */}
       <CommandPalette 

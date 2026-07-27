@@ -274,6 +274,16 @@ body::after {
   color: #FFFFFF;
   box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 8px 18px rgba(244, 63, 94, 0.4);
 }
+.nav-item.active-battlecards {
+  background: linear-gradient(145deg, #7C3AED 0%, #A855F7 100%);
+  color: #FFFFFF;
+  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 8px 18px rgba(168, 85, 247, 0.4);
+}
+.nav-item.active-warroom {
+  background: linear-gradient(145deg, #4F46E5 0%, #8B5CF6 100%);
+  color: #FFFFFF;
+  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 8px 18px rgba(139, 92, 246, 0.4);
+}
 .nav-item.active-settings {
   background: linear-gradient(145deg, #059669 0%, #10B981 100%);
   color: #FFFFFF;
@@ -1295,6 +1305,53 @@ button *, .btn *, .mira-btn * {
 
 /* Hover Utility Classes */
 .hover\:text-violet-300:hover  { color: #C084FC; }
+
+/* ============================================================
+   MIRA ORACLE STRICT OVERLAY & CHIPS
+   ============================================================ */
+.oracle-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
+.oracle-modal-panel {
+  position: relative !important;
+  z-index: 1000000 !important;
+  width: 100% !important;
+  max-width: 520px !important;
+  height: 100vh !important;
+  background: #0B0E1B !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.85) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.oracle-chip {
+  background: #141A2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #CBD5E1 !important;
+  border-radius: 999px !important;
+  padding: 6px 14px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.oracle-chip:hover {
+  background: #1E2845 !important;
+  color: #FFFFFF !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+}
 .hover\:text-sky-300:hover     { color: #7DD3FC; }
 .hover\:text-rose-300:hover    { color: #FDA4AF; }
 .hover\:text-emerald-400:hover { color: #34D399; }
