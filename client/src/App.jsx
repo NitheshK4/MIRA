@@ -54,6 +54,7 @@ import VisualDiffModal from './components/VisualDiffModal.jsx';
 import BattlecardsView from './components/BattlecardsView.jsx';
 import WarRoomView from './components/WarRoomView.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
+import SalesHudView from './components/SalesHudView.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
 // Extract or generate Workspace ID per tab session
@@ -514,6 +515,14 @@ export default function App() {
                   onDelete={handleDeleteCompetitor}
                   onCheckNow={handleCheckNow}
                   onUpdateCompetitor={refreshCompetitors}
+                />
+              )}
+
+              {activeTab === 'saleshud' && (
+                <SalesHudView 
+                  cards={feedCards}
+                  competitors={competitors}
+                  profile={profile}
                 />
               )}
 

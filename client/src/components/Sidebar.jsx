@@ -4,6 +4,7 @@ import {
   Activity, 
   Settings as SettingsIcon, 
   Swords,
+  Target,
   Layers, 
   Copy, 
   Check, 
@@ -46,6 +47,12 @@ export default function Sidebar({
       icon: Activity, 
       badge: unreadCount > 0 ? unreadCount : null,
       activeClass: 'active-feed',
+    },
+    { 
+      id: 'saleshud', 
+      label: 'Sales Call HUD 🎯', 
+      icon: Target,
+      activeClass: 'active-saleshud',
     },
     { 
       id: 'battlecards', 
