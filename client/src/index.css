@@ -178,8 +178,8 @@ body::after {
    SIDEBAR (Clay Drawer)
    ============================================================ */
 .sidebar-drawer {
-  width: 265px;
-  min-width: 265px;
+  width: 295px;
+  min-width: 295px;
   height: 100vh;
   position: sticky;
   top: 0;
@@ -187,9 +187,9 @@ body::after {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px 16px;
+  padding: 24px 20px;
   background: var(--surface-clay);
-  box-shadow: 6px 0 24px rgba(0, 0, 0, 0.45), inset -2px 0 6px rgba(0, 0, 0, 0.35), inset 2px 0 4px rgba(255, 255, 255, 0.08);
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.50), inset -2px 0 6px rgba(0, 0, 0, 0.35), inset 2px 0 4px rgba(255, 255, 255, 0.08);
   z-index: 50;
   overflow-y: auto;
 }
@@ -198,18 +198,18 @@ body::after {
 .sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px 18px;
+  gap: 14px;
+  padding: 12px 14px 20px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  margin-bottom: 18px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.30);
+  margin-bottom: 22px;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .sidebar-brand:hover { transform: scale(1.02); }
 
 .sidebar-brand-icon {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   border-radius: var(--radius-sm);
   background: linear-gradient(145deg, #8B5CF6 0%, #06B6D4 100%);
   display: flex;
@@ -219,35 +219,35 @@ body::after {
   box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 6px 16px rgba(139, 92, 246, 0.4);
 }
 .sidebar-brand-name {
-  font-size: 21px;
+  font-size: 25px;
   font-weight: 900;
   color: #FFFFFF;
   letter-spacing: -0.02em;
   line-height: 1;
 }
 .sidebar-brand-sub {
-  font-size: 9.5px;
+  font-size: 11px;
   color: var(--cyan);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
 /* Nav Menu */
-.nav-menu { display: flex; flex-direction: column; gap: 8px; }
+.nav-menu { display: flex; flex-direction: column; gap: 10px; }
 .nav-item {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
+  gap: 12px;
+  padding: 14px 18px;
   border-radius: var(--radius-sm);
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-muted);
   background: linear-gradient(145deg, #181F33 0%, #131828 100%);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
   box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.06), inset -2px -2px 4px rgba(0, 0, 0, 0.4), 2px 4px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -427,32 +427,34 @@ body::after {
   align-items: center;
   justify-content: space-between;
   flex: 1;
-  max-width: 380px;
-  padding: 9px 16px;
+  max-width: 580px;
+  padding: 13px 22px;
   border-radius: var(--radius-full);
   background: var(--surface-recessed);
   box-shadow: var(--clay-inset-shadow);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   transition: all 0.2s ease;
-  gap: 10px;
+  gap: 12px;
 }
 .top-bar-search:hover {
   box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.60), inset -2px -2px 6px rgba(255, 255, 255, 0.10);
+  border-color: rgba(139, 92, 246, 0.35);
 }
-.top-bar-search-placeholder { font-size: 12px; color: var(--text-muted); font-weight: 600; flex: 1; }
+.top-bar-search-placeholder { font-size: 15px; color: var(--text-muted); font-weight: 600; flex: 1; }
 .top-bar-search-kbd {
-  font-size: 10px;
+  font-size: 12px;
   font-family: var(--font-mono);
   font-weight: 800;
   color: var(--cyan);
   background: linear-gradient(145deg, #1B233A, #121828);
   box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.2), inset -1px -1px 3px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
-  padding: 3px 7px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
 }
-.top-bar-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.top-bar-right { display: flex; align-items: center; gap: 14px; margin-left: auto; }
 .top-bar-icon-btn {
-  width: 38px; height: 38px;
+  width: 46px; height: 46px;
   display: flex; align-items: center; justify-content: center;
   border-radius: var(--radius-md);
   background: linear-gradient(145deg, #222B45 0%, #171D30 100%);
@@ -461,7 +463,7 @@ body::after {
   cursor: pointer;
   position: relative;
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .top-bar-icon-btn:hover {
   background: linear-gradient(145deg, #2B3758 0%, #1F2740 100%);
@@ -477,11 +479,11 @@ body::after {
 .notif-badge {
   position: absolute;
   top: -3px; right: -3px;
-  width: 17px; height: 17px;
+  width: 20px; height: 20px;
   border-radius: 50%;
   background: linear-gradient(145deg, #F43F5E 0%, #BE123C 100%);
   color: #FFFFFF;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   display: flex; align-items: center; justify-content: center;
   box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.5), inset -1px -1px 2px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(244, 63, 94, 0.5);
@@ -490,17 +492,17 @@ body::after {
 /* ============================================================
    PAGE CONTAINER
    ============================================================ */
-.app-container { padding: 30px 34px; }
+.app-container { padding: 34px 40px; }
 .page-title {
-  font-size: 27px;
+  font-size: 32px;
   font-weight: 900;
   color: #FFFFFF;
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
-.page-subtitle { font-size: 13.5px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+.page-subtitle { font-size: 15px; color: var(--text-muted); font-weight: 600; margin-top: 6px; }
 
 /* ============================================================
    BENTO GRID
@@ -869,24 +871,24 @@ button *, .btn *, .mira-btn * {
 /* ============================================================
    FORMS & INPUTS (Debossed Recessed Clay Slots)
    ============================================================ */
-.mira-form-group, .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.mira-form-group, .form-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
 .mira-form-label, .form-label {
-  font-size: 11.5px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 .mira-input, .mira-select, .mira-textarea, .form-input, .form-select, .form-textarea {
   width: 100%;
   background: var(--surface-recessed);
-  border: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  font-size: 13.5px;
+  padding: 15px 20px;
+  font-size: 16px;
   font-weight: 600;
   color: #FFFFFF;
   font-family: var(--font-sans);
@@ -895,16 +897,17 @@ button *, .btn *, .mira-btn * {
   transition: all 0.2s ease;
 }
 .mira-input::placeholder, .form-input::placeholder, .mira-textarea::placeholder {
-  color: rgba(148, 163, 184, 0.55);
+  color: rgba(148, 163, 184, 0.65);
 }
 .mira-input:focus, .mira-select:focus, .mira-textarea:focus,
 .form-input:focus, .form-select:focus, .form-textarea:focus {
-  box-shadow: inset 5px 5px 12px rgba(0, 0, 0, 0.70), inset -2px -2px 6px rgba(139, 92, 246, 0.20), 0 0 0 2px rgba(139, 92, 246, 0.4);
+  box-shadow: inset 5px 5px 12px rgba(0, 0, 0, 0.70), inset -2px -2px 6px rgba(139, 92, 246, 0.20), 0 0 0 3px rgba(139, 92, 246, 0.5);
+  border-color: rgba(139, 92, 246, 0.6);
   outline: none;
 }
-.mira-select option, .form-select option { background: var(--surface-solid); color: #FFFFFF; }
-.mira-textarea, .form-textarea { resize: vertical; min-height: 90px; }
-.mira-form-hint { font-size: 11px; color: var(--text-subtle); font-weight: 500; }
+.mira-select option, .form-select option { background: var(--surface-solid); color: #FFFFFF; padding: 12px; font-size: 15px; }
+.mira-textarea, .form-textarea { resize: vertical; min-height: 110px; }
+.mira-form-hint { font-size: 13px; color: var(--text-subtle); font-weight: 500; }
 
 /* ============================================================
    MODAL DIALOG (Clay Floating Modal)
@@ -912,41 +915,43 @@ button *, .btn *, .mira-btn * {
 .modal-backdrop, .mira-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(4, 6, 12, 0.75);
+  background: rgba(4, 6, 12, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
-  padding: 20px;
+  padding: 24px;
 }
-.modal-panel {
+.modal-panel, .mira-modal-card {
   width: 100%;
-  max-width: 540px;
+  max-width: 680px;
   background: var(--surface-clay);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 0 50px rgba(139, 92, 246, 0.20), var(--shadow-xl);
   overflow: hidden;
-  border: none;
+  border: 2px solid rgba(139, 92, 246, 0.45);
+  padding: 28px 32px;
 }
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  background: rgba(0, 0, 0, 0.15);
+  padding: 24px 32px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.30);
+  background: rgba(0, 0, 0, 0.20);
 }
 .modal-title {
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 900;
   color: #FFFFFF;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   letter-spacing: -0.01em;
 }
-.modal-body { padding: 24px; }
-.modal-footer { display: flex; gap: 12px; padding: 18px 24px; border-top: 1px solid rgba(0, 0, 0, 0.25); background: rgba(0, 0, 0, 0.2); }
+.modal-body { padding: 32px; }
+.modal-footer { display: flex; gap: 16px; padding: 22px 32px; border-top: 2px solid rgba(0, 0, 0, 0.30); background: rgba(0, 0, 0, 0.25); }
 
 /* ============================================================
    FEED CARDS
