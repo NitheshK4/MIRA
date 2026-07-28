@@ -1,6 +1,6 @@
 const { runScrape } = require('./scraper');
 const { detectChanges } = require('./detector');
-const { analyzeChange } = require('./llm');
+const { analyzeChange, generateBattlecardData } = require('./llm');
 const { syncCard, runRetryQueue } = require('./crm');
 const { getEnrichmentData } = require('./enrichment');
 const { sendSlackNotification } = require('./slack');
@@ -170,6 +170,35 @@ async function processNextJob() {
       console.log(`CRM Sync status: ${crmResult.status}`);
     } else {
       console.log(`No meaningful changes detected for ${competitor.name}. Cosine similarity: ${detection.similarity.toFixed(3)}`);
+    }
+
+    // Automatically generate / update Battlecard in the background
+    try {
+      console.log(`Synthesizing background AI Battlecard for ${competitor.name}...`);
+      const recentScrapes = await db.getScrapes(competitorId, 3);
+      const intelCards = await db.getIntelligenceCards(competitor.workspace_id, competitorId, 5);
+      const businessProfile = await db.getProfile(competitor.workspace_id);
+      const userGeminiKey = await db.getSetting(competitor.workspace_id, 'gemini_api_key');
+
+      const battlecardData = await generateBattlecardData(
+        competitor,
+        recentScrapes,
+        intelCards,
+        businessProfile,
+        userGeminiKey
+      );
+
+      const savedCard = await db.saveBattlecard(competitor.workspace_id, competitorId, battlecardData);
+      console.log(`✅ Background AI Battlecard synthesized and saved for ${competitor.name}.`);
+
+      if (global.broadcastSSE) {
+        global.broadcastSSE('battlecard-updated', {
+          competitorId,
+          battlecard: savedCard
+        });
+      }
+    } catch (bcardErr) {
+      console.error(`Background battlecard auto-synthesis failed for ${competitor.name}:`, bcardErr.message);
     }
 
     // Success update
