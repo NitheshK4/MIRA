@@ -2162,23 +2162,23 @@ function AddCompetitorModal({ onClose, onSubmit }) {
 
   return (
     <div className="mira-modal-backdrop" onClick={onClose}>
-      <div className="mira-glass mira-modal-card border-violet-500/30" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-white/10">
-          <h2 className="text-lg font-black text-white font-['Outfit'] flex items-center gap-2">
-            <Plus className="w-5 h-5 text-violet-400" />
+      <div className="mira-glass mira-modal-card border-2 border-violet-500/50 shadow-2xl p-8 max-w-xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/15">
+          <h2 className="text-2xl font-black text-white font-['Outfit'] flex items-center gap-3">
+            <Plus className="w-6 h-6 text-violet-400" />
             Register Competitor Target URL
           </h2>
-          <button className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10" onClick={onClose}>
-            <X className="w-4 h-4" />
+          <button className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10" onClick={onClose}>
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="mira-form-group">
-            <label className="mira-form-label text-xs">Competitor Label Name</label>
+            <label className="mira-form-label text-sm font-extrabold text-slate-300">Competitor Label Name</label>
             <input 
               type="text" 
-              className="mira-input text-xs font-semibold" 
+              className="mira-input text-base font-semibold py-3 px-4" 
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. Acme SaaS"
@@ -2187,10 +2187,10 @@ function AddCompetitorModal({ onClose, onSubmit }) {
           </div>
 
           <div className="mira-form-group">
-            <label className="mira-form-label text-xs">Target Page URL</label>
+            <label className="mira-form-label text-sm font-extrabold text-slate-300">Target Page URL</label>
             <input 
               type="url" 
-              className="mira-input text-xs font-semibold" 
+              className="mira-input text-base font-semibold py-3 px-4" 
               value={form.url}
               onChange={e => setForm({ ...form, url: e.target.value })}
               placeholder="https://acme.com/pricing"
@@ -2199,9 +2199,9 @@ function AddCompetitorModal({ onClose, onSubmit }) {
           </div>
 
           <div className="mira-form-group">
-            <label className="mira-form-label text-xs">Scrape Frequency (Interval)</label>
+            <label className="mira-form-label text-sm font-extrabold text-slate-300">Scrape Frequency (Interval)</label>
             <select 
-              className="mira-select text-xs font-semibold"
+              className="mira-select text-base font-semibold py-3 px-4"
               value={form.interval_hours}
               onChange={e => setForm({ ...form, interval_hours: parseInt(e.target.value, 10) })}
             >
@@ -2213,9 +2213,9 @@ function AddCompetitorModal({ onClose, onSubmit }) {
           </div>
 
           <div className="mira-form-group">
-            <label className="mira-form-label text-xs">Extraction Scope</label>
+            <label className="mira-form-label text-sm font-extrabold text-slate-300">Extraction Scope</label>
             <select 
-              className="mira-select text-xs font-semibold"
+              className="mira-select text-base font-semibold py-3 px-4"
               value={form.scope}
               onChange={e => setForm({ ...form, scope: e.target.value })}
             >
@@ -2225,21 +2225,21 @@ function AddCompetitorModal({ onClose, onSubmit }) {
             </select>
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-200 pb-2">
+          <label className="flex items-center gap-3 cursor-pointer text-sm font-semibold text-slate-200 py-1">
             <input 
               type="checkbox" 
               checked={form.js_enabled}
               onChange={e => setForm({ ...form, js_enabled: e.target.checked })}
-              className="w-4 h-4 rounded border-white/20 text-violet-500 bg-black/60"
+              className="w-5 h-5 rounded border-white/20 text-violet-500 bg-black/60"
             />
             Render Dynamic Javascript (Headless Chromium)
           </label>
 
-          <div className="flex gap-3 pt-2">
-            <button type="button" className="mira-btn mira-btn-secondary flex-1 text-xs font-bold" onClick={onClose}>
+          <div className="flex gap-4 pt-3">
+            <button type="button" className="mira-btn mira-btn-secondary flex-1 text-base font-bold py-3.5" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="mira-btn mira-btn-primary flex-1 text-xs font-black">
+            <button type="submit" className="mira-btn mira-btn-primary flex-1 text-base font-black py-3.5">
               Add & Scan Target
             </button>
           </div>
