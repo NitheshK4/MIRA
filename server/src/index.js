@@ -488,6 +488,32 @@ app.post('/api/battlecards/:competitorId/generate', checkWorkspace, async (req, 
   }
 });
 
+// Generate or refresh AI battlecards in batch for all competitors in workspace
+app.post('/api/battlecards/generate-all', checkWorkspace, async (req, res) => {
+  try {
+    const competitors = await db.getCompetitors(req.workspaceId);
+    if (!competitors || competitors.length === 0) {
+      return res.status(400).json({ error: 'No competitors registered in workspace.' });
+    }
+
+    const profile = await db.getProfile(req.workspaceId);
+    const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+
+    const generatedCards = [];
+    for (const competitor of competitors) {
+      const recentScrapes = await db.getScrapeHistory(competitor.id);
+      const intelCards = await db.getIntelligenceCards(req.workspaceId, competitor.id);
+      const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting);
+      const savedCard = await db.saveBattlecard(req.workspaceId, competitor.id, generatedData);
+      generatedCards.push(savedCard);
+    }
+
+    res.json({ success: true, count: generatedCards.length, battlecards: generatedCards });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Manually update battlecard
 app.put('/api/battlecards/:competitorId', checkWorkspace, async (req, res) => {
   try {
