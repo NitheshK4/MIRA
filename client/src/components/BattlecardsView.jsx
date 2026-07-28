@@ -221,6 +221,29 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
     URL.revokeObjectURL(url);
   };
 
+  const [seeding, setSeeding] = useState(false);
+
+  const handleSeedDemo = async () => {
+    try {
+      setSeeding(true);
+      await fetch('/api/competitors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-workspace-id': workspaceId },
+        body: JSON.stringify({ name: 'Notion', url: 'https://notion.so' })
+      });
+      await fetch('/api/competitors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-workspace-id': workspaceId },
+        body: JSON.stringify({ name: 'HubSpot', url: 'https://hubspot.com' })
+      });
+      window.location.reload();
+    } catch (e) {
+      console.error('Failed to seed demo competitors:', e);
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   if (competitors.length === 0) {
     return (
       <div className="card-glass" style={{ padding: '48px', textAlign: 'center' }}>
@@ -229,6 +252,26 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
         <p style={{ color: '#94A3B8', maxWidth: '480px', margin: '0 auto 24px auto', fontSize: '14px' }}>
           Add your first competitor in the Dashboard tab to unlock AI-powered battlecards for your sales team.
         </p>
+        <button
+          onClick={handleSeedDemo}
+          disabled={seeding}
+          style={{
+            background: 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontWeight: 600,
+            fontSize: '13px',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <Sparkles size={16} />
+          {seeding ? 'Adding Demo Competitors...' : 'Add Sample Demo Competitors'}
+        </button>
       </div>
     );
   }
