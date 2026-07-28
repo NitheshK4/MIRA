@@ -9,7 +9,10 @@ import {
   Swords, 
   Bot,
   User,
-  Zap
+  Zap,
+  FileText,
+  Download,
+  Share2
 } from 'lucide-react';
 
 const QUICK_PROMPTS = [
@@ -79,6 +82,7 @@ export default function StrategyCopilotModal({ isOpen, onClose, onLaunchWarRoom 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
+  const [memoCopied, setMemoCopied] = useState(false);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -132,6 +136,69 @@ export default function StrategyCopilotModal({ isOpen, onClose, onLaunchWarRoom 
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
+  const generateExecutiveMemoContent = () => {
+    const today = new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    const assistantMessages = messages.filter(m => m.role === 'assistant');
+    const userQueries = messages.filter(m => m.role === 'user');
+
+    const keyTakeaways = assistantMessages
+      .map(m => m.text.replace(/###?\s*/g, '• '))
+      .slice(-3)
+      .join('\n\n');
+
+    return `# 🏛️ EXECUTIVE COMPETITIVE STRATEGY BRIEF
+**Date:** ${today}
+**Source:** MIRA Oracle AI Co-Pilot Engine
+**Target Audience:** CEO, Executive Leadership & Strategy Teams
+
+---
+
+## 🎯 EXECUTIVE SUMMARY & KEY TAKEAWAYS
+${keyTakeaways || 'Initial competitive strategy briefing initialized.'}
+
+---
+
+## 📊 KEY STRATEGIC INQUIRIES ANALYZED
+${userQueries.map((q, i) => `**Q${i + 1}:** ${q.text}`).join('\n')}
+
+---
+
+## 🚀 RECOMMENDED ACTION PLAN FOR LEADERSHIP
+1. **Sales Enablement:** Distribute updated objection counter-scripts to sales reps.
+2. **Product Positioning:** Address identified competitor feature gaps in the upcoming release cycle.
+3. **Pricing & Packaging:** Monitor rival tier upgrades and adjust value-add bundles.
+
+---
+
+## 📋 FULL CONVERSATION TRANSCRIPT & CONTEXT
+${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle Briefing'}]\n${m.text}`).join('\n\n')}
+`;
+  };
+
+  const handleExportMemo = () => {
+    const memoContent = generateExecutiveMemoContent();
+    const blob = new Blob([memoContent], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Executive_Strategy_Memo_${new Date().toISOString().slice(0, 10)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopyMemoSlack = () => {
+    const memoContent = generateExecutiveMemoContent();
+    navigator.clipboard.writeText(memoContent);
+    setMemoCopied(true);
+    setTimeout(() => setMemoCopied(false), 2500);
+  };
+
   return (
     <div className="oracle-modal-backdrop animate-fade-in">
       {/* Backdrop Click to Close */}
@@ -158,13 +225,35 @@ export default function StrategyCopilotModal({ isOpen, onClose, onLaunchWarRoom 
             </div>
           </div>
 
-          <button 
-            type="button"
-            onClick={onClose}
-            className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              type="button"
+              onClick={handleCopyMemoSlack}
+              className="px-2.5 py-1.5 rounded-lg bg-violet-600/20 border border-violet-500/40 text-violet-300 hover:bg-violet-600/30 text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-sm"
+              title="Copy formatted 1-Page Executive Briefing for Slack or Email"
+            >
+              {memoCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+              <span>{memoCopied ? 'Copied Brief' : 'Copy Slack Memo'}</span>
+            </button>
+
+            <button 
+              type="button"
+              onClick={handleExportMemo}
+              className="px-2.5 py-1.5 rounded-lg bg-sky-600/20 border border-sky-500/40 text-sky-300 hover:bg-sky-600/30 text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-sm"
+              title="Download Executive Strategy Brief as Markdown (.md)"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export Memo (.md)</span>
+            </button>
+
+            <button 
+              type="button"
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors ml-1"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Quick Action Chips */}
