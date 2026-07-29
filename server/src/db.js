@@ -261,6 +261,7 @@ async function getDb() {
       pricing_comparison TEXT,
       objection_handling TEXT,
       landmines TEXT,
+      battleguard TEXT,
       last_generated_at TEXT,
       UNIQUE(workspace_id, competitor_id),
       FOREIGN KEY(competitor_id) REFERENCES competitors(id) ON DELETE CASCADE
@@ -270,6 +271,13 @@ async function getDb() {
   // Try adding enrichment_data column to competitors table dynamically
   try {
     await dbInstance.exec('ALTER TABLE competitors ADD COLUMN enrichment_data TEXT');
+  } catch (e) {
+    // Column already exists, safe to ignore
+  }
+
+  // Try adding battleguard column to battlecards table dynamically
+  try {
+    await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN battleguard TEXT');
   } catch (e) {
     // Column already exists, safe to ignore
   }
@@ -725,11 +733,15 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
   const db = await getDb();
   const now = new Date().toISOString();
 
+  const battleguardValue = typeof data.battleguard === 'string'
+    ? data.battleguard
+    : JSON.stringify(data.battleguard || null);
+
   await db.run(`
     INSERT INTO battlecards (
       workspace_id, competitor_id, overview, strengths, weaknesses,
-      why_we_win, pricing_comparison, objection_handling, landmines, last_generated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      why_we_win, pricing_comparison, objection_handling, landmines, battleguard, last_generated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(workspace_id, competitor_id) DO UPDATE SET
       overview = excluded.overview,
       strengths = excluded.strengths,
@@ -738,6 +750,7 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
       pricing_comparison = excluded.pricing_comparison,
       objection_handling = excluded.objection_handling,
       landmines = excluded.landmines,
+      battleguard = excluded.battleguard,
       last_generated_at = excluded.last_generated_at
   `, [
     workspaceId,
@@ -749,6 +762,7 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
     data.pricing_comparison || '',
     typeof data.objection_handling === 'string' ? data.objection_handling : JSON.stringify(data.objection_handling || []),
     typeof data.landmines === 'string' ? data.landmines : JSON.stringify(data.landmines || []),
+    battleguardValue,
     now
   ]);
 

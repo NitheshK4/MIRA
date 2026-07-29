@@ -1745,6 +1745,7 @@ function SettingsPage({
   const [schedule, setSchedule] = useState(settings?.digest_schedule || 'daily');
   const [slackWebhookUrl, setSlackWebhookUrl] = useState(settings?.slack_webhook_url || '');
   const [outboundWebhookUrl, setOutboundWebhookUrl] = useState(settings?.outbound_webhook_url || '');
+  const [geminiModel, setGeminiModel] = useState(settings?.gemini_model || 'gemini-3.6-flash');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [copiedKey, setCopiedKey] = useState(false);
 
@@ -1781,6 +1782,7 @@ function SettingsPage({
       setSchedule(settings.digest_schedule || 'daily');
       setSlackWebhookUrl(settings.slack_webhook_url || '');
       setOutboundWebhookUrl(settings.outbound_webhook_url || '');
+      setGeminiModel(settings.gemini_model || 'gemini-3.6-flash');
     }
   }, [settings]);
 
@@ -1798,7 +1800,8 @@ function SettingsPage({
       email_config: emailForm,
       crm_config: crmForm,
       slack_webhook_url: slackWebhookUrl,
-      outbound_webhook_url: outboundWebhookUrl
+      outbound_webhook_url: outboundWebhookUrl,
+      gemini_model: geminiModel
     });
   };
 
@@ -1937,6 +1940,30 @@ function SettingsPage({
               <h3 className="text-base font-bold text-white font-['Outfit'] pb-2.5 border-b border-white/10">
                 General Scrapes & Alert Parameters
               </h3>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-xs">AI Strategy & BattleGuard LLM Model</label>
+                <select 
+                  className="mira-select text-xs font-semibold"
+                  value={geminiModel}
+                  onChange={e => setGeminiModel(e.target.value)}
+                >
+                  <option value="gemini-3.6-flash">🔮 Gemini 3.6 Flash (Default - High Reasoning & Prediction Model)</option>
+                  <option value="gemini-3.0-flash">🔥 Gemini 3.0 Flash (Next-Gen 3.0 Speed & Intelligence)</option>
+                  <option value="gemini-3.0-pro">🌟 Gemini 3.0 Pro (Next-Gen 3.0 Strategic Frontier)</option>
+                  <option value="gemini-2.5-flash">✨ Gemini 2.5 Flash (Fast & Intelligent)</option>
+                  <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (Deep Strategy & Complex Analysis)</option>
+                  <option value="gemini-2.0-flash">⚡ Gemini 2.0 Flash (Multimodal Fast)</option>
+                  <option value="gemini-2.0-flash-lite">🚀 Gemini 2.0 Flash-Lite (Ultra Low-Latency)</option>
+                  <option value="gemini-2.0-pro-exp">🧪 Gemini 2.0 Pro Experimental</option>
+                  <option value="gemini-1.5-flash">📦 Gemini 1.5 Flash (Legacy Fast)</option>
+                  <option value="gemini-1.5-pro">📦 Gemini 1.5 Pro (Legacy Reasoning)</option>
+                  <option value="local-qwen-gguf">💻 Local Qwen2.5 GGUF (Offline CPU Engine)</option>
+                </select>
+                <div className="text-[10.5px] text-slate-400 mt-1 font-medium">
+                  Select your preferred Gemini API model for change analysis, BattleGuard playbooks, and War Room simulations.
+                </div>
+              </div>
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Semantic Change Threshold (0.0 – 1.0)</label>

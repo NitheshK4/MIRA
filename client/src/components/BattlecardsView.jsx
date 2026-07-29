@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Swords, 
   Sparkles, 
@@ -16,8 +16,15 @@ import {
   Copy, 
   Check, 
   ShieldAlert,
+  ShieldCheck,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  Target,
+  Zap,
+  Lock,
+  ArrowRight,
+  Compass,
+  FileText
 } from 'lucide-react';
 
 export default function BattlecardsView({ workspaceId, competitors = [] }) {
@@ -30,8 +37,12 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
   const [editData, setEditData] = useState(null);
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  // Compute effective active competitor ID reliably
-  const activeCompetitorId = selectedCompetitorId || competitors[0]?.id || null;
+  // BattleGuard active view tab: 'overview' | 'battleguard' | 'simulator'
+  const [activeSubTab, setActiveSubTab] = useState('overview');
+
+  // Interactive Objection Simulator state
+  const [simQuery, setSimQuery] = useState('');
+  const [simMatch, setSimMatch] = useState(null);
 
   // Sync selected competitor ID when competitors list changes
   useEffect(() => {
@@ -66,6 +77,8 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
     }
   };
 
+  const activeCompetitorId = selectedCompetitorId || competitors[0]?.id || null;
+
   const handleGenerate = async (compId) => {
     const cid = compId || activeCompetitorId;
     if (!cid) {
@@ -86,10 +99,10 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
         if (editMode) setEditMode(false);
       } else {
         const errData = await res.json().catch(() => ({}));
-        setGenError(errData.error || 'Failed to generate battlecard.');
+        setGenError(errData.error || 'Failed to generate BattleGuard card.');
       }
     } catch (err) {
-      console.error('Failed to generate battlecard:', err);
+      console.error('Failed to generate BattleGuard card:', err);
       setGenError(err.message || 'Error communicating with server.');
     } finally {
       setGenerating(false);
@@ -114,31 +127,48 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
         setEditMode(false);
       }
     } catch (err) {
-      console.error('Failed to save battlecard edit:', err);
+      console.error('Failed to save BattleGuard edit:', err);
     }
   };
 
-  const parseArrayField = (field) => {
-    if (!field) return [];
-    if (Array.isArray(field)) return field;
+  const parseJsonField = (field, fallback = []) => {
+    if (!field) return fallback;
+    if (typeof field === 'object') return field;
     try {
       return JSON.parse(field);
     } catch (e) {
-      return [field];
+      return fallback;
     }
   };
 
   const currentCompetitor = competitors.find(c => String(c.id) === String(activeCompetitorId)) || competitors[0];
   const rawCard = activeCompetitorId ? battlecards[activeCompetitorId] : null;
 
-  const cardData = rawCard ? {
-    ...rawCard,
-    strengths: parseArrayField(rawCard.strengths),
-    weaknesses: parseArrayField(rawCard.weaknesses),
-    why_we_win: parseArrayField(rawCard.why_we_win),
-    objection_handling: parseArrayField(rawCard.objection_handling),
-    landmines: parseArrayField(rawCard.landmines)
-  } : null;
+  const cardData = useMemo(() => {
+    if (!rawCard) return null;
+    const bgParsed = parseJsonField(rawCard.battleguard, null);
+    const bgData = bgParsed || {
+      threat_level: 'MODERATE',
+      defense_score: 84,
+      threat_vectors: [`Competitor active on ${currentCompetitor?.url || 'target market'}`],
+      defensive_tactics: [
+        { vector: 'Pricing Defense', strategy: 'Highlight total cost of ownership, included seats, and zero hidden add-on fees.' },
+        { vector: 'Feature Superiority Counter', strategy: 'Demonstrate our ONNX-driven change detection & zero-downtime CRM sync.' },
+        { vector: 'Security & Compliance Guard', strategy: 'Provide SOC2 and compliance proof point documentation immediately.' }
+      ],
+      recommended_win_angle: 'Emphasize immediate 14-day ROI, zero hidden seat fees, and dedicated customer success.'
+    };
+
+    return {
+      ...rawCard,
+      strengths: parseJsonField(rawCard.strengths, []),
+      weaknesses: parseJsonField(rawCard.weaknesses, []),
+      why_we_win: parseJsonField(rawCard.why_we_win, []),
+      objection_handling: parseJsonField(rawCard.objection_handling, []),
+      landmines: parseJsonField(rawCard.landmines, []),
+      battleguard: bgData
+    };
+  }, [rawCard, currentCompetitor]);
 
   const startEdit = () => {
     if (!cardData) return;
@@ -149,82 +179,127 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
       weaknesses: cardData.weaknesses,
       why_we_win: cardData.why_we_win,
       landmines: cardData.landmines,
-      objection_handling: cardData.objection_handling
+      objection_handling: cardData.objection_handling,
+      battleguard: cardData.battleguard
     });
     setEditMode(true);
   };
 
-  const handleCopyText = (text, idx) => {
+  const handleCopyText = (text, idxKey) => {
     navigator.clipboard.writeText(text);
-    setCopiedIndex(idx);
+    setCopiedIndex(idxKey);
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   const handleExportMarkdown = () => {
     if (!currentCompetitor || !cardData) return;
     
-    const mdContent = `# Battlecard: Our Business vs ${currentCompetitor.name || 'Competitor'}
+    const bg = cardData.battleguard || {};
+    const tacticsStr = (bg.defensive_tactics || []).map(t => `- **${t.vector}**: ${t.strategy}`).join('\n');
+    const vectorsStr = (bg.threat_vectors || []).map(v => `- ${v}`).join('\n');
+
+    const mdContent = `# BattleGuard Sales Playbook: Our Business vs ${currentCompetitor.name || 'Competitor'}
 URL: ${currentCompetitor.url}
 Generated At: ${cardData.last_generated_at || new Date().toISOString()}
 
-## Overview
+## 🛡️ BattleGuard Defense Metrics
+- **Defense Score**: ${bg.defense_score || 85}/100
+- **Threat Level**: ${bg.threat_level || 'MODERATE'}
+- **Recommended Win Angle**: ${bg.recommended_win_angle || 'N/A'}
+
+### Active Threat Vectors
+${vectorsStr || '- Standard competitive monitoring active.'}
+
+### Tactical Defense Protocols
+${tacticsStr || '- Maintain core value messaging.'}
+
+---
+
+## 📌 Competitive Overview
 ${cardData.overview}
 
-## Core Strengths & Advantages
+## 🟩 Competitor Strengths & Advantages
 ${cardData.strengths.map(s => `- ${s}`).join('\n')}
 
-## Weaknesses & Vulnerabilities
+## 🟥 Competitor Weaknesses & Vulnerabilities
 ${cardData.weaknesses.map(w => `- ${w}`).join('\n')}
 
-## Why We Win (Key Differentiators)
+## 🏆 Why We Win (Key Differentiators)
 ${cardData.why_we_win.map(w => `- ${w}`).join('\n')}
 
-## Pricing Comparison
+## 💰 Pricing Comparison
 ${cardData.pricing_comparison}
 
-## Landmine Questions for Reps
+## 💣 Landmine Questions for Reps
 ${cardData.landmines.map(l => `- ${l}`).join('\n')}
 
-## Objection Handling Scripts
-${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response**: ${o.response}\n`).join('\n')}
+## 🛡️ Objection Handling Scripts
+${cardData.objection_handling.map(o => `### Prospect Claim: ${o.objection}\n**Winning Counter-Script**: ${o.response}\n`).join('\n')}
 `;
 
     const blob = new Blob([mdContent], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `battlecard_${(currentCompetitor.name || 'competitor').toLowerCase().replace(/\s+/g, '_')}.md`;
+    a.download = `battleguard_${(currentCompetitor.name || 'competitor').toLowerCase().replace(/\s+/g, '_')}.md`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  // Run objection simulation lookup
+  const handleSimulate = (queryText) => {
+    setSimQuery(queryText);
+    if (!queryText.trim() || !cardData) {
+      setSimMatch(null);
+      return;
+    }
+    const q = queryText.toLowerCase();
+    const handlers = cardData.objection_handling || [];
+    const bestMatch = handlers.find(h => 
+      h.objection.toLowerCase().includes(q) || 
+      q.split(' ').some(w => w.length > 3 && h.objection.toLowerCase().includes(w))
+    ) || handlers[0];
+
+    setSimMatch(bestMatch);
   };
 
   if (competitors.length === 0) {
     return (
       <div className="card-glass" style={{ padding: '48px', textAlign: 'center' }}>
-        <Swords size={48} style={{ color: '#8B5CF6', marginBottom: '16px', opacity: 0.8 }} />
-        <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>No Competitors Configured</h2>
+        <ShieldCheck size={48} style={{ color: '#8B5CF6', marginBottom: '16px', opacity: 0.8 }} />
+        <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>No Competitors Registered</h2>
         <p style={{ color: '#94A3B8', maxWidth: '480px', margin: '0 auto 24px auto', fontSize: '14px' }}>
-          Add your first competitor in the Dashboard tab to unlock AI-powered battlecards for your sales team.
+          Add your first competitor URL in the Dashboard tab to initialize AI-powered BattleGuard defense playbooks.
         </p>
       </div>
     );
   }
 
+  const bg = cardData?.battleguard || {};
+  const defenseScore = bg.defense_score || 85;
+  const threatLevel = bg.threat_level || 'MODERATE';
+  const scoreColor = defenseScore >= 80 ? '#34D399' : defenseScore >= 65 ? '#FBBF24' : '#F87171';
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Top Header */}
+      {/* Top Header Bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ padding: '8px', background: 'rgba(139, 92, 246, 0.15)', borderRadius: '10px', color: '#A78BFA', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
-              <Swords size={22} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ padding: '10px', background: 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(56,189,248,0.2))', borderRadius: '12px', color: '#A78BFA', border: '1px solid rgba(139, 92, 246, 0.4)' }}>
+              <ShieldCheck size={26} />
             </div>
             <div>
-              <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.02em' }}>
-                Competitive Battlecards
-              </h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.02em' }}>
+                  Battlecards & BattleGuard 🛡️
+                </h1>
+                <span style={{ fontSize: '10px', fontWeight: 800, background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '2px 8px', borderRadius: '12px', textTransform: 'uppercase' }}>
+                  v2.5 Defense Engine
+                </span>
+              </div>
               <p style={{ color: '#94A3B8', fontSize: '13px', margin: 0 }}>
-                AI-synthesized tactical playbooks, objection handlers, and landmines for sales enablement.
+                Real-time competitive defense matrix, threat ratings, objection handlers, and sales counter-scripts.
               </p>
             </div>
           </div>
@@ -238,7 +313,7 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
                 className="btn-primary"
                 style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#10B981', borderColor: '#059669' }}
               >
-                <Save size={15} /> Save Changes
+                <Save size={15} /> Save Playbook
               </button>
               <button
                 onClick={() => setEditMode(false)}
@@ -261,7 +336,7 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
                 ) : (
                   <Sparkles size={15} />
                 )}
-                {generating ? 'Synthesizing Battlecard...' : cardData ? 'Refresh with AI' : 'Generate Battlecard with AI'}
+                {generating ? 'Synthesizing BattleGuard...' : cardData ? 'Sync with AI' : 'Generate BattleGuard Playbook'}
               </button>
               {cardData && (
                 <>
@@ -277,7 +352,7 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
                     className="btn-secondary"
                     style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                   >
-                    <Download size={15} /> Export Markdown
+                    <Download size={15} /> Export Cheat Sheet
                   </button>
                 </>
               )}
@@ -292,10 +367,10 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
         </div>
       )}
 
-      {/* Main Content Layout */}
+      {/* Main Grid Layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '24px', alignItems: 'start' }}>
         
-        {/* Competitors Selector Panel */}
+        {/* Competitor Selector Panel */}
         <div className="card-glass" style={{ padding: '16px' }}>
           <div style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', color: '#94A3B8', letterSpacing: '0.08em', marginBottom: '12px', paddingLeft: '4px' }}>
             Competitors ({competitors.length})
@@ -303,7 +378,10 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {competitors.map(comp => {
               const isSelected = String(comp.id) === String(activeCompetitorId);
-              const hasCard = !!battlecards[comp.id];
+              const card = battlecards[comp.id];
+              const bgObj = card ? parseJsonField(card.battleguard, {}) : {};
+              const score = bgObj.defense_score || 80;
+
               return (
                 <button
                   key={comp.id}
@@ -315,7 +393,7 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justify: 'space-between',
+                    justifyContent: 'space-between',
                     padding: '10px 12px',
                     borderRadius: '8px',
                     border: isSelected ? '1px solid rgba(167, 139, 250, 0.5)' : '1px solid rgba(255, 255, 255, 0.06)',
@@ -334,9 +412,9 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
                       {comp.url}
                     </div>
                   </div>
-                  {hasCard ? (
-                    <span style={{ fontSize: '10px', background: 'rgba(16, 185, 129, 0.2)', color: '#34D399', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
-                      AI Ready
+                  {card ? (
+                    <span style={{ fontSize: '10px', background: 'rgba(16, 185, 129, 0.15)', color: '#34D399', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
+                      <ShieldCheck size={10} /> {score}%
                     </span>
                   ) : (
                     <ChevronRight size={14} style={{ color: '#64748B' }} />
@@ -347,16 +425,16 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
           </div>
         </div>
 
-        {/* Battlecard Details View */}
+        {/* Playbook Details Area */}
         <div>
           {!cardData ? (
             <div className="card-glass" style={{ padding: '48px', textAlign: 'center' }}>
               <Sparkles size={40} style={{ color: '#38BDF8', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>
-                No Battlecard Generated Yet for {currentCompetitor?.name || 'this competitor'}
+                No BattleGuard Generated for {currentCompetitor?.name || 'this competitor'}
               </h3>
               <p style={{ color: '#94A3B8', fontSize: '14px', maxWidth: '440px', margin: '0 auto 20px auto' }}>
-                Generate an AI battlecard now using recent scraped page content, detected intelligence signals, and your company profile.
+                Synthesize a high-impact competitive BattleGuard playbook using scraped web intelligence and position metrics.
               </p>
               <button
                 onClick={() => handleGenerate(activeCompetitorId)}
@@ -365,159 +443,348 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
                 style={{ margin: '0 auto', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
               >
                 {generating ? <RefreshCw size={16} className="spin-animation" /> : <Sparkles size={16} />}
-                {generating ? 'Analyzing Competitor Intelligence...' : 'Generate Battlecard with AI'}
+                {generating ? 'Synthesizing Defense Playbook...' : 'Generate BattleGuard Playbook'}
               </button>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Card Meta & Overview */}
-              <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #8B5CF6' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', margin: 0 }}>
-                      {currentCompetitor?.name || 'Competitor'} Battlecard
-                    </h2>
-                    <a
-                      href={currentCompetitor?.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: '#38BDF8', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}
-                    >
-                      <ExternalLink size={12} /> Visit Site
-                    </a>
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#64748B' }}>
-                    Last Updated: {cardData.last_generated_at ? new Date(cardData.last_generated_at).toLocaleDateString() : 'Just now'}
-                  </div>
-                </div>
-
-                {editMode ? (
+              {/* BattleGuard Defense Bar & Security Gauge */}
+              <div className="card-glass" style={{ padding: '20px', background: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(15,23,42,0.6) 100%)', border: '1px solid rgba(139,92,246,0.3)', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
                   <div>
-                    <label style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>Overview & Positioning</label>
-                    <textarea
-                      value={editData.overview}
-                      onChange={(e) => setEditData({ ...editData, overview: e.target.value })}
-                      style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '6px', padding: '10px', marginTop: '4px', minHeight: '80px' }}
-                    />
-                  </div>
-                ) : (
-                  <p style={{ color: '#E2E8F0', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
-                    {cardData.overview}
-                  </p>
-                )}
-              </div>
-
-              {/* Strengths vs Weaknesses Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                
-                {/* Strengths */}
-                <div className="card-glass" style={{ padding: '20px', borderTop: '3px solid #10B981' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34D399', fontWeight: 700, fontSize: '15px', marginBottom: '14px' }}>
-                    <CheckCircle2 size={18} /> Competitor Strengths
-                  </div>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {cardData.strengths.map((str, idx) => (
-                      <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: '#CBD5E1', lineHeight: '1.4' }}>
-                        <span style={{ color: '#34D399', fontWeight: 800 }}>•</span> {str}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Weaknesses */}
-                <div className="card-glass" style={{ padding: '20px', borderTop: '3px solid #EF4444' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F87171', fontWeight: 700, fontSize: '15px', marginBottom: '14px' }}>
-                    <XCircle size={18} /> Competitor Vulnerabilities
-                  </div>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {cardData.weaknesses.map((wk, idx) => (
-                      <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: '#CBD5E1', lineHeight: '1.4' }}>
-                        <span style={{ color: '#F87171', fontWeight: 800 }}>•</span> {wk}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Why We Win Highlights */}
-              <div className="card-glass" style={{ padding: '20px', background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38BDF8', fontWeight: 800, fontSize: '16px', marginBottom: '12px' }}>
-                  <Trophy size={20} /> Why We Win (Key Differentiators)
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
-                  {cardData.why_we_win.map((win, idx) => (
-                    <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '13px', color: '#F1F5F9', fontWeight: 500, lineHeight: '1.4' }}>
-                      <span style={{ color: '#38BDF8', fontWeight: 700, marginRight: '6px' }}>#{idx + 1}</span> {win}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', margin: 0 }}>
+                        {currentCompetitor?.name || 'Competitor'} Defense Index
+                      </h2>
+                      <a
+                        href={currentCompetitor?.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#38BDF8', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}
+                      >
+                        <ExternalLink size={12} /> {currentCompetitor?.url}
+                      </a>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Landmine Questions */}
-              <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #F59E0B' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FBBF24', fontWeight: 700, fontSize: '15px', marginBottom: '12px' }}>
-                  <AlertTriangle size={18} /> Landmines to Plant in Sales Calls
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {cardData.landmines.map((lm, idx) => (
-                    <div key={idx} style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '10px 14px', borderRadius: '6px', fontSize: '13px', color: '#FEF3C7', fontStyle: 'italic' }}>
-                      "{lm}"
+                    <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>
+                      BattleGuard Protection Active • Synchronized {cardData.last_generated_at ? new Date(cardData.last_generated_at).toLocaleDateString() : 'Today'}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
 
-              {/* Objection Handling Scripts */}
-              <div className="card-glass" style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#A78BFA', fontWeight: 700, fontSize: '16px', marginBottom: '14px' }}>
-                  <ShieldAlert size={20} /> Objection Handling Counter-Scripts
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {cardData.objection_handling.map((obj, idx) => (
-                    <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '14px' }}>
-                      <div style={{ fontSize: '13px', fontWeight: 700, color: '#F87171', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <HelpCircle size={14} /> Prospect Says: {obj.objection}
+                  {/* Defense Score Widget */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#94A3B8', letterSpacing: '0.05em' }}>
+                        Defense Score
                       </div>
-                      <div style={{ fontSize: '13px', color: '#E2E8F0', lineHeight: '1.5', paddingLeft: '20px', borderLeft: '2px solid #8B5CF6', position: 'relative' }}>
-                        <span style={{ fontWeight: 600, color: '#A78BFA' }}>Sales Rep Response: </span>
-                        {obj.response}
+                      <div style={{ fontSize: '24px', fontWeight: 900, color: scoreColor, lineHeight: 1 }}>
+                        {defenseScore}<span style={{ fontSize: '14px', color: '#64748B' }}>/100</span>
+                      </div>
+                    </div>
+                    <div style={{ padding: '6px 12px', borderRadius: '8px', background: threatLevel === 'HIGH' ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', border: threatLevel === 'HIGH' ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(16,185,129,0.3)', color: threatLevel === 'HIGH' ? '#F87171' : '#34D399', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Threat: {threatLevel}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Score Progress Bar */}
+                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: `${defenseScore}%`, height: '100%', background: scoreColor, transition: 'width 0.4s ease' }} />
+                </div>
+              </div>
+
+              {/* Sub-Tab Navigation Bar */}
+              <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
+                <button
+                  onClick={() => setActiveSubTab('overview')}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    border: activeSubTab === 'overview' ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid transparent',
+                    background: activeSubTab === 'overview' ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
+                    color: activeSubTab === 'overview' ? '#fff' : '#94A3B8'
+                  }}
+                >
+                  <FileText size={14} /> Overview & Differentiators
+                </button>
+                <button
+                  onClick={() => setActiveSubTab('battleguard')}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    border: activeSubTab === 'battleguard' ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid transparent',
+                    background: activeSubTab === 'battleguard' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
+                    color: activeSubTab === 'battleguard' ? '#38BDF8' : '#94A3B8'
+                  }}
+                >
+                  <ShieldCheck size={14} /> BattleGuard Defense Matrix
+                </button>
+                <button
+                  onClick={() => setActiveSubTab('simulator')}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    border: activeSubTab === 'simulator' ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid transparent',
+                    background: activeSubTab === 'simulator' ? 'rgba(245, 158, 11, 0.2)' : 'transparent',
+                    color: activeSubTab === 'simulator' ? '#FBBF24' : '#94A3B8'
+                  }}
+                >
+                  <Target size={14} /> Objection Simulator
+                </button>
+              </div>
+
+              {/* TAB 1: OVERVIEW & DIFFERENTIATORS */}
+              {activeSubTab === 'overview' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  {/* Executive Overview */}
+                  <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #8B5CF6' }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: 800, textTransform: 'uppercase', color: '#A78BFA', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                      Positioning & Market Context
+                    </h3>
+                    {editMode ? (
+                      <textarea
+                        value={editData.overview}
+                        onChange={(e) => setEditData({ ...editData, overview: e.target.value })}
+                        style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '6px', padding: '10px', minHeight: '80px' }}
+                      />
+                    ) : (
+                      <p style={{ color: '#E2E8F0', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                        {cardData.overview}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Strengths vs Weaknesses */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div className="card-glass" style={{ padding: '20px', borderTop: '3px solid #10B981' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34D399', fontWeight: 700, fontSize: '15px', marginBottom: '14px' }}>
+                        <CheckCircle2 size={18} /> Competitor Strengths
+                      </div>
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {cardData.strengths.map((str, idx) => (
+                          <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: '#CBD5E1', lineHeight: '1.4' }}>
+                            <span style={{ color: '#34D399', fontWeight: 800 }}>•</span> {str}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="card-glass" style={{ padding: '20px', borderTop: '3px solid #EF4444' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F87171', fontWeight: 700, fontSize: '15px', marginBottom: '14px' }}>
+                        <XCircle size={18} /> Competitor Vulnerabilities
+                      </div>
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {cardData.weaknesses.map((wk, idx) => (
+                          <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: '#CBD5E1', lineHeight: '1.4' }}>
+                            <span style={{ color: '#F87171', fontWeight: 800 }}>•</span> {wk}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Why We Win Differentiators */}
+                  <div className="card-glass" style={{ padding: '20px', background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38BDF8', fontWeight: 800, fontSize: '16px', marginBottom: '12px' }}>
+                      <Trophy size={20} /> Why We Win (Key Differentiators)
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+                      {cardData.why_we_win.map((win, idx) => (
+                        <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '13px', color: '#F1F5F9', fontWeight: 500, lineHeight: '1.4' }}>
+                          <span style={{ color: '#38BDF8', fontWeight: 700, marginRight: '6px' }}>#{idx + 1}</span> {win}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Pricing Comparison */}
+                  <div className="card-glass" style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34D399', fontWeight: 700, fontSize: '15px', marginBottom: '10px' }}>
+                      <DollarSign size={18} /> Pricing & Value Contrast
+                    </div>
+                    <p style={{ color: '#CBD5E1', fontSize: '13px', lineHeight: '1.6', margin: 0 }}>
+                      {cardData.pricing_comparison}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: BATTLEGUARD DEFENSE MATRIX */}
+              {activeSubTab === 'battleguard' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  
+                  {/* Recommended Win Angle Banner */}
+                  <div className="card-glass" style={{ padding: '16px 20px', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '10px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', color: '#34D399', letterSpacing: '0.08em', marginBottom: '4px' }}>
+                      Recommended Strategic Win Angle
+                    </div>
+                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#ECFDF5', lineHeight: '1.4' }}>
+                      "{bg.recommended_win_angle || 'Emphasize superior speed to value, transparent pricing, and robust platform stability.'}"
+                    </div>
+                  </div>
+
+                  {/* Defensive Counter-Tactics */}
+                  <div className="card-glass" style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38BDF8', fontWeight: 800, fontSize: '16px', marginBottom: '16px' }}>
+                      <ShieldCheck size={20} /> Tactical Defense Counter-Maneuvers
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {(bg.defensive_tactics || []).map((tactic, idx) => (
+                        <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 800, color: '#38BDF8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                              Vector #{idx + 1}: {tactic.vector}
+                            </span>
+                            <button
+                              onClick={() => handleCopyText(tactic.strategy, `tactic_${idx}`)}
+                              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '4px', padding: '3px 8px', color: '#CBD5E1', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            >
+                              {copiedIndex === `tactic_${idx}` ? <Check size={12} color="#34D399" /> : <Copy size={12} />}
+                              {copiedIndex === `tactic_${idx}` ? 'Copied' : 'Copy'}
+                            </button>
+                          </div>
+                          <div style={{ fontSize: '13px', color: '#E2E8F0', lineHeight: '1.5' }}>
+                            {tactic.strategy}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Planted Landmines */}
+                  <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #F59E0B' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FBBF24', fontWeight: 700, fontSize: '15px', marginBottom: '12px' }}>
+                      <AlertTriangle size={18} /> Killer Landmine Questions for Reps
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {cardData.landmines.map((lm, idx) => (
+                        <div key={idx} style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '10px 14px', borderRadius: '6px', fontSize: '13px', color: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                          <span style={{ fontStyle: 'italic' }}>"{lm}"</span>
+                          <button
+                            onClick={() => handleCopyText(lm, `lm_${idx}`)}
+                            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '4px', padding: '3px 8px', color: '#CBD5E1', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}
+                          >
+                            {copiedIndex === `lm_${idx}` ? <Check size={12} color="#34D399" /> : <Copy size={12} />}
+                            {copiedIndex === `lm_${idx}` ? 'Copied' : 'Copy'}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: OBJECTION SIMULATOR */}
+              {activeSubTab === 'simulator' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  
+                  {/* Simulator Interactive Box */}
+                  <div className="card-glass" style={{ padding: '24px', background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, rgba(15, 23, 42, 0.8) 100%)', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FBBF24', fontWeight: 800, fontSize: '16px', marginBottom: '8px' }}>
+                      <Target size={20} /> Interactive Objection Counter-Script Simulator
+                    </div>
+                    <p style={{ color: '#94A3B8', fontSize: '13px', marginBottom: '16px' }}>
+                      Type a prospect objection or claim to test against BattleGuard scripts in real time:
+                    </p>
+
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <input
+                        type="text"
+                        placeholder={`e.g., "${currentCompetitor?.name || 'Competitor'} is 30% cheaper" or "They have more integrations"`}
+                        value={simQuery}
+                        onChange={(e) => handleSimulate(e.target.value)}
+                        style={{ flex: 1, background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '12px 14px', borderRadius: '8px', fontSize: '14px' }}
+                      />
+                    </div>
+
+                    {/* Quick Suggestion Chips */}
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+                      {['cheaper', 'features', 'legacy', 'support'].map((chip, idx) => (
                         <button
-                          onClick={() => handleCopyText(obj.response, idx)}
-                          style={{
-                            position: 'absolute',
-                            right: '0',
-                            top: '-4px',
-                            background: 'rgba(255,255,255,0.08)',
-                            border: '1px solid rgba(255,255,255,0.15)',
-                            borderRadius: '4px',
-                            padding: '4px 8px',
-                            color: '#CBD5E1',
-                            fontSize: '11px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
+                          key={idx}
+                          onClick={() => handleSimulate(chip)}
+                          style={{ padding: '4px 10px', borderRadius: '6px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#CBD5E1', fontSize: '11px', cursor: 'pointer' }}
                         >
-                          {copiedIndex === idx ? <Check size={12} color="#34D399" /> : <Copy size={12} />}
-                          {copiedIndex === idx ? 'Copied' : 'Copy'}
+                          Test "{chip}"
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Simulator Output Result */}
+                  {simMatch ? (
+                    <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #A78BFA' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', color: '#F87171', letterSpacing: '0.05em', marginBottom: '6px' }}>
+                        Matched Prospect Claim: {simMatch.objection}
+                      </div>
+                      <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '16px', position: 'relative' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 700, color: '#A78BFA', marginBottom: '4px' }}>
+                          BattleGuard Recommended Counter-Script:
+                        </div>
+                        <p style={{ color: '#F1F5F9', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                          {simMatch.response}
+                        </p>
+                        <button
+                          onClick={() => handleCopyText(simMatch.response, 'sim_match')}
+                          style={{ position: 'absolute', right: '12px', top: '12px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '4px', padding: '4px 8px', color: '#CBD5E1', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        >
+                          {copiedIndex === 'sim_match' ? <Check size={12} color="#34D399" /> : <Copy size={12} />}
+                          {copiedIndex === 'sim_match' ? 'Copied Script' : 'Copy Response'}
                         </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  ) : simQuery ? (
+                    <div style={{ color: '#94A3B8', fontSize: '13px', fontStyle: 'italic', textAlign: 'center', padding: '20px' }}>
+                      No exact match found for "{simQuery}". Try keywords like "cheaper", "support", "legacy".
+                    </div>
+                  ) : null}
 
-              {/* Pricing Battle Card */}
-              <div className="card-glass" style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34D399', fontWeight: 700, fontSize: '15px', marginBottom: '10px' }}>
-                  <DollarSign size={18} /> Pricing & Tier Breakdown
+                  {/* All Default Objection Scripts List */}
+                  <div className="card-glass" style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#A78BFA', fontWeight: 700, fontSize: '16px', marginBottom: '14px' }}>
+                      <HelpCircle size={20} /> All BattleGuard Objection Scripts ({cardData.objection_handling.length})
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {cardData.objection_handling.map((obj, idx) => (
+                        <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '14px', position: 'relative' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 700, color: '#F87171', marginBottom: '6px' }}>
+                            Prospect: {obj.objection}
+                          </div>
+                          <div style={{ fontSize: '13px', color: '#CBD5E1', lineHeight: '1.5', paddingLeft: '16px', borderLeft: '2px solid #8B5CF6' }}>
+                            <span style={{ fontWeight: 600, color: '#A78BFA' }}>Response: </span>
+                            {obj.response}
+                          </div>
+                          <button
+                            onClick={() => handleCopyText(obj.response, `obj_${idx}`)}
+                            style={{ position: 'absolute', right: '12px', top: '12px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '4px', padding: '4px 8px', color: '#CBD5E1', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            {copiedIndex === `obj_${idx}` ? <Check size={12} color="#34D399" /> : <Copy size={12} />}
+                            {copiedIndex === `obj_${idx}` ? 'Copied' : 'Copy'}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <p style={{ color: '#CBD5E1', fontSize: '13px', lineHeight: '1.6', margin: 0 }}>
-                  {cardData.pricing_comparison}
-                </p>
-              </div>
+              )}
 
             </div>
           )}

@@ -56,7 +56,7 @@ export default function Sidebar({
     },
     { 
       id: 'battlecards', 
-      label: 'Battlecards', 
+      label: 'Battlecards & Guard 🛡️', 
       icon: Swords,
       activeClass: 'active-battlecards',
     },
