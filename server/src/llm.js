@@ -534,7 +534,14 @@ IMPORTANT FOR BATTLEGUARD SCORING ACCURACY:
 
 Respond ONLY with a valid JSON object wrapped inside <json> ... </json> tags matching this exact structure:
 {
-  "overview": "Crisp 2-3 sentence positioning overview of ${compName} based on actual content.",
+  "overview": "A crisp 2-3 sentence overview of ${compName}, their current market positioning, and target audience.",
+  "target_icp": "Target Customer Segment & Ideal Customer Profile (ICP) comparison explaining who prefers ${compName} vs who prefers Our Business.",
+  "switching_triggers": [
+    "Primary customer migration trigger 1 (e.g., sudden pricing increase, legacy UI fatigue, poor support response)",
+    "Migration trigger 2",
+    "Migration trigger 3"
+  ],
+  "elevator_pitch": "A 30-second high-conversion sales script/cold outreach pitch for sales reps to position Our Business against ${compName}.",
   "strengths": ["Specific competitor strength 1 derived from content", "Strength 2", "Strength 3"],
   "weaknesses": ["Specific vulnerability/gap 1 based on signals", "Vulnerability 2", "Vulnerability 3"],
   "why_we_win": ["Key killer differentiator 1 for Our Business", "Differentiator 2", "Differentiator 3"],
@@ -614,6 +621,13 @@ Analyze the data and generate the accurate AI sales battlecard & BattleGuard def
 
         return {
           overview: parsed.overview || `${compName} operates directly in competition with ${businessProfile?.business_name || 'our company'}.`,
+          target_icp: parsed.target_icp || `${compName} targets general market users, whereas ${businessProfile?.business_name || 'our product'} is optimized for ${businessProfile?.customers || 'agile teams seeking rapid ROI'}.`,
+          switching_triggers: Array.isArray(parsed.switching_triggers) && parsed.switching_triggers.length > 0 ? parsed.switching_triggers : [
+            `Frustration with ${compName}'s opaque tier upgrades`,
+            `Need for faster ongoing customer support SLA responses`,
+            `Complex onboarding workflows compared to our streamlined setup`
+          ],
+          elevator_pitch: parsed.elevator_pitch || `"While ${compName} offers a legacy framework, ${businessProfile?.business_name || 'our platform'} delivers 3x faster setup, direct personalized support, and lower TCO tailored specifically for your workflow."`,
           strengths: Array.isArray(parsed.strengths) && parsed.strengths.length > 0 ? parsed.strengths : [`Established brand presence for ${compName}`],
           weaknesses: Array.isArray(parsed.weaknesses) && parsed.weaknesses.length > 0 ? parsed.weaknesses : [`Rigid onboarding compared to our agile solution`],
           why_we_win: Array.isArray(parsed.why_we_win) && parsed.why_we_win.length > 0 ? parsed.why_we_win : [`Better total cost of ownership and direct support`],
@@ -678,6 +692,13 @@ Analyze the data and generate the accurate AI sales battlecard & BattleGuard def
 
   return {
     overview: `${compName} (${compUrl}) is a primary market rival offering solutions targeting similar business segments.`,
+    target_icp: `${compName} focuses heavily on mid-to-large legacy buyers, whereas ${businessProfile?.business_name || 'our company'} is purpose-built for ${businessProfile?.customers || 'high-growth teams requiring fast time-to-value'}.`,
+    switching_triggers: [
+      `Price hikes or mandatory tier shifts at ${compName}`,
+      `Slow feature request turnaround and rigid customer support`,
+      `Complex UI/UX friction for everyday non-technical users`
+    ],
+    elevator_pitch: `"If you're experiencing friction with ${compName}'s setup speed or restrictive pricing tiers, ${businessProfile?.business_name || 'our platform'} provides a modern, high-agility alternative built for instant time-to-value."`,
     strengths: [
       `Established digital footprint at ${compUrl}`,
       'Active marketing presence and product distribution',

@@ -262,18 +262,29 @@ async function getDb() {
       objection_handling TEXT,
       landmines TEXT,
       battleguard TEXT,
+      target_icp TEXT,
+      switching_triggers TEXT,
+      elevator_pitch TEXT,
       last_generated_at TEXT,
       UNIQUE(workspace_id, competitor_id),
       FOREIGN KEY(competitor_id) REFERENCES competitors(id) ON DELETE CASCADE
     );
   `);
 
-  // Try adding enrichment_data column to competitors table dynamically
+  // Try adding dynamic columns to existing tables
   try {
     await dbInstance.exec('ALTER TABLE competitors ADD COLUMN enrichment_data TEXT');
-  } catch (e) {
-    // Column already exists, safe to ignore
-  }
+  } catch (e) {}
+
+  try {
+    await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN target_icp TEXT');
+  } catch (e) {}
+  try {
+    await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN switching_triggers TEXT');
+  } catch (e) {}
+  try {
+    await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN elevator_pitch TEXT');
+  } catch (e) {}
 
   // Try adding battleguard column to battlecards table dynamically
   try {
@@ -740,8 +751,9 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
   await db.run(`
     INSERT INTO battlecards (
       workspace_id, competitor_id, overview, strengths, weaknesses,
-      why_we_win, pricing_comparison, objection_handling, landmines, battleguard, last_generated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      why_we_win, pricing_comparison, objection_handling, landmines,
+      battleguard, target_icp, switching_triggers, elevator_pitch, last_generated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(workspace_id, competitor_id) DO UPDATE SET
       overview = excluded.overview,
       strengths = excluded.strengths,
@@ -751,6 +763,9 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
       objection_handling = excluded.objection_handling,
       landmines = excluded.landmines,
       battleguard = excluded.battleguard,
+      target_icp = excluded.target_icp,
+      switching_triggers = excluded.switching_triggers,
+      elevator_pitch = excluded.elevator_pitch,
       last_generated_at = excluded.last_generated_at
   `, [
     workspaceId,
@@ -763,6 +778,9 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
     typeof data.objection_handling === 'string' ? data.objection_handling : JSON.stringify(data.objection_handling || []),
     typeof data.landmines === 'string' ? data.landmines : JSON.stringify(data.landmines || []),
     battleguardValue,
+    data.target_icp || '',
+    typeof data.switching_triggers === 'string' ? data.switching_triggers : JSON.stringify(data.switching_triggers || []),
+    data.elevator_pitch || '',
     now
   ]);
 

@@ -24,7 +24,9 @@ import {
   Lock,
   ArrowRight,
   Compass,
-  FileText
+  FileText,
+  Users,
+  Megaphone
 } from 'lucide-react';
 
 export default function BattlecardsView({ workspaceId, competitors = [] }) {
@@ -36,6 +38,7 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState(null);
   const [copiedIndex, setCopiedIndex] = useState(null);
+  const [pitchCopied, setPitchCopied] = useState(false);
 
   // BattleGuard active view tab: 'overview' | 'battleguard' | 'simulator'
   const [activeSubTab, setActiveSubTab] = useState('overview');
@@ -166,6 +169,7 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
       why_we_win: parseJsonField(rawCard.why_we_win, []),
       objection_handling: parseJsonField(rawCard.objection_handling, []),
       landmines: parseJsonField(rawCard.landmines, []),
+      switching_triggers: parseJsonField(rawCard.switching_triggers, []),
       battleguard: bgData
     };
   }, [rawCard, currentCompetitor]);
@@ -174,6 +178,9 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
     if (!cardData) return;
     setEditData({
       overview: cardData.overview || '',
+      target_icp: cardData.target_icp || '',
+      switching_triggers: cardData.switching_triggers || [],
+      elevator_pitch: cardData.elevator_pitch || '',
       pricing_comparison: cardData.pricing_comparison || '',
       strengths: cardData.strengths,
       weaknesses: cardData.weaknesses,
@@ -189,6 +196,12 @@ export default function BattlecardsView({ workspaceId, competitors = [] }) {
     navigator.clipboard.writeText(text);
     setCopiedIndex(idxKey);
     setTimeout(() => setCopiedIndex(null), 2000);
+  };
+
+  const handleCopyPitch = (text) => {
+    navigator.clipboard.writeText(text);
+    setPitchCopied(true);
+    setTimeout(() => setPitchCopied(false), 2000);
   };
 
   const handleExportMarkdown = () => {
@@ -217,6 +230,15 @@ ${tacticsStr || '- Maintain core value messaging.'}
 
 ## 📌 Competitive Overview
 ${cardData.overview}
+
+## 🎯 Target Persona & Ideal Customer Profile (ICP)
+${cardData.target_icp || 'N/A'}
+
+## ⚡ Customer Switching Triggers
+${(cardData.switching_triggers || []).map(t => `- ${t}`).join('\n')}
+
+## 🗣️ 30-Second Elevator & Displacement Pitch
+${cardData.elevator_pitch || 'N/A'}
 
 ## 🟩 Competitor Strengths & Advantages
 ${cardData.strengths.map(s => `- ${s}`).join('\n')}
@@ -263,6 +285,29 @@ ${cardData.objection_handling.map(o => `### Prospect Claim: ${o.objection}\n**Wi
     setSimMatch(bestMatch);
   };
 
+  const [seeding, setSeeding] = useState(false);
+
+  const handleSeedDemo = async () => {
+    try {
+      setSeeding(true);
+      await fetch('/api/competitors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-workspace-id': workspaceId },
+        body: JSON.stringify({ name: 'Notion', url: 'https://notion.so' })
+      });
+      await fetch('/api/competitors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-workspace-id': workspaceId },
+        body: JSON.stringify({ name: 'HubSpot', url: 'https://hubspot.com' })
+      });
+      window.location.reload();
+    } catch (e) {
+      console.error('Failed to seed demo competitors:', e);
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   if (competitors.length === 0) {
     return (
       <div className="card-glass" style={{ padding: '48px', textAlign: 'center' }}>
@@ -271,6 +316,26 @@ ${cardData.objection_handling.map(o => `### Prospect Claim: ${o.objection}\n**Wi
         <p style={{ color: '#94A3B8', maxWidth: '480px', margin: '0 auto 24px auto', fontSize: '14px' }}>
           Add your first competitor URL in the Dashboard tab to initialize AI-powered BattleGuard defense playbooks.
         </p>
+        <button
+          onClick={handleSeedDemo}
+          disabled={seeding}
+          style={{
+            background: 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontWeight: 600,
+            fontSize: '13px',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <Sparkles size={16} />
+          {seeding ? 'Adding Demo Competitors...' : 'Add Sample Demo Competitors'}
+        </button>
       </div>
     );
   }
@@ -465,6 +530,193 @@ ${cardData.objection_handling.map(o => `### Prospect Claim: ${o.objection}\n**Wi
                       >
                         <ExternalLink size={12} /> {currentCompetitor?.url}
                       </a>
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>
+                      BattleGuard Protection Active • Synchronized {cardData.last_generated_at ? new Date(cardData.last_generated_at).toLocaleDateString() : 'Today'}
+                    </div>
+                  </div>
+
+                  {/* Defense Score Widget */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#94A3B8', letterSpacing: '0.05em' }}>
+                        Defense Score
+                      </div>
+                      <div style={{ fontSize: '24px', fontWeight: 900, color: scoreColor, lineHeight: 1 }}>
+                        {defenseScore}<span style={{ fontSize: '14px', color: '#64748B' }}>/100</span>
+                      </div>
+                    </div>
+                    <div style={{ padding: '6px 12px', borderRadius: '8px', background: threatLevel === 'HIGH' ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', border: threatLevel === 'HIGH' ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(16,185,129,0.3)', color: threatLevel === 'HIGH' ? '#F87171' : '#34D399', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Threat: {threatLevel}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Score Progress Bar */}
+                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: `${defenseScore}%`, height: '100%', background: scoreColor, transition: 'width 0.4s ease' }} />
+                </div>
+              </div>
+
+              {/* Card Meta & Overview */}
+              <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #8B5CF6' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', margin: 0 }}>
+                      {currentCompetitor?.name || 'Competitor'} Battlecard
+                    </h2>
+                    <a
+                      href={currentCompetitor?.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#38BDF8', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}
+                    >
+                      <ExternalLink size={12} /> Visit Site
+                    </a>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#64748B' }}>
+                    Last Updated: {cardData.last_generated_at ? new Date(cardData.last_generated_at).toLocaleDateString() : 'Just now'}
+                  </div>
+                </div>
+
+                {editMode ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div>
+                      <label style={{ fontSize: '11px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>Overview & Positioning</label>
+                      <textarea
+                        value={editData.overview}
+                        onChange={(e) => setEditData({ ...editData, overview: e.target.value })}
+                        style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '6px', padding: '10px', marginTop: '4px', minHeight: '65px' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px', fontWeight: 700, color: '#38BDF8', textTransform: 'uppercase' }}>Target Persona & ICP Fit</label>
+                      <textarea
+                        value={editData.target_icp}
+                        onChange={(e) => setEditData({ ...editData, target_icp: e.target.value })}
+                        style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '6px', padding: '10px', marginTop: '4px', minHeight: '60px' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px', fontWeight: 700, color: '#F59E0B', textTransform: 'uppercase' }}>30-Second Elevator Pitch</label>
+                      <textarea
+                        value={editData.elevator_pitch}
+                        onChange={(e) => setEditData({ ...editData, elevator_pitch: e.target.value })}
+                        style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '6px', padding: '10px', marginTop: '4px', minHeight: '65px' }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <p style={{ color: '#E2E8F0', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+                    {cardData.overview}
+                  </p>
+                )}
+              </div>
+
+              {/* Target ICP & Elevator Pitch Row */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                
+                {/* Target ICP Fit */}
+                <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #38BDF8' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38BDF8', fontWeight: 700, fontSize: '15px', marginBottom: '10px' }}>
+                    <Users size={18} /> Target Persona & ICP Fit
+                  </div>
+                  <p style={{ color: '#CBD5E1', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
+                    {cardData.target_icp || `${currentCompetitor?.name || 'Competitor'} targets general buyers, whereas our product is optimized for agile teams seeking high ROI.`}
+                  </p>
+                </div>
+
+                {/* 30-Second Elevator Pitch */}
+                <div className="card-glass" style={{ padding: '20px', borderLeft: '4px solid #EC4899', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F472B6', fontWeight: 700, fontSize: '15px' }}>
+                      <Megaphone size={18} /> 30-Second Elevator Pitch
+                    </div>
+                    {cardData.elevator_pitch && (
+                      <button
+                        onClick={() => handleCopyPitch(cardData.elevator_pitch)}
+                        style={{
+                          background: 'rgba(255,255,255,0.08)',
+                          border: '1px solid rgba(255,255,255,0.15)',
+                          borderRadius: '4px',
+                          padding: '4px 8px',
+                          color: '#CBD5E1',
+                          fontSize: '11px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                      >
+                        {pitchCopied ? <Check size={12} color="#34D399" /> : <Copy size={12} />}
+                        {pitchCopied ? 'Copied Pitch' : 'Copy Pitch'}
+                      </button>
+                    )}
+                  </div>
+                  <p style={{ color: '#F1F5F9', fontSize: '13px', lineHeight: '1.5', margin: 0, fontStyle: 'italic', background: 'rgba(236, 72, 153, 0.08)', padding: '10px', borderRadius: '6px', border: '1px dashed rgba(236, 72, 153, 0.3)' }}>
+                    {cardData.elevator_pitch ? `"${cardData.elevator_pitch}"` : 'No pitch generated yet.'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Customer Switching Triggers */}
+              {cardData.switching_triggers && cardData.switching_triggers.length > 0 && (
+                <div className="card-glass" style={{ padding: '16px 20px', borderLeft: '4px solid #F59E0B', background: 'rgba(245, 158, 11, 0.05)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FBBF24', fontWeight: 700, fontSize: '14px', marginBottom: '10px' }}>
+                    <Zap size={16} /> Customer Migration & Switching Triggers
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {cardData.switching_triggers.map((trigger, idx) => (
+                      <div key={idx} style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(245, 158, 11, 0.25)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', color: '#FEF3C7', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ color: '#F59E0B', fontWeight: 800 }}>⚡</span> {trigger}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Strengths vs Weaknesses Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                
+                {/* Strengths */}
+                <div className="card-glass" style={{ padding: '20px', borderTop: '3px solid #10B981' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34D399', fontWeight: 700, fontSize: '15px', marginBottom: '14px' }}>
+                    <CheckCircle2 size={18} /> Competitor Strengths
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {cardData.strengths.map((str, idx) => (
+                      <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: '#CBD5E1', lineHeight: '1.4' }}>
+                        <span style={{ color: '#34D399', fontWeight: 800 }}>•</span> {str}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Weaknesses */}
+                <div className="card-glass" style={{ padding: '20px', borderTop: '3px solid #EF4444' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F87171', fontWeight: 700, fontSize: '15px', marginBottom: '14px' }}>
+                    <XCircle size={18} /> Competitor Vulnerabilities
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {cardData.weaknesses.map((wk, idx) => (
+                      <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '13px', color: '#CBD5E1', lineHeight: '1.4' }}>
+                        <span style={{ color: '#F87171', fontWeight: 800 }}>•</span> {wk}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Why We Win Highlights */}
+              <div className="card-glass" style={{ padding: '20px', background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38BDF8', fontWeight: 800, fontSize: '16px', marginBottom: '12px' }}>
+                  <Trophy size={20} /> Why We Win (Key Differentiators)
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+                  {cardData.why_we_win.map((win, idx) => (
+                    <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '13px', color: '#F1F5F9', fontWeight: 500, lineHeight: '1.4' }}>
+                      <span style={{ color: '#38BDF8', fontWeight: 700, marginRight: '6px' }}>#{idx + 1}</span> {win}
+>>>>>>> origin/main
                     </div>
                     <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>
                       BattleGuard Protection Active • Synchronized {cardData.last_generated_at ? new Date(cardData.last_generated_at).toLocaleDateString() : 'Today'}
