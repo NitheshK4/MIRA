@@ -574,19 +574,23 @@ async function removeFromCrmQueue(cardId) {
 }
 
 // Settings operations
-async function getSetting(workspaceId = 'global', key) {
+async function getSetting(workspaceId = 'default', key) {
   let finalWorkspaceId = workspaceId;
   let finalKey = key;
   if (key === undefined) {
     finalKey = workspaceId;
-    finalWorkspaceId = 'global';
+    finalWorkspaceId = 'default';
   }
 
-  const isGlobalKey = finalKey !== 'api_key';
-  const queryWorkspaceId = isGlobalKey ? 'global' : finalWorkspaceId;
-
   const db = await getDb();
-  let row = await db.get('SELECT value FROM settings WHERE workspace_id = ? AND key = ?', [queryWorkspaceId, finalKey]);
+  let row = await db.get('SELECT value FROM settings WHERE workspace_id = ? AND key = ?', [finalWorkspaceId, finalKey]);
+
+  if (!row && finalWorkspaceId !== 'default') {
+    row = await db.get('SELECT value FROM settings WHERE workspace_id = "default" AND key = ?', [finalKey]);
+  }
+  if (!row && finalWorkspaceId !== 'global') {
+    row = await db.get('SELECT value FROM settings WHERE workspace_id = "global" AND key = ?', [finalKey]);
+  }
 
   if (!row) {
     // Dynamically seed default values for the global or workspace-specific configurations
@@ -617,7 +621,7 @@ async function getSetting(workspaceId = 'global', key) {
     if (finalKey in defaults) {
       await db.run(
         'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES (?, ?, ?)',
-        [queryWorkspaceId, finalKey, defaults[finalKey]]
+        [finalWorkspaceId, finalKey, defaults[finalKey]]
       );
       row = { value: defaults[finalKey] };
     }
@@ -689,24 +693,35 @@ async function getSetting(workspaceId = 'global', key) {
   return val;
 }
 
-async function setSetting(workspaceId = 'global', key, value) {
+async function setSetting(workspaceId = 'default', key, value) {
   let finalWorkspaceId = workspaceId;
   let finalKey = key;
   let finalValue = value;
   if (value === undefined) {
     finalValue = key;
     finalKey = workspaceId;
-    finalWorkspaceId = 'global';
+    finalWorkspaceId = 'default';
   }
 
-  const isGlobalKey = finalKey !== 'api_key';
-  const saveWorkspaceId = isGlobalKey ? 'global' : finalWorkspaceId;
-
   const db = await getDb();
+  // Save under requested workspace_id
   await db.run(
     'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES (?, ?, ?)',
-    [saveWorkspaceId, finalKey, finalValue]
+    [finalWorkspaceId, finalKey, finalValue]
   );
+  // Synchronize to default and global workspaces for background workers
+  if (finalWorkspaceId !== 'default') {
+    await db.run(
+      'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES ("default", ?, ?)',
+      [finalKey, finalValue]
+    );
+  }
+  if (finalWorkspaceId !== 'global') {
+    await db.run(
+      'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES ("global", ?, ?)',
+      [finalKey, finalValue]
+    );
+  }
   return finalValue;
 }
 

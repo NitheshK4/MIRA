@@ -64,37 +64,37 @@ async function syncToNotion(card, config, screenshotUrl) {
   const dbInfo = await notion.databases.retrieve({ database_id: config.notion_db_id });
   const actualProperties = dbInfo.properties || {};
 
-  const getPropName = (targetName) => {
+  const findPropKey = (targetName) => {
     const norm = targetName.toLowerCase().trim();
     for (const key of Object.keys(actualProperties)) {
       if (key.toLowerCase().trim() === norm) {
         return key;
       }
     }
-    return targetName; // fallback
+    return null;
   };
 
-  // Idempotency check: Search database for an existing entry with the same card title or URL
+  // Find actual Title property name
+  let titlePropKey = findPropKey('Title') || findPropKey('Name');
+  if (!titlePropKey) {
+    for (const [key, meta] of Object.entries(actualProperties)) {
+      if (meta.type === 'title') {
+        titlePropKey = key;
+        break;
+      }
+    }
+  }
+  if (!titlePropKey) titlePropKey = 'Title';
+
+  // Idempotency check: Search database for an existing entry with the same card title
   try {
-    const urlProp = getPropName('URL');
-    const titleProp = getPropName('Title');
     const existing = await notion.databases.query({
       database_id: config.notion_db_id,
       filter: {
-        and: [
-          {
-            property: urlProp,
-            url: {
-              equals: card.competitor_url
-            }
-          },
-          {
-            property: titleProp,
-            title: {
-              equals: cardTitle
-            }
-          }
-        ]
+        property: titlePropKey,
+        title: {
+          equals: cardTitle
+        }
       }
     });
     if (existing.results && existing.results.length > 0) {
@@ -105,65 +105,42 @@ async function syncToNotion(card, config, screenshotUrl) {
     console.warn('Notion duplicate query failed, proceeding with create:', err.message);
   }
 
-  const properties = {
-    [getPropName('Title')]: {
-      title: [
-        {
-          text: {
-            content: cardTitle
-          }
-        }
-      ]
-    },
-    [getPropName('Competitor Name')]: {
-      select: {
-        name: card.competitor_name.replace(/,/g, '') // Notion selects don't allow commas
-      }
-    },
-    [getPropName('URL')]: {
-      url: card.competitor_url
-    },
-    [getPropName('Category')]: {
-      select: {
-        name: card.category
-      }
-    },
-    [getPropName('Impact Score')]: {
-      number: card.impact_score
-    },
-    [getPropName('Recommended Action')]: {
-      rich_text: [
-        {
-          text: {
-            content: card.recommendation || ''
-          }
-        }
-      ]
-    },
-    [getPropName('Summary')]: {
-      rich_text: [
-        {
-          text: {
-            content: (card.summary || '').substring(0, 2000) // Notion text block limit is 2000 chars
-          }
-        }
-      ]
-    },
-    [getPropName('Justification')]: {
-      rich_text: [
-        {
-          text: {
-            content: (card.justification || '').substring(0, 2000)
-          }
-        }
-      ]
+  const properties = {};
+
+  // 1. Title
+  properties[titlePropKey] = {
+    title: [{ text: { content: cardTitle } }]
+  };
+
+  // Helper to add typed property
+  const addProp = (targetName, value, defaultType = 'rich_text') => {
+    const key = findPropKey(targetName);
+    if (!key) return; // Skip if property does not exist in target Notion DB
+
+    const propType = actualProperties[key]?.type || defaultType;
+    if (propType === 'select') {
+      properties[key] = { select: { name: String(value).replace(/,/g, '') } };
+    } else if (propType === 'number') {
+      properties[key] = { number: Number(value) || 0 };
+    } else if (propType === 'url') {
+      properties[key] = { url: String(value) };
+    } else {
+      properties[key] = {
+        rich_text: [{ text: { content: String(value || '').substring(0, 2000) } }]
+      };
     }
   };
 
-  if (screenshotUrl) {
-    properties[getPropName('Screenshot URL')] = {
-      url: screenshotUrl
-    };
+  addProp('Competitor Name', card.competitor_name, 'select');
+  addProp('URL', card.competitor_url, 'url');
+  addProp('Category', card.category, 'select');
+  addProp('Impact Score', card.impact_score, 'number');
+  addProp('Recommended Action', card.recommendation, 'rich_text');
+  addProp('Summary', card.summary, 'rich_text');
+  addProp('Justification', card.justification, 'rich_text');
+
+  if (screenshotUrl && findPropKey('Screenshot URL')) {
+    addProp('Screenshot URL', screenshotUrl, 'url');
   }
 
   await notion.pages.create({

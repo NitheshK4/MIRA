@@ -201,13 +201,19 @@ async function sendDigestEmail(workspaceId = 'default', period = 'daily', overri
         host: emailConfig.smtp_host,
         port: parseInt(emailConfig.smtp_port || '587', 10),
         secure: parseInt(emailConfig.smtp_port || '587', 10) === 465,
-        auth: {
+        auth: (emailConfig.smtp_user || emailConfig.smtp_pass) ? {
           user: emailConfig.smtp_user,
           pass: emailConfig.smtp_pass
+        } : undefined,
+        tls: {
+          rejectUnauthorized: false
         }
       });
+      const senderAddress = (emailConfig.smtp_user && emailConfig.smtp_user.includes('@')) 
+        ? emailConfig.smtp_user 
+        : (emailConfig.recipient_email || 'noreply@mira.ai');
       await transporter.sendMail({
-        from: `"Competitor Intel Bot" <${emailConfig.smtp_user}>`,
+        from: `"Competitor Intel Bot" <${senderAddress}>`,
         to: emailConfig.recipient_email,
         subject: emailSubject,
         html: htmlContent

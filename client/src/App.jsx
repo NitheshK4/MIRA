@@ -56,16 +56,22 @@ import WarRoomView from './components/WarRoomView.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
-// Extract or generate Workspace ID per tab session
+// Extract or persist Workspace ID across browser sessions
 const getWorkspaceId = () => {
   const params = new URLSearchParams(window.location.search);
   let w = params.get('w');
-  if (!w) {
-    w = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
-    params.set('w', w);
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.pushState({ path: newUrl }, '', newUrl);
+  if (w) {
+    try { localStorage.setItem('mira_workspace_id', w); } catch (e) {}
+    return w;
   }
+  
+  try {
+    const saved = localStorage.getItem('mira_workspace_id');
+    if (saved) return saved;
+  } catch (e) {}
+
+  w = 'default';
+  try { localStorage.setItem('mira_workspace_id', w); } catch (e) {}
   return w;
 };
 

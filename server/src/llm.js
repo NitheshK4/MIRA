@@ -439,7 +439,8 @@ ${userPrompt}<|im_end|>
       } catch (e) {}
 
       if (code !== 0) {
-        return reject(new Error(`LLM inference failed with code ${code}. Stderr: ${stderr}`));
+        console.warn(`LLM inference process exited with code ${code}. Falling back to heuristic rule-based analysis.`);
+        return resolve(generateFallbackAnalysis(diffText));
       }
 
       // Parse structured tags
