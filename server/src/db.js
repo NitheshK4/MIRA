@@ -441,6 +441,14 @@ async function getScrapeHistory(competitorId) {
   );
 }
 
+async function getScrapes(competitorId, limit = 5) {
+  const db = await getDb();
+  return await db.all(
+    'SELECT * FROM scrapes WHERE competitor_id = ? ORDER BY id DESC LIMIT ?',
+    [competitorId, limit]
+  );
+}
+
 // Intelligence Card operations
 async function saveIntelligenceCard(card) {
   const db = await getDb();
@@ -815,6 +823,7 @@ module.exports = {
   saveScrape,
   getLatestScrape,
   getScrapeHistory,
+  getScrapes,
   saveIntelligenceCard,
   getIntelligenceCards,
   getIntelligenceCardById,
