@@ -18,7 +18,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js_20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Gemini](https://img.shields.io/badge/Gemini_2.5-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Gemini](https://img.shields.io/badge/Gemini_3.6_Flash-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
 [![HuggingFace](https://img.shields.io/badge/🤗_ONNX-FFD21E?style=for-the-badge)](https://huggingface.co)
 [![Chrome MV3](https://img.shields.io/badge/Chrome_MV3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com)
 
@@ -31,7 +31,8 @@
 <br/>
 
 ![RAM](https://img.shields.io/badge/RAM-≤_512MB-blueviolet?style=flat-square)
-![Inference](https://img.shields.io/badge/Inference-CPU_Only-orange?style=flat-square)
+![Inference](https://img.shields.io/badge/Inference-Gemini_3.6-orange?style=flat-square)
+![BattleGuard](https://img.shields.io/badge/BattleGuard-Active-brightgreen?style=flat-square)
 ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 [![Stars](https://img.shields.io/github/stars/NitheshK4/Autonomous-Competitor-Intelligence-Engine?style=flat-square&color=FFD21E)](https://github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/stargazers)
@@ -48,7 +49,7 @@
 <summary>Click to expand</summary>
 
 - [Overview](#-overview)
-- [What's New — v2.0](#-whats-new--v20)
+- [What's New — v2.5](#-whats-new--v25)
 - [Live Demo](#-live-demo)
 - [System Architecture](#️-system-architecture)
 - [ML Pipeline](#-ml-pipeline)
@@ -56,7 +57,7 @@
 - [Core Features](#-core-features)
 - [AI Strategy Co-Pilot (MIRA Oracle)](#-ai-strategy-co-pilot--mira-oracle)
 - [Competitive War Room Simulator](#️-competitive-war-room-simulator)
-- [Auto-Generated Battlecards](#-auto-generated-battlecards)
+- [Auto-Generated Battlecards & BattleGuard](#-auto-generated-battlecards--battleguard)
 - [Model Configurations](#-model-configurations)
 - [Quick Start](#-quick-start)
 - [Environment Variables](#-environment-variables)
@@ -75,16 +76,16 @@
 
 ## 🌟 Overview
 
-> **MIRA** (**M**arket **I**ntelligence & **R**esearch **A**utomation) is an autonomous, self-healing competitor monitoring engine with an **AI-powered strategy co-pilot** and **competitive war room simulator**. It scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **ONNX sentence embeddings**, analyzes business impact with **Gemini 2.5 Flash** (with a local **Qwen GGUF** fallback), generates **auto-battlecards**, and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
+> **MIRA** (**M**arket **I**ntelligence & **R**esearch **A**utomation) is an autonomous, self-healing competitor monitoring engine with an **AI-powered strategy co-pilot**, **competitive war room simulator**, and **BattleGuard sales defense matrix**. It scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **ONNX sentence embeddings**, predicts business impact with **Gemini 3.6 Flash** (with multi-model selector & local **Qwen GGUF** fallback), generates **auto-battlecards & BattleGuard defense playbooks**, and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
 
 <br/>
 
 <div align="center">
 
-| 🔬 Scrape | 🧠 Detect | 📊 Analyze & Score | ⚔️ Simulate | 🚨 Alert |
-|:---:|:---:|:---:|:---:|:---:|
-| Axios + Puppeteer | ONNX Embeddings | Gemini 2.5 Flash / Qwen | War Room + Oracle | Slack + Email + CRM |
-| Static & JS pages | Cosine similarity | Impact 1–10 + Battlecards | Game-theory simulation | Real-time webhooks |
+| 🔬 Scrape | 🧠 Detect | 📊 Analyze & Score | 🛡️ Defend | ⚔️ Simulate | 🚨 Alert |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| Axios + Puppeteer | ONNX Embeddings | Gemini 3.6 Flash / Qwen | BattleGuard Defense | War Room + Oracle | Slack + Email + CRM |
+| Static & JS pages | Cosine similarity | Impact 1–10 + Battlecards | 0–100 Score & Badges | Game-theory simulation | Real-time webhooks |
 
 </div>
 
@@ -153,32 +154,33 @@ LLM-generated competitive battlecards with strengths, weaknesses, killer questio
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## 🆕 What's New — v2.0
+## 🆕 What's New — v2.5
 
 <div align="center">
 
 ```
   ┌──────────────────────────────────────────────────────────────────┐
-  │                    🚀  MIRA v2.0 HIGHLIGHTS                      │
+  │                    🚀  MIRA v2.5 HIGHLIGHTS                      │
   ├──────────────────────────────────────────────────────────────────┤
+  │                                                                  │
+  │  🔮  GEMINI 3.6 FLASH PREDICTION ENGINE                          │
+  │      • Powered by Google DeepMind's newest Gemini 3.6 Flash       │
+  │      • Multi-Model Selector (3.6 Flash, 3.0, 2.5, 2.0, Local GGUF)  │
+  │                                                                  │
+  │  🛡️  BATTLEGUARD SALES DEFENSE CENTER                            │
+  │      • Quantitative 0-100 Defense Score Index & gauge            │
+  │      • Real-time threat level badges (CRITICAL, HIGH, MODERATE)  │
+  │      • Competitor threat vectors & defensive counter-tactics     │
+  │      • Interactive Objection Simulator for live sales calls      │
+  │      • Downloadable Markdown BattleGuard cheat sheets (.md)      │
   │                                                                  │
   │  🔮  AI STRATEGY CO-PILOT (MIRA Oracle)                          │
   │      • Conversational AI with full workspace context             │
   │      • Instant pitch drafts, pricing analysis, SWOT audits       │
-  │      • Quick-prompt chips for common strategic queries            │
   │                                                                  │
   │  ⚔️  COMPETITIVE WAR ROOM SIMULATOR                              │
   │      • "What-If" scenario engine with game-theory modeling       │
-  │      • Dynamic risk scoring (1-10) with threat levels            │
   │      • Per-competitor predicted reactions & timelines             │
-  │      • Step-by-step counter-offensive playbook generation        │
-  │      • Pre-built scenario templates for rapid simulation         │
-  │                                                                  │
-  │  🃏  AUTO-GENERATED BATTLECARDS                                  │
-  │      • LLM-powered competitive comparison cards                  │
-  │      • Strengths / Weaknesses / Killer Questions / Landmines     │
-  │      • One-click refresh from latest intelligence data           │
-  │      • CRM sync status tracking (Notion / Airtable)              │
   │                                                                  │
   └──────────────────────────────────────────────────────────────────┘
 ```
@@ -285,8 +287,8 @@ const newEmbed = await embedder("Current Price: $100",
 
 ### 📊 Stage 2 — LLM Analysis & Scoring
 
-**Cloud:** Gemini 2.5 Flash API
-**Local:** Qwen2.5-0.5B GGUF via llama-cli (CPU)
+**Cloud:** Gemini 3.6 Flash API (Default, customizable via Settings)  
+**Local:** Qwen2.5-0.5B GGUF via llama-cli (CPU)  
 
 Detected changes are analyzed in a **single inference pass**. The LLM returns structured output:
 
@@ -298,7 +300,7 @@ Detected changes are analyzed in a **single inference pass**. The LLM returns st
 | 📊 **Impact Score** | 1–10 threat/opportunity rating |
 | 📋 **Justification** | Evidence-based reasoning |
 | 🎯 **Recommendation** | Action item with timeline |
-| 🃏 **Battlecard** | Auto-generated competitive card |
+| 🛡️ **BattleGuard** | Auto-generated defense metrics & score |
 
 </td>
 </tr>
@@ -308,8 +310,8 @@ Detected changes are analyzed in a **single inference pass**. The LLM returns st
 
 ```
 ┌─────────────────────┐     ┌──────────────────────────┐     ┌─────────────────────────┐
-│  Gemini 2.5 Flash   │────▶│  Qwen2.5-0.5B GGUF       │────▶│  Rule-Based Heuristics  │
-│  (Cloud, <1.5s)     │     │  (Local, CPU, 7-15s)      │     │  (Keyword match, <1ms)  │
+│  Gemini 3.6 Flash   │────▶│  Qwen2.5-0.5B GGUF       │────▶│  Rule-Based Heuristics  │
+│  (Cloud, <1.2s)     │     │  (Local, CPU, 4-8s)       │     │  (Keyword match, <1ms)  │
 └─────────────────────┘     └──────────────────────────┘     └─────────────────────────┘
 ```
 
@@ -633,11 +635,12 @@ Each battlecard includes:
 | Component | Model | Runtime | Disk | RAM | Latency |
 |:---|:---|:---|:---:|:---:|:---:|
 | 🔍 **Embeddings** | `Xenova/all-MiniLM-L6-v2` | ONNX (JavaScript) | ~90 MB | ~80 MB | < 0.5s |
-| 🧠 **LLM (Cloud)** | `gemini-3.6-flash` | Google API | — | — | < 1.5s |
-| 🧠 **LLM (Local)** | `Qwen2.5-0.5B-Instruct` | llama-cli (GGUF Q4_K_M) | ~382 MB | ~350 MB | 7–15s |
+| 🔮 **LLM (Default)** | `gemini-3.6-flash` | Google API (v1beta) | — | — | < 1.2s |
+| ⚡ **LLM (Options)** | `gemini-3.6-pro`, `gemini-3.0`, `2.0` | Google API (customizable) | — | — | < 1.5s |
+| 💻 **LLM (Local)** | `Qwen2.5-0.5B-Instruct` | llama-cli (GGUF Q4_K_M) | ~382 MB | ~350 MB | 4–8s |
 | 🔧 **Fallback** | Rule-based heuristic | Node.js keyword matching | — | — | < 1ms |
-| 🔮 **Oracle** | `gemini-3.6-flash` | Google API (contextual) | — | — | < 2s |
-| ⚔️ **War Room** | `gemini-3.6-flash` | Google API (game-theory) | — | — | < 3s |
+| 🔮 **Oracle** | `gemini-3.6-flash` | Google API (contextual) | — | — | < 1.5s |
+| ⚔️ **War Room** | `gemini-3.6-flash` | Google API (game-theory) | — | — | < 2s |
 
 </div>
 

@@ -29,7 +29,7 @@ import {
   Megaphone
 } from 'lucide-react';
 
-export default function BattlecardsView({ workspaceId, competitors = [] }) {
+export default function BattlecardsView({ workspaceId, competitors = [], onOpenPdfModal }) {
   const [selectedCompetitorId, setSelectedCompetitorId] = useState(competitors[0]?.id || null);
   const [battlecards, setBattlecards] = useState({});
   const [loadingCard, setLoadingCard] = useState(false);
@@ -418,6 +418,13 @@ ${cardData.objection_handling.map(o => `### Prospect Claim: ${o.objection}\n**Wi
                     style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                   >
                     <Download size={15} /> Export Cheat Sheet
+                  </button>
+                  <button
+                    onClick={onOpenPdfModal}
+                    className="btn-secondary"
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(139, 92, 246, 0.15)', borderColor: 'rgba(139, 92, 246, 0.3)', color: '#D8B4FE' }}
+                  >
+                    <FileText size={15} /> Export PDF Report
                   </button>
                 </>
               )}

@@ -9,7 +9,8 @@ import {
   Globe, 
   X, 
   ArrowRight,
-  Sparkles
+  Sparkles,
+  FileText
 } from 'lucide-react';
 
 export default function CommandPalette({ 
@@ -19,7 +20,8 @@ export default function CommandPalette({
   onNavigateTab, 
   onAddClick, 
   onViewDetails,
-  onRefresh
+  onRefresh,
+  onOpenPdfModal
 }) {
   const [query, setQuery] = useState('');
 
@@ -93,6 +95,13 @@ export default function CommandPalette({
       subtitle: 'Manage Chrome Extension API Key, SMTP, and CRM integration',
       icon: Settings,
       action: () => { onClose(); onNavigateTab('settings'); }
+    },
+    {
+      id: 'action-export-pdf',
+      title: 'Export Executive Intelligence PDF Report 📊',
+      subtitle: 'Generate print-ready PDF briefing with BattleGuard, SWOT, and War Room metrics',
+      icon: FileText,
+      action: () => { onClose(); onOpenPdfModal(); }
     },
     {
       id: 'action-refresh',

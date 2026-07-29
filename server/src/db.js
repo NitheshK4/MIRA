@@ -302,7 +302,16 @@ async function getDb() {
 // Profile operations
 async function getProfile(workspaceId = 'default') {
   const db = await getDb();
-  return await db.get('SELECT * FROM profile WHERE workspace_id = ?', [workspaceId]);
+  let p = await db.get('SELECT * FROM profile WHERE workspace_id = ?', [workspaceId]);
+  if (!p && workspaceId === 'default') {
+    p = await saveProfile('default', {
+      business_name: 'WorkflowSync',
+      product_desc: 'AI-powered workflow automation & competitor intelligence engine',
+      customers: 'B2B SaaS companies, marketing agencies, sales teams',
+      price_point: '$80/mo'
+    });
+  }
+  return p;
 }
 
 async function saveProfile(workspaceId = 'default', profileData) {
@@ -429,6 +438,14 @@ async function getScrapeHistory(competitorId) {
   return await db.all(
     'SELECT * FROM scrapes WHERE competitor_id = ? ORDER BY id DESC',
     [competitorId]
+  );
+}
+
+async function getScrapes(competitorId, limit = 5) {
+  const db = await getDb();
+  return await db.all(
+    'SELECT * FROM scrapes WHERE competitor_id = ? ORDER BY id DESC LIMIT ?',
+    [competitorId, limit]
   );
 }
 
@@ -806,6 +823,7 @@ module.exports = {
   saveScrape,
   getLatestScrape,
   getScrapeHistory,
+  getScrapes,
   saveIntelligenceCard,
   getIntelligenceCards,
   getIntelligenceCardById,

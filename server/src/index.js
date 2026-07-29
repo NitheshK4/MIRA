@@ -631,6 +631,37 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
   }
 });
 
+// Executive Intelligence Report Data Endpoint
+app.get('/api/reports/executive', checkWorkspace, async (req, res) => {
+  try {
+    const profile = await db.getProfile(req.workspaceId);
+    const competitors = await db.getCompetitors(req.workspaceId);
+    const battlecards = await db.getBattlecards(req.workspaceId);
+    const intelCards = await db.getIntelligenceCards(req.workspaceId);
+    const gemini_model = await db.getSetting(req.workspaceId, 'gemini_model') || 'gemini-3.6-flash';
+
+    res.json({
+      workspaceId: req.workspaceId,
+      generatedAt: new Date().toISOString(),
+      activeModel: gemini_model,
+      profile: profile || {},
+      totalCompetitors: competitors.length,
+      competitors: competitors || [],
+      battlecards: battlecards || [],
+      recentIntel: intelCards.slice(0, 15),
+      summaryMetrics: {
+        totalIntelCards: intelCards.length,
+        highImpactCards: intelCards.filter(c => c.impact_score >= 7).length,
+        averageImpactScore: intelCards.length > 0 
+          ? (intelCards.reduce((acc, c) => acc + (c.impact_score || 0), 0) / intelCards.length).toFixed(1)
+          : 0
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/settings', checkWorkspace, async (req, res) => {
   try {
     const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url, outbound_webhook_url, gemini_model } = req.body;

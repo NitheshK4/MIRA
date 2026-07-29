@@ -55,6 +55,7 @@ import BattlecardsView from './components/BattlecardsView.jsx';
 import WarRoomView from './components/WarRoomView.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import SalesHudView from './components/SalesHudView.jsx';
+import ExecutivePdfModal from './components/ExecutivePdfModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
 // Extract or generate Workspace ID per tab session
@@ -62,10 +63,7 @@ const getWorkspaceId = () => {
   const params = new URLSearchParams(window.location.search);
   let w = params.get('w');
   if (!w) {
-    w = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
-    params.set('w', w);
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.pushState({ path: newUrl }, '', newUrl);
+    w = 'default';
   }
   return w;
 };
@@ -100,6 +98,7 @@ export default function App() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isOracleOpen, setIsOracleOpen] = useState(false);
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDiffText, setActiveDiffText] = useState(null);
   const [activeScreenshotUrl, setActiveScreenshotUrl] = useState(null);
@@ -423,34 +422,31 @@ export default function App() {
   return (
     <div className="app-shell">
       {/* Sidebar Navigation */}
-      {onboarded && (
-        <Sidebar 
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          workspaceId={workspaceId}
-          profile={profile}
-          isOpen={isMobileMenuOpen}
-          onClose={() => setIsMobileMenuOpen(false)}
-          unreadCount={unreadCount}
-          onOpenOracle={() => setIsOracleOpen(true)}
-        />
-      )}
+      <Sidebar 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        workspaceId={workspaceId}
+        profile={profile}
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        unreadCount={unreadCount}
+        onOpenOracle={() => setIsOracleOpen(true)}
+      />
 
       {/* Main Content Area */}
       <div className="app-main-content">
-        {onboarded && (
-          <TopBar 
-            onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
-            onAddClick={() => setIsAddModalOpen(true)}
-            onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            unreadCount={unreadCount}
-            onRefresh={() => {
-              refreshCompetitors();
-              refreshFeed();
-            }}
-            activeTab={activeTab}
-          />
-        )}
+        <TopBar 
+          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+          onAddClick={() => setIsAddModalOpen(true)}
+          onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          unreadCount={unreadCount}
+          onRefresh={() => {
+            refreshCompetitors();
+            refreshFeed();
+          }}
+          activeTab={activeTab}
+          onOpenPdfModal={() => setIsPdfModalOpen(true)}
+        />
 
         <main className="app-container">
           {loading && activeTab !== 'onboarding' ? (
@@ -530,6 +526,7 @@ export default function App() {
                 <BattlecardsView 
                   workspaceId={workspaceId}
                   competitors={competitors}
+                  onOpenPdfModal={() => setIsPdfModalOpen(true)}
                 />
               )}
 
@@ -537,6 +534,7 @@ export default function App() {
                 <WarRoomView 
                   competitors={competitors}
                   profile={profile}
+                  onOpenPdfModal={() => setIsPdfModalOpen(true)}
                 />
               )}
               
@@ -585,6 +583,17 @@ export default function App() {
           refreshCompetitors();
           refreshFeed();
         }}
+        onOpenPdfModal={() => setIsPdfModalOpen(true)}
+      />
+
+      {/* Executive Intelligence PDF Exporter Modal */}
+      <ExecutivePdfModal 
+        isOpen={isPdfModalOpen}
+        onClose={() => setIsPdfModalOpen(false)}
+        profile={profile}
+        competitors={competitors}
+        intelCards={feedCards}
+        settings={settings}
       />
 
       {/* Diff Text Modal */}
