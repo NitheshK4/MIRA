@@ -723,32 +723,8 @@ ${cardData.objection_handling.map(o => `### Prospect Claim: ${o.objection}\n**Wi
                   {cardData.why_we_win.map((win, idx) => (
                     <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '13px', color: '#F1F5F9', fontWeight: 500, lineHeight: '1.4' }}>
                       <span style={{ color: '#38BDF8', fontWeight: 700, marginRight: '6px' }}>#{idx + 1}</span> {win}
->>>>>>> origin/main
                     </div>
-                    <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>
-                      BattleGuard Protection Active • Synchronized {cardData.last_generated_at ? new Date(cardData.last_generated_at).toLocaleDateString() : 'Today'}
-                    </div>
-                  </div>
-
-                  {/* Defense Score Widget */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#94A3B8', letterSpacing: '0.05em' }}>
-                        Defense Score
-                      </div>
-                      <div style={{ fontSize: '24px', fontWeight: 900, color: scoreColor, lineHeight: 1 }}>
-                        {defenseScore}<span style={{ fontSize: '14px', color: '#64748B' }}>/100</span>
-                      </div>
-                    </div>
-                    <div style={{ padding: '6px 12px', borderRadius: '8px', background: threatLevel === 'HIGH' ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)', border: threatLevel === 'HIGH' ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(16,185,129,0.3)', color: threatLevel === 'HIGH' ? '#F87171' : '#34D399', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Threat: {threatLevel}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Score Progress Bar */}
-                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ width: `${defenseScore}%`, height: '100%', background: scoreColor, transition: 'width 0.4s ease' }} />
+                  ))}
                 </div>
               </div>
 
