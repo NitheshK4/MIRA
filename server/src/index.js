@@ -478,8 +478,9 @@ app.post('/api/battlecards/:competitorId/generate', checkWorkspace, async (req, 
     const intelCards = await db.getIntelligenceCards(req.workspaceId, competitorId);
     const profile = await db.getProfile(req.workspaceId);
     const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+    const geminiModelSetting = await db.getSetting(req.workspaceId, 'gemini_model') || 'gemini-3.6-flash';
 
-    const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting);
+    const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting, geminiModelSetting);
     const savedCard = await db.saveBattlecard(req.workspaceId, competitorId, generatedData);
 
     res.json(savedCard);
@@ -498,12 +499,13 @@ app.post('/api/battlecards/generate-all', checkWorkspace, async (req, res) => {
 
     const profile = await db.getProfile(req.workspaceId);
     const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+    const geminiModelSetting = await db.getSetting(req.workspaceId, 'gemini_model') || 'gemini-3.6-flash';
 
     const generatedCards = [];
     for (const competitor of competitors) {
       const recentScrapes = await db.getScrapeHistory(competitor.id);
       const intelCards = await db.getIntelligenceCards(req.workspaceId, competitor.id);
-      const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting);
+      const generatedData = await llm.generateBattlecardData(competitor, recentScrapes, intelCards, profile, geminiKeySetting, geminiModelSetting);
       const savedCard = await db.saveBattlecard(req.workspaceId, competitor.id, generatedData);
       generatedCards.push(savedCard);
     }
@@ -556,12 +558,14 @@ app.post('/api/oracle/chat', checkWorkspace, async (req, res) => {
     const battlecards = await db.getBattlecards(req.workspaceId);
 
     const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+    const geminiModelSetting = await db.getSetting(req.workspaceId, 'gemini_model') || 'gemini-3.6-flash';
 
     const reply = await llm.generateStrategyCopilotResponse(
       message, 
       history || [], 
       { profile, competitors, intelCards, battlecards }, 
-      geminiKeySetting
+      geminiKeySetting,
+      geminiModelSetting
     );
 
     res.json({ reply });
@@ -583,11 +587,13 @@ app.post('/api/warroom/simulate', checkWorkspace, async (req, res) => {
     const battlecards = await db.getBattlecards(req.workspaceId);
 
     const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
+    const geminiModelSetting = await db.getSetting(req.workspaceId, 'gemini_model') || 'gemini-3.6-flash';
 
     const simulation = await llm.runWarRoomSimulation(
       move, 
       { profile, competitors, intelCards, battlecards }, 
-      geminiKeySetting
+      geminiKeySetting,
+      geminiModelSetting
     );
 
     res.json(simulation);
@@ -607,6 +613,7 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
     const semantic_threshold = await db.getSetting(req.workspaceId, 'semantic_threshold') || '0.85';
     const slack_webhook_url = await db.getSetting(req.workspaceId, 'slack_webhook_url') || '';
     const outbound_webhook_url = await db.getSetting(req.workspaceId, 'outbound_webhook_url') || '';
+    const gemini_model = await db.getSetting(req.workspaceId, 'gemini_model') || 'gemini-3.6-flash';
 
     res.json({
       api_key,
@@ -614,6 +621,7 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
       last_digest_sent,
       slack_webhook_url,
       outbound_webhook_url,
+      gemini_model,
       semantic_threshold: parseFloat(semantic_threshold),
       email_config: emailConfigStr ? JSON.parse(emailConfigStr) : {},
       crm_config: crmConfigStr ? JSON.parse(crmConfigStr) : {}
@@ -625,13 +633,14 @@ app.get('/api/settings', checkWorkspace, async (req, res) => {
 
 app.post('/api/settings', checkWorkspace, async (req, res) => {
   try {
-    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url, outbound_webhook_url } = req.body;
+    const { api_key, digest_schedule, semantic_threshold, email_config, crm_config, slack_webhook_url, outbound_webhook_url, gemini_model } = req.body;
 
     if (api_key) await db.setSetting(req.workspaceId, 'api_key', api_key);
     if (digest_schedule) await db.setSetting(req.workspaceId, 'digest_schedule', digest_schedule);
     if (semantic_threshold) await db.setSetting(req.workspaceId, 'semantic_threshold', semantic_threshold.toString());
     if (slack_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'slack_webhook_url', slack_webhook_url);
     if (outbound_webhook_url !== undefined) await db.setSetting(req.workspaceId, 'outbound_webhook_url', outbound_webhook_url);
+    if (gemini_model) await db.setSetting(req.workspaceId, 'gemini_model', gemini_model);
     
     if (email_config) {
       await db.setSetting(req.workspaceId, 'email_config', JSON.stringify(email_config));

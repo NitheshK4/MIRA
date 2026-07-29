@@ -149,6 +149,35 @@ async function runTests() {
     }
     console.log('✅ Test 4 Passed: CRM failure queue, idempotency tracking, and retries work.\n');
 
+    // ----------------------------------------------------
+    // TEST 5: BATTLEGUARD METRICS & DB PERSISTENCE TEST
+    // ----------------------------------------------------
+    console.log('Running Test 5: BattleGuard Metrics & Playbook Persistence...');
+    const llm = require('./llm');
+    const mockComp = { id: 9999, name: 'Apex Competitor', url: 'https://apex-comp.com' };
+    const mockProfileContext = { business_name: 'WorkflowSync', price_point: '$80/mo' };
+    
+    const bgData = await llm.generateBattlecardData(mockComp, [], [], mockProfileContext);
+    assert.ok(bgData.battleguard, 'Should generate BattleGuard object');
+    assert.ok(bgData.battleguard.defense_score >= 0 && bgData.battleguard.defense_score <= 100, 'Defense score should be between 0 and 100');
+    assert.ok(bgData.battleguard.threat_level, 'Should contain threat level');
+    assert.ok(Array.isArray(bgData.battleguard.defensive_tactics), 'Should contain defensive tactics array');
+
+    // Test DB saving & reading of battleguard payload
+    const dummyCompForBg = await db.addCompetitor({
+      name: 'BattleGuard Test Rival',
+      url: 'https://battleguard-test-rival.com',
+      interval_hours: 12
+    });
+    
+    const savedCard = await db.saveBattlecard('default', dummyCompForBg.id, bgData);
+    assert.ok(savedCard, 'Should save battlecard with BattleGuard metrics');
+    assert.ok(savedCard.battleguard, 'Saved card should return battleguard field');
+
+    // Clean up
+    await db.deleteCompetitor(dummyCompForBg.id);
+    console.log('✅ Test 5 Passed: BattleGuard metrics, defense scores, and DB persistence verified.\n');
+
     console.log('==================================================');
     console.log('ALL VERIFICATION TESTS COMPLETED SUCCESSFULLY! 🎉');
     console.log('==================================================');

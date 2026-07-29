@@ -261,6 +261,7 @@ async function getDb() {
       pricing_comparison TEXT,
       objection_handling TEXT,
       landmines TEXT,
+      battleguard TEXT,
       target_icp TEXT,
       switching_triggers TEXT,
       elevator_pitch TEXT,
@@ -284,6 +285,13 @@ async function getDb() {
   try {
     await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN elevator_pitch TEXT');
   } catch (e) {}
+
+  // Try adding battleguard column to battlecards table dynamically
+  try {
+    await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN battleguard TEXT');
+  } catch (e) {
+    // Column already exists, safe to ignore
+  }
 
   // Run schema migrations for workspace isolation support
   await runMigrations(dbInstance);
@@ -736,12 +744,16 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
   const db = await getDb();
   const now = new Date().toISOString();
 
+  const battleguardValue = typeof data.battleguard === 'string'
+    ? data.battleguard
+    : JSON.stringify(data.battleguard || null);
+
   await db.run(`
     INSERT INTO battlecards (
       workspace_id, competitor_id, overview, strengths, weaknesses,
       why_we_win, pricing_comparison, objection_handling, landmines,
-      target_icp, switching_triggers, elevator_pitch, last_generated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      battleguard, target_icp, switching_triggers, elevator_pitch, last_generated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(workspace_id, competitor_id) DO UPDATE SET
       overview = excluded.overview,
       strengths = excluded.strengths,
@@ -750,6 +762,7 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
       pricing_comparison = excluded.pricing_comparison,
       objection_handling = excluded.objection_handling,
       landmines = excluded.landmines,
+      battleguard = excluded.battleguard,
       target_icp = excluded.target_icp,
       switching_triggers = excluded.switching_triggers,
       elevator_pitch = excluded.elevator_pitch,
@@ -764,6 +777,7 @@ async function saveBattlecard(workspaceId = 'default', competitorId, data) {
     data.pricing_comparison || '',
     typeof data.objection_handling === 'string' ? data.objection_handling : JSON.stringify(data.objection_handling || []),
     typeof data.landmines === 'string' ? data.landmines : JSON.stringify(data.landmines || []),
+    battleguardValue,
     data.target_icp || '',
     typeof data.switching_triggers === 'string' ? data.switching_triggers : JSON.stringify(data.switching_triggers || []),
     data.elevator_pitch || '',

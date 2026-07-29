@@ -74,6 +74,13 @@ export default function CommandPalette({
       action: () => { onClose(); onNavigateTab('feed'); }
     },
     {
+      id: 'nav-battlecards',
+      title: 'Open Battlecards & BattleGuard Defense 🛡️',
+      subtitle: 'View competitive defense playbooks, threat scores, and objection scripts',
+      icon: LayoutDashboard,
+      action: () => { onClose(); onNavigateTab('battlecards'); }
+    },
+    {
       id: 'nav-warroom',
       title: 'Open Competitive War Room ⚔️',
       subtitle: 'Simulate market moves and predicted competitor reactions',

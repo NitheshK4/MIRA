@@ -193,7 +193,8 @@ async function detectChangesJS(oldText, newText, threshold = 0.85) {
  * Primary: Gemini API with rate-limiting retry.
  * Fallback: Local JS-ONNX transformers pipeline.
  */
-async function detectChangesGemini(oldText, newText, apiKey) {
+async function detectChangesGemini(oldText, newText, apiKey, geminiModel = null) {
+  const targetModel = geminiModel || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
   const systemPrompt = `You are a text change detector. Your job is to compare the old text of a webpage with the new text, and determine if the core content has changed significantly.
 Ignore minor cosmetic noise (like clock timestamps changing, minor page views/comment counters incrementing, or copyright years updating).
 If new sections, articles, text blocks, or headlines have been added, removed, or rewritten, you must flag this as a change.
@@ -227,7 +228,7 @@ Compare the two contents and return the JSON response.`;
   for (let i = 0; i < retries; i++) {
     try {
       res = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${apiKey}`,
         {
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { 

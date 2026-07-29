@@ -244,11 +244,12 @@ function generateFallbackAnalysis(diffText) {
 }
 
 // Main analysis runner
-async function analyzeChange(diffText, businessProfile) {
-  const geminiApiKey = process.env.GEMINI_API_KEY;
+async function analyzeChange(diffText, businessProfile, geminiApiKeyOverride = null, geminiModel = null) {
+  const geminiApiKey = geminiApiKeyOverride || process.env.GEMINI_API_KEY;
+  const targetModel = geminiModel || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
   if (geminiApiKey) {
-    console.log('Using Google Gemini API for inference...');
+    console.log(`Using Google Gemini API (${targetModel}) for inference...`);
     const startTime = Date.now();
     try {
       const systemPrompt = `You are a Competitor Intelligence Analyst. Your task is to analyze a detected change on a competitor's website, classify it, and score its business impact relative to our own business profile.
@@ -287,7 +288,7 @@ Analyze the competitor's changes above and generate the classified intelligence 
       for (let i = 0; i < retries; i++) {
         try {
           res = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${geminiApiKey}`,
             {
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.2 }
@@ -491,9 +492,10 @@ ${userPrompt}<|im_end|>
   });
 }
 
-async function generateBattlecardData(competitor, recentScrapes = [], intelCards = [], businessProfile = null, geminiApiKey = null) {
+async function generateBattlecardData(competitor, recentScrapes = [], intelCards = [], businessProfile = null, geminiApiKey = null, geminiModel = null) {
   const compName = competitor.name || competitor.url || 'Competitor';
   const compUrl = competitor.url || '';
+  const targetModel = geminiModel || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
   let enrichmentContext = '';
   if (competitor.enrichment_data) {
@@ -521,9 +523,14 @@ Our Price Point: ${businessProfile.price_point || 'Standard pricing'}
 
   if (activeGeminiKey) {
     try {
-      console.log(`Generating deep AI Battlecard for ${compName} using Gemini API...`);
+      console.log(`Generating deep AI Battlecard & BattleGuard analysis for ${compName} using Gemini API (${targetModel})...`);
       const systemInstruction = `You are a Chief Competitive Intelligence & Sales Enablement Strategist.
-Your task is to generate an actionable, high-impact sales enablement battlecard comparing "Our Business" vs "${compName}".
+Your task is to analyze the provided competitor content and intelligence signals to produce an accurate, data-driven sales enablement battlecard and BattleGuard defense matrix comparing "Our Business" vs "${compName}".
+
+IMPORTANT FOR BATTLEGUARD SCORING ACCURACY:
+1. Dynamically calculate "defense_score" (an integer from 0 to 100) reflecting how well Our Business can defend against ${compName} given the ACTUAL competitor changes and market signals provided.
+2. Determine "threat_level" ('CRITICAL' | 'HIGH' | 'MODERATE' | 'LOW') accurately based on the severity of competitor moves.
+3. Extract real, specific threat_vectors from the competitor scraped text and detected signals rather than generic statements.
 
 Respond ONLY with a valid JSON object wrapped inside <json> ... </json> tags matching this exact structure:
 {
@@ -535,16 +542,25 @@ Respond ONLY with a valid JSON object wrapped inside <json> ... </json> tags mat
     "Migration trigger 3"
   ],
   "elevator_pitch": "A 30-second high-conversion sales script/cold outreach pitch for sales reps to position Our Business against ${compName}.",
-  "strengths": ["Specific competitor strength 1", "Strength 2", "Strength 3"],
-  "weaknesses": ["Specific vulnerability/gap 1", "Vulnerability 2", "Vulnerability 3"],
-  "why_we_win": ["Key killer differentiator 1", "Key differentiator 2", "Key differentiator 3"],
-  "pricing_comparison": "In-depth pricing comparison contrasting our price model vs ${compName}'s pricing tier & ROI.",
+  "strengths": ["Specific competitor strength 1 derived from content", "Strength 2", "Strength 3"],
+  "weaknesses": ["Specific vulnerability/gap 1 based on signals", "Vulnerability 2", "Vulnerability 3"],
+  "why_we_win": ["Key killer differentiator 1 for Our Business", "Differentiator 2", "Differentiator 3"],
+  "pricing_comparison": "Specific pricing comparison contrasting our pricing vs ${compName}'s model & ROI.",
   "objection_handling": [
-    { "objection": "Prospect objection about ${compName}", "response": "Winning tactical counter-script for our sales reps" },
+    { "objection": "Real prospect objection regarding ${compName}", "response": "Tactical winning counter-script" },
     { "objection": "Second objection", "response": "Winning counter-script" },
     { "objection": "Third objection", "response": "Winning counter-script" }
   ],
-  "landmines": ["Landmine question reps should ask prospects", "Landmine question 2", "Landmine question 3"]
+  "landmines": ["Landmine question reps should ask prospects", "Landmine question 2", "Landmine question 3"],
+  "battleguard": {
+    "threat_level": "DYNAMIC_THREAT_LEVEL",
+    "defense_score": DYNAMIC_DEFENSE_SCORE_INTEGER,
+    "threat_vectors": ["Real competitor move 1", "Real move 2"],
+    "defensive_tactics": [
+      { "vector": "Tactical Vector Name", "strategy": "Specific defense counter-strategy" }
+    ],
+    "recommended_win_angle": "High-impact closing position statement"
+  }
 }`;
 
       const promptText = `
@@ -562,11 +578,11 @@ ${scrapeSnippet || 'No recent scraped web content available.'}
 RECENT DETECTED INTELLIGENCE SIGNALS:
 ${intelSummary || 'No recent intelligence signals detected.'}
 
-Generate the tactical AI sales battlecard for ${compName} now. Format inside <json> tags.
+Analyze the data and generate the accurate AI sales battlecard & BattleGuard defense matrix for ${compName} now. Format inside <json> tags.
 `;
 
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${activeGeminiKey}`,
         {
           contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
         },
@@ -579,6 +595,30 @@ Generate the tactical AI sales battlecard for ${compName} now. Format inside <js
 
       try {
         const parsed = JSON.parse(jsonString);
+        const rawBg = parsed.battleguard && typeof parsed.battleguard === 'object' ? parsed.battleguard : {};
+        
+        // Ensure score is valid integer between 0 and 100
+        const parsedScore = parseInt(rawBg.defense_score, 10);
+        const validDefenseScore = !isNaN(parsedScore) && parsedScore >= 0 && parsedScore <= 100 ? parsedScore : 82;
+        const validThreatLevel = ['CRITICAL', 'HIGH', 'MODERATE', 'LOW'].includes(String(rawBg.threat_level).toUpperCase())
+          ? String(rawBg.threat_level).toUpperCase()
+          : 'MODERATE';
+
+        const battleguardObj = {
+          threat_level: validThreatLevel,
+          defense_score: validDefenseScore,
+          threat_vectors: Array.isArray(rawBg.threat_vectors) && rawBg.threat_vectors.length > 0
+            ? rawBg.threat_vectors
+            : [`Active positioning by ${compName}`],
+          defensive_tactics: Array.isArray(rawBg.defensive_tactics) && rawBg.defensive_tactics.length > 0
+            ? rawBg.defensive_tactics
+            : [
+                { vector: 'Price Defense', strategy: 'Emphasize total cost of ownership and included integrations.' },
+                { vector: 'Product Guard', strategy: 'Highlight our ONNX semantic detection & rapid automation capability.' }
+              ],
+          recommended_win_angle: rawBg.recommended_win_angle || `Focus on superior speed to value and transparent tiering.`
+        };
+
         return {
           overview: parsed.overview || `${compName} operates directly in competition with ${businessProfile?.business_name || 'our company'}.`,
           target_icp: parsed.target_icp || `${compName} targets general market users, whereas ${businessProfile?.business_name || 'our product'} is optimized for ${businessProfile?.customers || 'agile teams seeking rapid ROI'}.`,
@@ -593,7 +633,8 @@ Generate the tactical AI sales battlecard for ${compName} now. Format inside <js
           why_we_win: Array.isArray(parsed.why_we_win) && parsed.why_we_win.length > 0 ? parsed.why_we_win : [`Better total cost of ownership and direct support`],
           pricing_comparison: parsed.pricing_comparison || `Our pricing (${businessProfile?.price_point || 'Flexible'}) delivers higher ROI than ${compName}.`,
           objection_handling: Array.isArray(parsed.objection_handling) && parsed.objection_handling.length > 0 ? parsed.objection_handling : [],
-          landmines: Array.isArray(parsed.landmines) && parsed.landmines.length > 0 ? parsed.landmines : []
+          landmines: Array.isArray(parsed.landmines) && parsed.landmines.length > 0 ? parsed.landmines : [],
+          battleguard: battleguardObj
         };
       } catch (e) {
         console.warn('Failed to parse Gemini JSON output for battlecard. Raw text snippet:', text.substring(0, 200));
@@ -603,10 +644,51 @@ Generate the tactical AI sales battlecard for ${compName} now. Format inside <js
     }
   }
 
-  // Dynamic Contextual Heuristic Fallback
-  console.log(`Using dynamic contextual battlecard generator for ${compName}...`);
-  const topIntel = intelCards.slice(0, 3);
-  const intelVulnerabilities = topIntel.map(c => `Vulnerability revealed in recent ${c.category}: ${c.summary.substring(0, 80)}...`);
+  // Dynamic Data-Driven Heuristic Fallback
+  console.log(`Using dynamic data-driven battlecard generator for ${compName}...`);
+  const topIntel = intelCards.slice(0, 5);
+  const intelVulnerabilities = topIntel.map(c => `Vulnerability revealed in ${c.category}: ${c.summary.substring(0, 90)}...`);
+
+  // Quantitative scoring calculation
+  const highImpactCount = intelCards.filter(c => (c.impact_score || 0) >= 7).length;
+  const maxImpactScore = intelCards.reduce((max, c) => Math.max(max, c.impact_score || 0), 0);
+  const pricingChangeCount = intelCards.filter(c => String(c.category).toLowerCase().includes('price') || String(c.summary).toLowerCase().includes('price')).length;
+
+  let threatLevel = 'LOW';
+  if (maxImpactScore >= 9 || highImpactCount >= 3) {
+    threatLevel = 'CRITICAL';
+  } else if (maxImpactScore >= 7 || highImpactCount >= 2) {
+    threatLevel = 'HIGH';
+  } else if (maxImpactScore >= 5 || highImpactCount >= 1 || pricingChangeCount >= 1) {
+    threatLevel = 'MODERATE';
+  }
+
+  // Calculate dynamic defense score
+  let baseScore = 90;
+  baseScore -= (highImpactCount * 6);
+  baseScore -= (pricingChangeCount * 5);
+  if (businessProfile?.product_desc) baseScore += 4;
+  const defenseScore = Math.max(45, Math.min(96, baseScore));
+
+  // Build dynamic threat vectors from real intel cards
+  const threatVectors = topIntel.length > 0
+    ? topIntel.map(c => `[${c.category.toUpperCase()}] ${c.summary}`)
+    : [`Active competitive web monitoring on ${compUrl}`];
+
+  const defensiveTactics = [
+    {
+      vector: pricingChangeCount > 0 ? 'Price Undercut Defense' : 'Value & TCO Defense',
+      strategy: `Highlight total cost of ownership for ${businessProfile?.business_name || 'our product'}, including zero add-on fees and included integrations.`
+    },
+    {
+      vector: 'Product & Feature Superiority Guard',
+      strategy: `Demonstrate our ONNX real-time change detection and 3-tier fallback architecture against ${compName}'s standard offerings.`
+    },
+    {
+      vector: 'Migration & Success SLA Guard',
+      strategy: `Offer zero-friction onboarding assistance, live account setup, and guaranteed data migration support.`
+    }
+  ];
 
   return {
     overview: `${compName} (${compUrl}) is a primary market rival offering solutions targeting similar business segments.`,
@@ -647,15 +729,23 @@ Generate the tactical AI sales battlecard for ${compName} now. Format inside <js
       `"How fast can ${compName} implement custom workflow requests for your team?"`,
       `"Does ${compName}'s pricing include all core features, or are key modules locked behind add-on fees?"`,
       `"What is ${compName}'s response time SLA for critical support issues?"`
-    ]
+    ],
+    battleguard: {
+      threat_level: threatLevel,
+      defense_score: defenseScore,
+      threat_vectors: threatVectors,
+      defensive_tactics: defensiveTactics,
+      recommended_win_angle: `Position ${businessProfile?.business_name || 'Our Company'} as the modern, high-agility alternative with superior ROI and zero lock-in.`
+    }
   };
 }
 
 /**
  * AI Strategy Co-Pilot ("MIRA Oracle") response generator
  */
-async function generateStrategyCopilotResponse(userMessage, conversationHistory = [], workspaceContext = {}, geminiApiKey = null) {
+async function generateStrategyCopilotResponse(userMessage, conversationHistory = [], workspaceContext = {}, geminiApiKey = null, geminiModel = null) {
   const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
+  const targetModel = geminiModel || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
   const { profile, competitors = [], intelCards = [], battlecards = [] } = workspaceContext;
 
   const profileSummary = profile ? `
@@ -693,7 +783,7 @@ ${cardsSummary}`;
       const fullPrompt = `${systemInstruction}\n\nCONVERSATION HISTORY:\n${historyFormatted}\n\nUser Question: ${userMessage}\n\nMIRA Oracle Response:`;
 
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${activeGeminiKey}`,
         {
           contents: [{ parts: [{ text: fullPrompt }] }],
           generationConfig: { temperature: 0.4 }
@@ -733,8 +823,9 @@ Based on live telemetry across your **${compCount} monitored competitors** and *
 /**
  * Interactive War Room ("What-If Market Simulator")
  */
-async function runWarRoomSimulation(proposedMove, workspaceContext = {}, geminiApiKey = null) {
+async function runWarRoomSimulation(proposedMove, workspaceContext = {}, geminiApiKey = null, geminiModel = null) {
   const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
+  const targetModel = geminiModel || process.env.GEMINI_MODEL || 'gemini-3.6-flash';
   const { profile, competitors = [], intelCards = [], battlecards = [] } = workspaceContext;
 
   const profileSummary = profile ? `
@@ -772,7 +863,7 @@ ${enrichStr ? `Enrichment Info: ${enrichStr}\n` : ''}${bcardStr ? `Battlecard Co
 
   if (activeGeminiKey) {
     try {
-      console.log(`Running supercharged War Room simulation for: "${proposedMove}" across ${competitors.length} competitors...`);
+      console.log(`Running supercharged War Room simulation using ${targetModel} for: "${proposedMove}" across ${competitors.length} competitors...`);
       const systemInstruction = `You are an AI Game-Theory Market Simulator & Competitive Strategy Engine.
 Your role is to simulate realistic competitive market reactions to a proposed strategic move by our company.
 
@@ -822,7 +913,7 @@ Simulate market reactions specifically analyzing each registered competitor and 
 `;
 
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${activeGeminiKey}`,
         {
           contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
         },
