@@ -1949,10 +1949,9 @@ function SettingsPage({
                   onChange={e => setGeminiModel(e.target.value)}
                 >
                   <option value="gemini-3.6-flash">🔮 Gemini 3.6 Flash (Default - High Reasoning & Prediction Model)</option>
+                  <option value="gemini-3.6-pro">🧠 Gemini 3.6 Pro (Deep Strategy & Complex Analysis)</option>
                   <option value="gemini-3.0-flash">🔥 Gemini 3.0 Flash (Next-Gen 3.0 Speed & Intelligence)</option>
                   <option value="gemini-3.0-pro">🌟 Gemini 3.0 Pro (Next-Gen 3.0 Strategic Frontier)</option>
-                  <option value="gemini-2.5-flash">✨ Gemini 2.5 Flash (Fast & Intelligent)</option>
-                  <option value="gemini-2.5-pro">🧠 Gemini 2.5 Pro (Deep Strategy & Complex Analysis)</option>
                   <option value="gemini-2.0-flash">⚡ Gemini 2.0 Flash (Multimodal Fast)</option>
                   <option value="gemini-2.0-flash-lite">🚀 Gemini 2.0 Flash-Lite (Ultra Low-Latency)</option>
                   <option value="gemini-2.0-pro-exp">🧪 Gemini 2.0 Pro Experimental</option>

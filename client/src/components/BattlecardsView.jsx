@@ -360,7 +360,7 @@ ${cardData.objection_handling.map(o => `### Prospect Claim: ${o.objection}\n**Wi
                   Battlecards & BattleGuard 🛡️
                 </h1>
                 <span style={{ fontSize: '10px', fontWeight: 800, background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '2px 8px', borderRadius: '12px', textTransform: 'uppercase' }}>
-                  v2.5 Defense Engine
+                  v3.6 Defense Engine
                 </span>
               </div>
               <p style={{ color: '#94A3B8', fontSize: '13px', margin: 0 }}>

@@ -633,11 +633,11 @@ Each battlecard includes:
 | Component | Model | Runtime | Disk | RAM | Latency |
 |:---|:---|:---|:---:|:---:|:---:|
 | 🔍 **Embeddings** | `Xenova/all-MiniLM-L6-v2` | ONNX (JavaScript) | ~90 MB | ~80 MB | < 0.5s |
-| 🧠 **LLM (Cloud)** | `gemini-2.5-flash` | Google API | — | — | < 1.5s |
+| 🧠 **LLM (Cloud)** | `gemini-3.6-flash` | Google API | — | — | < 1.5s |
 | 🧠 **LLM (Local)** | `Qwen2.5-0.5B-Instruct` | llama-cli (GGUF Q4_K_M) | ~382 MB | ~350 MB | 7–15s |
 | 🔧 **Fallback** | Rule-based heuristic | Node.js keyword matching | — | — | < 1ms |
-| 🔮 **Oracle** | `gemini-2.5-flash` | Google API (contextual) | — | — | < 2s |
-| ⚔️ **War Room** | `gemini-2.5-flash` | Google API (game-theory) | — | — | < 3s |
+| 🔮 **Oracle** | `gemini-3.6-flash` | Google API (contextual) | — | — | < 2s |
+| ⚔️ **War Room** | `gemini-3.6-flash` | Google API (game-theory) | — | — | < 3s |
 
 </div>
 
