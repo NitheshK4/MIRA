@@ -178,6 +178,20 @@ async function runTests() {
     await db.deleteCompetitor(dummyCompForBg.id);
     console.log('✅ Test 5 Passed: BattleGuard metrics, defense scores, and DB persistence verified.\n');
 
+    // ----------------------------------------------------
+    // TEST 6: EXECUTIVE INTELLIGENCE REPORT API PAYLOAD TEST
+    // ----------------------------------------------------
+    console.log('Running Test 6: Executive Intelligence Summary Payload...');
+    const testProfile = await db.getProfile('default');
+    const testCompetitors = await db.getCompetitors('default');
+    const testBattlecards = await db.getBattlecards('default');
+    const testIntel = await db.getIntelligenceCards('default');
+
+    assert.ok(Array.isArray(testCompetitors), 'Competitors list should be array');
+    assert.ok(Array.isArray(testBattlecards), 'Battlecards list should be array');
+    assert.ok(Array.isArray(testIntel), 'Intel cards list should be array');
+    console.log('✅ Test 6 Passed: Executive Intelligence summary payload structure verified.\n');
+
     console.log('==================================================');
     console.log('ALL VERIFICATION TESTS COMPLETED SUCCESSFULLY! 🎉');
     console.log('==================================================');

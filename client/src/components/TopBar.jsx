@@ -5,7 +5,8 @@ import {
   Plus, 
   Menu, 
   RefreshCw,
-  Zap
+  Zap,
+  FileText
 } from 'lucide-react';
 
 export default function TopBar({ 
@@ -14,11 +15,14 @@ export default function TopBar({
   onMobileMenuToggle, 
   unreadCount,
   onRefresh,
-  activeTab 
+  activeTab,
+  onOpenPdfModal
 }) {
   const pageLabels = {
     dashboard: '⚡ Competitor Radar',
     feed:      '📡 Intelligence Stream',
+    battlecards:'🛡️ Battlecards & Guard',
+    warroom:   '⚔️ War Room Simulator',
     settings:  '⚙️  System Config',
     details:   '🔍 Competitor Detail',
     onboarding:'🚀 Setup Context',
@@ -67,6 +71,25 @@ export default function TopBar({
 
       {/* Right: Actions */}
       <div className="top-bar-right">
+        {/* Export Executive PDF Briefing */}
+        <button
+          type="button"
+          onClick={onOpenPdfModal}
+          className="mira-btn border border-violet-500/30 text-violet-300 hover:bg-violet-500/20"
+          style={{ 
+            padding: '6px 12px',
+            fontSize: '12px',
+            gap: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            background: 'rgba(139, 92, 246, 0.12)'
+          }}
+          title="Export Executive PDF Briefing"
+        >
+          <FileText size={14} />
+          <span className="hidden sm:inline font-bold">Export PDF</span>
+        </button>
+
         {/* Refresh */}
         <button
           type="button"

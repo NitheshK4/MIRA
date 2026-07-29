@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { 
   Swords, 
   Sparkles, 
@@ -14,7 +13,8 @@ import {
   Building2, 
   Clock, 
   BarChart2, 
-  ArrowRight 
+  ArrowRight,
+  FileText 
 } from 'lucide-react';
 
 const PRESET_SCENARIOS = [
@@ -40,7 +40,7 @@ const PRESET_SCENARIOS = [
   }
 ];
 
-export default function WarRoomView({ competitors = [], profile }) {
+export default function WarRoomView({ competitors = [], profile, onOpenPdfModal }) {
   const [customMove, setCustomMove] = useState('');
   const [selectedPreset, setSelectedPreset] = useState(null);
   const [simulating, setSimulating] = useState(false);
@@ -102,11 +102,22 @@ export default function WarRoomView({ competitors = [], profile }) {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-[#0D0F17]/80 p-3.5 rounded-2xl border border-slate-800">
-            <Building2 className="w-8 h-8 text-sky-400 p-1.5 bg-sky-500/10 rounded-xl" />
-            <div>
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Target Radar</div>
-              <div className="text-xs font-black text-white">{competitors.length} Monitored Competitors</div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onOpenPdfModal}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/30 text-violet-300 font-bold text-xs transition-all shadow-sm"
+              title="Export Executive War Room Report"
+            >
+              <FileText size={15} />
+              <span>Export PDF Report</span>
+            </button>
+
+            <div className="flex items-center gap-3 bg-[#0D0F17]/80 p-3.5 rounded-2xl border border-slate-800">
+              <Building2 className="w-8 h-8 text-sky-400 p-1.5 bg-sky-500/10 rounded-xl" />
+              <div>
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Target Radar</div>
+                <div className="text-xs font-black text-white">{competitors.length} Monitored Competitors</div>
+              </div>
             </div>
           </div>
         </div>
