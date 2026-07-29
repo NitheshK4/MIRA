@@ -9,7 +9,7 @@
 
 <!-- Typing Animation -->
 <a href="#-overview">
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&multiline=true&repeat=true&width=750&height=60&lines=Scrape+%E2%86%92+Detect+%E2%86%92+Analyze+%E2%86%92+Simulate+%E2%86%92+Dominate;AI-Powered+Competitive+Intelligence+with+War+Room+Simulator" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=3000&pause=1500&color=A78BFA&center=true&vCenter=true&multiline=true&repeat=true&width=750&height=60&lines=Scrape+%E2%86%92+Detect+%E2%86%92+Analyze+%E2%86%92+BattleGuard+%E2%86%92+Simulate+%E2%86%92+Dominate;AI-Powered+Competitor+Intelligence+with+Gemini+3.6+Flash+%26+BattleGuard" alt="Typing SVG" />
 </a>
 
 <br/>
@@ -18,7 +18,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js_20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Gemini](https://img.shields.io/badge/Gemini_2.5-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Gemini 3.6](https://img.shields.io/badge/Gemini_3.6_Flash-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
 [![HuggingFace](https://img.shields.io/badge/🤗_ONNX-FFD21E?style=for-the-badge)](https://huggingface.co)
 [![Chrome MV3](https://img.shields.io/badge/Chrome_MV3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com)
 
@@ -31,8 +31,9 @@
 <br/>
 
 ![RAM](https://img.shields.io/badge/RAM-≤_512MB-blueviolet?style=flat-square)
-![Inference](https://img.shields.io/badge/Inference-CPU_Only-orange?style=flat-square)
-![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen?style=flat-square)
+![Inference](https://img.shields.io/badge/Inference-Gemini_3.6_%7C_Local_GGUF-orange?style=flat-square)
+![BattleGuard](https://img.shields.io/badge/BattleGuard-Active-brightgreen?style=flat-square)
+![Tests](https://img.shields.io/badge/Tests-5%2F5_Passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 [![Stars](https://img.shields.io/github/stars/NitheshK4/Autonomous-Competitor-Intelligence-Engine?style=flat-square&color=FFD21E)](https://github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/stargazers)
 
@@ -48,16 +49,15 @@
 <summary>Click to expand</summary>
 
 - [Overview](#-overview)
-- [What's New — v2.0](#-whats-new--v20)
+- [What's New in Latest Release](#-whats-new-in-latest-release)
 - [Live Demo](#-live-demo)
 - [System Architecture](#️-system-architecture)
-- [ML Pipeline](#-ml-pipeline)
-- [Chrome Extension](#-chrome-extension)
-- [Core Features](#-core-features)
+- [ML & Prediction Pipeline](#-ml--prediction-pipeline)
+- [BattleGuard Sales Enablement Defense Center](#-battleguard-sales-enablement-defense-center)
+- [Multi-Model LLM Engine Selection](#-multi-model-llm-engine-selection)
 - [AI Strategy Co-Pilot (MIRA Oracle)](#-ai-strategy-co-pilot--mira-oracle)
 - [Competitive War Room Simulator](#️-competitive-war-room-simulator)
-- [Auto-Generated Battlecards](#-auto-generated-battlecards)
-- [Model Configurations](#-model-configurations)
+- [Chrome Extension](#-chrome-extension)
 - [Quick Start](#-quick-start)
 - [Environment Variables](#-environment-variables)
 - [API Reference](#-api-reference)
@@ -75,16 +75,16 @@
 
 ## 🌟 Overview
 
-> **MIRA** (**M**arket **I**ntelligence & **R**esearch **A**utomation) is an autonomous, self-healing competitor monitoring engine with an **AI-powered strategy co-pilot** and **competitive war room simulator**. It scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **ONNX sentence embeddings**, analyzes business impact with **Gemini 2.5 Flash** (with a local **Qwen GGUF** fallback), generates **auto-battlecards**, and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
+> **MIRA** (**M**arket **I**ntelligence & **R**esearch **A**utomation) is an autonomous, self-healing competitor monitoring engine powered by **Google Gemini 3.6 Flash**, an **AI Strategy Co-Pilot (MIRA Oracle)**, a **War Room Simulator**, and the **BattleGuard Sales Defense Matrix**. It scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **ONNX sentence embeddings**, evaluates business impact with custom Gemini models, generates sales playbooks, and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
 
 <br/>
 
 <div align="center">
 
-| 🔬 Scrape | 🧠 Detect | 📊 Analyze & Score | ⚔️ Simulate | 🚨 Alert |
-|:---:|:---:|:---:|:---:|:---:|
-| Axios + Puppeteer | ONNX Embeddings | Gemini 2.5 Flash / Qwen | War Room + Oracle | Slack + Email + CRM |
-| Static & JS pages | Cosine similarity | Impact 1–10 + Battlecards | Game-theory simulation | Real-time webhooks |
+| 🔬 Scrape | 🧠 Detect | 📊 Predict & Score | 🛡️ BattleGuard | ⚔️ Simulate | 🚨 Alert |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| Cheerio + Puppeteer | ONNX Embeddings | Gemini 3.6 Flash / Qwen | 0–100 Defense Score | Game-Theory Engine | Slack + Email + CRM |
+| Static & JS pages | Cosine similarity | Impact 1–10 + Signals | Threat Level & Tactics | Timeline & Playbooks | Webhooks + Retries |
 
 </div>
 
@@ -96,56 +96,56 @@
 <tr>
 <td>
 
-**🧠 Semantic Understanding**<br/>
-No brittle string diffs. Changes are compared by *meaning*, not characters. "Price is $100" ≈ "Current Price: $100" → no false alert.
+**🔮 Gemini 3.6 Flash Predictions**<br/>
+Uses Google DeepMind's latest high-reasoning Gemini 3.6 Flash model by default for accurate market change predictions and threat scoring.
 
 </td>
 <td>
 
-**🔄 Triple-Tier Fallback**<br/>
-Cloud LLM → Local GGUF → Rule-based heuristics. MIRA always produces analysis, even fully offline.
+**🛡️ BattleGuard Defense Center**<br/>
+Generates quantitative 0–100 Defense Scores, Threat Badges (`CRITICAL`, `HIGH`, `MODERATE`, `LOW`), defensive counter-tactics, and downloadable cheat sheets.
 
 </td>
 </tr>
 <tr>
 <td>
 
-**🔮 AI Strategy Co-Pilot**<br/>
-Ask MIRA Oracle anything — get instant competitive intelligence, pricing strategy advice, and sales objection scripts powered by your live data.
+**🔄 Multi-Model LLM Selector**<br/>
+Choose between Gemini 3.6 Flash, Gemini 3.0 Flash/Pro, Gemini 2.5, Gemini 2.0, or run 100% offline with an embedded Qwen2.5 GGUF CPU engine.
+
+</td>
+<td>
+
+**🧠 Semantic Change Filtering**<br/>
+Strips cosmetic noise (timestamps, view counters, copyright years). Changes are evaluated by *meaning* via ONNX embeddings (`all-MiniLM-L6-v2`).
+
+</td>
+</tr>
+<tr>
+<td>
+
+**💬 AI Strategy Co-Pilot (Oracle)**<br/>
+Ask MIRA Oracle anything — get instant positioning advice, elevator pitches, and sales objection handling scripts powered by live workspace data.
 
 </td>
 <td>
 
 **⚔️ War Room Simulator**<br/>
-"What if we drop prices 30%?" — simulate competitive market reactions with risk scores, counter-offensives, and timeline predictions.
+"What if we drop prices 30%?" — simulate competitive market responses with predicted reaction timelines, risk scores, and counter-offensive playbooks.
 
 </td>
 </tr>
 <tr>
 <td>
 
-**📢 Multi-Channel Alerts**<br/>
-Slack (instant, high-impact ≥ 8), Email (periodic digest), Notion/Airtable (every change logged).
+**📢 Multi-Channel Alerts & CRMs**<br/>
+Instant Slack webhooks (Impact ≥ 8), periodic Email summaries, and automated Notion / Airtable CRM database record creation.
 
 </td>
 <td>
 
-**🩹 Self-Healing**<br/>
-Failed CRM syncs auto-retry via a local SQLite queue. No data loss, ever.
-
-</td>
-</tr>
-<tr>
-<td>
-
-**🧩 Chrome Extension**<br/>
-One-click competitor registration from any browser tab. Live badge shows unread intel count.
-
-</td>
-<td>
-
-**🃏 Auto-Battlecards**<br/>
-LLM-generated competitive battlecards with strengths, weaknesses, killer questions, and sales landmines — ready for your next sales call.
+**🩹 Self-Healing Idempotency**<br/>
+Failed CRM syncs automatically queue in local SQLite with background exponential retries. Zero data loss guarantee.
 
 </td>
 </tr>
@@ -153,34 +153,37 @@ LLM-generated competitive battlecards with strengths, weaknesses, killer questio
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## 🆕 What's New — v2.0
+## 🆕 What's New in Latest Release
 
 <div align="center">
 
 ```
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                    🚀  MIRA v2.0 HIGHLIGHTS                      │
-  ├──────────────────────────────────────────────────────────────────┤
-  │                                                                  │
-  │  🔮  AI STRATEGY CO-PILOT (MIRA Oracle)                          │
-  │      • Conversational AI with full workspace context             │
-  │      • Instant pitch drafts, pricing analysis, SWOT audits       │
-  │      • Quick-prompt chips for common strategic queries            │
-  │                                                                  │
-  │  ⚔️  COMPETITIVE WAR ROOM SIMULATOR                              │
-  │      • "What-If" scenario engine with game-theory modeling       │
-  │      • Dynamic risk scoring (1-10) with threat levels            │
-  │      • Per-competitor predicted reactions & timelines             │
-  │      • Step-by-step counter-offensive playbook generation        │
-  │      • Pre-built scenario templates for rapid simulation         │
-  │                                                                  │
-  │  🃏  AUTO-GENERATED BATTLECARDS                                  │
-  │      • LLM-powered competitive comparison cards                  │
-  │      • Strengths / Weaknesses / Killer Questions / Landmines     │
-  │      • One-click refresh from latest intelligence data           │
-  │      • CRM sync status tracking (Notion / Airtable)              │
-  │                                                                  │
-  └──────────────────────────────────────────────────────────────────┘
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │                    🚀  MIRA LATEST RELEASE HIGHLIGHTS                     │
+  ├──────────────────────────────────────────────────────────────────────────┤
+  │                                                                          │
+  │  🔮  GEMINI 3.6 FLASH PREDICTION ENGINE                                  │
+  │      • Integrated Google DeepMind's newest Gemini 3.6 Flash model        │
+  │      • Default reasoning engine for change detection & threat scoring    │
+  │                                                                          │
+  │  🛡️  BATTLEGUARD SALES DEFENSE CENTER                                    │
+  │      • Quantitative 0-100 Defense Score Index & gauge display           │
+  │      • Real-time threat level badges (CRITICAL, HIGH, MODERATE, LOW)     │
+  │      • Competitor threat vectors & defensive counter-tactics             │
+  │      • Interactive Objection Simulator with instant rep lookup          │
+  │      • Downloadable Markdown BattleGuard cheat sheets (.md export)       │
+  │                                                                          │
+  │  ⚙️  MULTI-MODEL LLM SELECTION MATRIX                                    │
+  │      • Dynamic dropdown selection in Settings panel                      │
+  │      • Gemini 3.6 Flash, 3.0 Flash/Pro, 2.5 Flash/Pro, 2.0 Flash         │
+  │      • Offline Qwen2.5 GGUF CPU engine fallback                          │
+  │                                                                          │
+  │  🎯  COMPREHENSIVE BATTLECARDS & ICP FIT                                 │
+  │      • Target Persona & Ideal Customer Profile (ICP) breakdown         │
+  │      • Customer Migration & Switching Triggers                           │
+  │      • 30-Second Elevator & Displacement Pitch scripts                  │
+  │                                                                          │
+  └──────────────────────────────────────────────────────────────────────────┘
 ```
 
 </div>
@@ -201,32 +204,33 @@ LLM-generated competitive battlecards with strengths, weaknesses, killer questio
 graph TD
     subgraph "📡 Input Sources"
         A["🧩 Chrome Extension"] -->|"One-Click API"| B("📋 Sequential Queue")
-        C["⏰ Scheduled Runner"] -->|"Configurable Interval"| B
+        C["⏰ Scheduled Scraper"] -->|"Configurable Cron"| B
     end
 
     subgraph "⚙️ Core Pipeline"
         B --> D["🕸️ Double-Engine Scraper"]
         D -->|"Cleaned Text"| E["🧠 ONNX Sentence Embedder"]
         E -->|"Cosine Similarity"| F{"🔍 Semantic Change?"}
-        F -->|"similarity >= 0.85"| G["✅ No Action"]
-        F -->|"similarity < 0.85"| H["🧠 Gemini / Qwen LLM"]
+        F -->|"similarity >= 0.85"| G["✅ No Action (Noise)"]
+        F -->|"similarity < 0.85"| H["🔮 Gemini 3.6 Flash / LLM"]
     end
 
-    subgraph "🃏 Battlecard Engine"
-        H -->|"Change Analysis"| BC["🃏 Auto-Battlecard Generator"]
-        BC -->|"Strengths / Weaknesses / Landmines"| BD["📋 Battlecard DB"]
+    subgraph "🛡️ BattleGuard & Enablement Engine"
+        H -->|"Intelligence Data"| BC["🛡️ BattleGuard Defense Engine"]
+        BC -->|"Defense Score / Threat Level"| DB[("💾 SQLite Database")]
+        BC -->|"Tactics & Counter-Scripts"| DB
     end
 
     subgraph "🔮 AI Strategy Layer"
         ORACLE["🔮 MIRA Oracle Co-Pilot"]
         WARROOM["⚔️ War Room Simulator"]
-        BD --> ORACLE
-        BD --> WARROOM
+        DB --> ORACLE
+        DB --> WARROOM
         ORACLE -->|"Conversational AI"| ORACLE_OUT["💬 Strategic Advice"]
         WARROOM -->|"Game Theory"| WAR_OUT["📊 Simulation Report"]
     end
 
-    subgraph "📤 Integrations"
+    subgraph "📤 Integrations & Alerts"
         H --> J["🔄 CRM Adapter"]
         J -->|"Idempotent Write"| K["📓 Notion"]
         J -->|"Idempotent Write"| L["📊 Airtable"]
@@ -241,25 +245,25 @@ graph TD
     style B fill:#0d1117,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
     style D fill:#0d1117,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
     style E fill:#0d1117,stroke:#FFD21E,stroke-width:2px,color:#FFD21E
-    style H fill:#0d1117,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
+    style H fill:#0d1117,stroke:#A78BFA,stroke-width:2px,color:#A78BFA
     style F fill:#161b22,stroke:#A78BFA,stroke-width:2px,color:#c9d1d9
     style ORACLE fill:#1a1040,stroke:#A78BFA,stroke-width:2px,color:#d8b4fe
     style WARROOM fill:#1a1040,stroke:#EC4899,stroke-width:2px,color:#f9a8d4
-    style BC fill:#0d1117,stroke:#FFD21E,stroke-width:2px,color:#FFD21E
+    style BC fill:#0d1117,stroke:#10B981,stroke-width:2px,color:#34D399
 ```
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## 🧬 ML Pipeline
+## 🧬 ML & Prediction Pipeline
 
 <table>
 <tr>
 <td width="50%">
 
-### 🧠 Stage 1 — Semantic Change Detection
+### 🧠 Stage 1 — ONNX Semantic Change Detection
 
-**Runtime:** `@huggingface/transformers` (ONNX, JavaScript)
-**Model:** `Xenova/all-MiniLM-L6-v2`
+**Runtime:** `@huggingface/transformers` (ONNX, JavaScript)  
+**Model:** `Xenova/all-MiniLM-L6-v2`  
 
 ```javascript
 const { pipeline } = require('@huggingface/transformers');
@@ -274,374 +278,146 @@ const oldEmbed = await embedder("Price is $100",
 const newEmbed = await embedder("Current Price: $100",
   { pooling: 'mean', normalize: true });
 
-// Cosine similarity → 0.93
+// Cosine similarity = 0.93 ( >= 0.85 threshold )
 // Same meaning — NO alert triggered ✅
 ```
 
-> ❌ No string comparison — MIRA understands *meaning*, not characters.
+> ❌ No brittle string diffs — MIRA understands *meaning*, eliminating false alarms caused by cosmetic rewording.
 
 </td>
 <td width="50%">
 
-### 📊 Stage 2 — LLM Analysis & Scoring
+### 📊 Stage 2 — Gemini 3.6 Flash Impact Scoring
 
-**Cloud:** Gemini 2.5 Flash API
-**Local:** Qwen2.5-0.5B GGUF via llama-cli (CPU)
+**Primary Model:** `gemini-3.6-flash`  
+**Offline Engine:** `Qwen2.5-0.5B-Instruct` (GGUF via llama-cli)  
 
-Detected changes are analyzed in a **single inference pass**. The LLM returns structured output:
+When a significant change occurs ($< 0.85$ similarity), MIRA runs an inference pass to output structured intelligence:
 
-| Output | Description |
+| Output Field | Purpose |
 |:---|:---|
-| 📂 **Category** | LLM-classified change type |
-| 📝 **Summary** | Plain-English explanation |
-| ❓ **Why It Matters** | Business impact analysis |
-| 📊 **Impact Score** | 1–10 threat/opportunity rating |
-| 📋 **Justification** | Evidence-based reasoning |
-| 🎯 **Recommendation** | Action item with timeline |
-| 🃏 **Battlecard** | Auto-generated competitive card |
+| 📂 **Category** | Classification (Pricing, Product, Hiring, Messaging) |
+| 📝 **Summary** | Plain-English summary of what changed |
+| ❓ **Why It Matters** | Impact analysis relative to your business |
+| 📊 **Impact Score** | 1–10 quantitative severity rating |
+| 📋 **Justification** | Evidence-backed reasoning |
+| 🎯 **Recommendation** | Strategic action item with timeframe |
 
 </td>
 </tr>
 </table>
 
-### 🔄 Fallback Chain
+### 🔄 3-Tier Multi-Model Fallback Chain
 
 ```
-┌─────────────────────┐     ┌──────────────────────────┐     ┌─────────────────────────┐
-│  Gemini 2.5 Flash   │────▶│  Qwen2.5-0.5B GGUF       │────▶│  Rule-Based Heuristics  │
-│  (Cloud, <1.5s)     │     │  (Local, CPU, 7-15s)      │     │  (Keyword match, <1ms)  │
-└─────────────────────┘     └──────────────────────────┘     └─────────────────────────┘
+┌─────────────────────────┐     ┌────────────────────────────┐     ┌───────────────────────────┐
+│   Gemini 3.6 Flash      │────▶│   Local Qwen2.5 GGUF       │────▶│  Quantitative Heuristic   │
+│   (Cloud API, <1.2s)    │     │   (Local CPU Engine, 4-8s) │     │  Scoring Formula (<1ms)   │
+└─────────────────────────┘     └────────────────────────────┘     └───────────────────────────┘
 ```
-
-> When cloud inference is unavailable (rate limits, missing API key), MIRA falls back to local GGUF, then to keyword-based heuristics. **Analysis always completes.**
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## 🧩 Chrome Extension
+## 🛡️ BattleGuard Sales Enablement Defense Center
 
-<div align="center">
+> **BattleGuard** turns raw competitor signals into actionable sales defense playbooks for revenue teams during live deals.
 
-[![Manifest V3](https://img.shields.io/badge/Manifest-V3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3)
-[![Service Worker](https://img.shields.io/badge/Background-Service_Worker-FF6D00?style=for-the-badge)](https://developer.chrome.com/docs/extensions/develop/concepts/service-workers)
-[![Live Badge](https://img.shields.io/badge/Live-Badge_Counter-38bdf8?style=for-the-badge)](https://developer.chrome.com/docs/extensions/reference/api/action#badge)
-
-</div>
-
-<br/>
-
-The **MIRA Chrome Extension** turns your browser into a competitor registration tool. Browse any competitor's website, click the extension icon, and it's instantly queued for monitoring.
-
-| Feature | Description |
-|:---|:---|
-| 🖱️ **One-Click Add** | Auto-detects the active tab's URL and infers competitor name from the domain |
-| 🔴 **Live Badge** | Service worker polls every 60s — new intel lights up a badge counter on the icon |
-| 🔑 **API Key Auth** | All requests secured with `Bearer` token, configured via Options page |
-| 🎯 **Scope Selector** | Monitor full website, pricing page, or a specific section |
-
-<details>
-<summary><b>📐 Architecture</b></summary>
-<br/>
-
-```mermaid
-graph LR
-    subgraph "Chrome Extension — Manifest V3"
-        POPUP["🖱️ popup.html + popup.js"]
-        OPTIONS["⚙️ options.html + options.js"]
-        BG["🔄 background.js"]
-        STORAGE["💾 chrome.storage.sync"]
-    end
-
-    subgraph "MIRA Backend"
-        API_ADD["/api/extension/add-competitor"]
-        API_UNREAD["/api/extension/unread-count"]
-    end
-
-    POPUP -->|"POST + Bearer"| API_ADD
-    BG -->|"GET every 60s"| API_UNREAD
-    API_UNREAD -->|"{ unreadCount: N }"| BG
-    BG -->|"setBadgeText(N)"| BADGE["🔴 Badge"]
-    POPUP --> STORAGE
-    OPTIONS --> STORAGE
-    BG --> STORAGE
-
-    style POPUP fill:#0d1117,stroke:#4285F4,stroke-width:2px,color:#c9d1d9
-    style BG fill:#0d1117,stroke:#FF6D00,stroke-width:2px,color:#c9d1d9
-    style OPTIONS fill:#0d1117,stroke:#4285F4,stroke-width:1px,color:#c9d1d9
-    style BADGE fill:#38bdf8,stroke:#fff,stroke-width:1px,color:#000
-    style API_ADD fill:#161b22,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
-    style API_UNREAD fill:#161b22,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🛡️ BATTLEGUARD DEFENSE CENTER — APEX COMPETITOR                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  📊 DEFENSE SCORE:   [ ██████████████████░░ ]  84 / 100                     │
+│  🚨 THREAT LEVEL:    [ HIGH ]                                               │
+│                                                                             │
+│  🎯 THREAT VECTORS DETECTED:                                                │
+│     • [PRICING] Competitor reduced entry plan by 30% ($100 → $70/mo)       │
+│     • [FEATURE] Launched beta workflow automation module                    │
+│                                                                             │
+│  🛡️ DEFENSIVE TACTICS:                                                      │
+│     1. Price Undercut Defense → Highlight zero add-on seat fees & low TCO   │
+│     2. Product Superiority  → Demo ONNX real-time change detection & SLAs  │
+│     3. Migration Guard     → Offer zero-friction onboarding & data import  │
+│                                                                             │
+│  💡 RECOMMENDED WIN ANGLE:                                                  │
+│     "Position our solution as the modern, high-agility alternative with     │
+│      superior ROI and zero lock-in."                                        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-</details>
+### ⚡ Sub-Tabs & Features
 
-<details>
-<summary><b>🔧 Installation</b></summary>
-<br/>
-
-1. Navigate to `chrome://extensions/` and enable **Developer mode**
-2. Click **Load unpacked** → select the `extension/` directory
-3. Click the MIRA extension icon → **Configure Server Settings**
-4. Enter your server URL (e.g., `http://localhost:3000`) and Extension API Key (from dashboard Settings)
-5. Click **Verify and Save** ✅
-
-</details>
+1. **Overview & Differentiators**: Target ICP fit, 30-second elevator pitch, customer switching triggers, strengths, weaknesses, and why we win.
+2. **BattleGuard Defense Matrix**: Visual Defense Score gauge, threat level badge, vector list, and tactical counter-strategies.
+3. **Interactive Objection Simulator**: Live search tool allowing sales reps to type any buyer objection during a sales call to get an instant winning counter-script.
+4. **Markdown Exporter**: Download ready-to-use `.md` cheat sheets with a single click.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## ⚡ Core Features
+## ⚙️ Multi-Model LLM Engine Selection
 
-<details open>
-<summary><b>🕸️ Intelligent Double-Engine Scraper</b></summary>
-<br/>
+Configure your preferred LLM engine directly from the **Settings** panel:
 
-| Engine | Library | Use Case |
+| Model ID | Category | Description |
 |:---|:---|:---|
-| ⚡ Fast Fetch | `axios` + `cheerio` | Static HTML — fast and lightweight |
-| 🌐 JS Render | `puppeteer` (headless Chromium) | SPAs & dynamic JS content |
-
-**Smart Cleaning Pipeline:**
-- 🧹 Strips cookie banners, nav bars, footers, sidebars
-- 🔄 Rotates User-Agent strings to avoid bot detection
-- 🖼️ Blocks images/CSS in Puppeteer to minimize RAM
-- 📸 Captures screenshots for audit trails
-
-</details>
-
-<details>
-<summary><b>🔍 Tech Stack & DNS Enrichment</b></summary>
-<br/>
-
-- 🌐 **DNS Resolution** — A-records & MX-records for server/email hosting detection
-- 🔧 **Header Inspection** — Reads `server`, `x-powered-by` headers
-- 📊 **Dashboard Widget** — Enriched tech profiles displayed in competitor sidebar
-
-</details>
-
-<details>
-<summary><b>💼 Idempotent CRM Sync</b></summary>
-<br/>
-
-- 🔒 **Deduplication** — Queries Notion/Airtable before writes
-- 🔄 **SQLite Retry Queue** — Failed syncs queued locally, auto-retried
-- 📊 **Dynamic Schema Matching** — Case-insensitive, whitespace-tolerant
-- ✅ **Status Tracking** — `synced` / `failed` / `pending` per card
-
-</details>
-
-<details>
-<summary><b>📢 Multi-Channel Alerts</b></summary>
-<br/>
-
-| Channel | Trigger | Content |
-|:---|:---|:---|
-| 💬 **Slack** | Impact ≥ 8 | Immediate webhook with full intel card |
-| 📧 **Email** | Periodic digest | HTML summary of recent changes |
-| 📓 **Notion** | Every change | Structured database row |
-| 📊 **Airtable** | Every change | Structured record |
-
-</details>
-
-<details>
-<summary><b>🖥️ Rich Dashboard UI</b></summary>
-<br/>
-
-Built with **React 18 + Tailwind CSS + Vite**, the dashboard features:
-
-- 🔍 **Command Palette** — `Cmd/Ctrl + K` global search & quick navigation
-- 📊 **Intel Feed** — Card-based timeline of all detected changes, filterable by impact
-- 🗂️ **Visual Diff Modal** — Side-by-side content diff viewer for every scrape
-- 🔔 **Live Badge** — Unread intel count synced with the Chrome Extension badge
-- ⚙️ **Settings Panel** — Per-workspace CRM keys, SMTP, Slack webhook, and API key management
-- 💀 **Skeleton Loaders** — Smooth loading states throughout the UI
-
-</details>
+| 🔮 **`gemini-3.6-flash`** | **Default / Primary** | Next-generation DeepMind model delivering highest accuracy & speed for predictions. |
+| 🔥 **`gemini-3.0-flash`** | Next-Gen 3.0 | Next-generation Gemini 3.0 Flash inference engine. |
+| 🌟 **`gemini-3.0-pro`** | Frontier Pro | High-reasoning Gemini 3.0 Pro for complex War Room simulations. |
+| ✨ **`gemini-2.5-flash`** | High Performance | Fast and balanced intelligence model. |
+| 🧠 **`gemini-2.5-pro`** | Deep Reasoning | Deep strategy and multi-competitor analysis. |
+| ⚡ **`gemini-2.0-flash`** | Multimodal Fast | Next-gen low-latency multimodal engine. |
+| 🚀 **`gemini-2.0-flash-lite`** | Ultra Low-Latency | Optimized for high-frequency objection handling lookups. |
+| 💻 **`local-qwen-gguf`** | **100% Offline** | Standalone Qwen2.5 GGUF CPU engine (no API key required). |
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🔮 AI Strategy Co-Pilot — MIRA Oracle
 
-<div align="center">
-
-[![Gemini Powered](https://img.shields.io/badge/Powered_by-Gemini_2.5_Flash-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
-[![Context-Aware](https://img.shields.io/badge/Context-Live_Workspace_Data-00C853?style=for-the-badge)](.)
-[![Conversational](https://img.shields.io/badge/Interface-Conversational_AI-FF6D00?style=for-the-badge)](.)
-
-</div>
-
-<br/>
-
-> **MIRA Oracle** is an embedded AI strategy co-pilot that has real-time access to your entire competitive intelligence workspace — business profile, competitor radar, intel signals, and battlecards. Ask it anything and get actionable strategic advice instantly.
-
-<br/>
-
-<table>
-<tr>
-<td width="50%">
-
-### 💡 What Can You Ask?
-
-- *"How should I position against [Competitor X] in enterprise deals?"*
-- *"Draft a 60-second elevator pitch highlighting our advantages"*
-- *"What are the top 3 pricing risks if we go freemium?"*
-- *"Summarize all high-impact competitor moves this week"*
-- *"Write objection-handling scripts for [Competitor]'s latest feature"*
-
-</td>
-<td width="50%">
-
-### ⚡ Quick-Prompt Chips
-
-Pre-built strategy prompts for instant access:
-
-| Chip | Action |
-|:---|:---|
-| 🎯 **Competitor SWOT** | Full SWOT analysis of a tracked competitor |
-| 💰 **Pricing Strategy** | Price positioning based on market signals |
-| 📝 **Pitch Draft** | 60-second elevator pitch generator |
-| 🛡️ **Objection Handling** | Counter-arguments for sales calls |
-| 📊 **Weekly Briefing** | Executive summary of all market movements |
-
-</td>
-</tr>
-</table>
-
-### 🏗️ How It Works
+> **MIRA Oracle** is a conversational AI strategist with full real-time access to your competitive intelligence workspace.
 
 ```mermaid
 graph LR
-    USER["👤 User Query"] --> CTX["📦 Context Assembler"]
-    CTX --> |"Profile + Competitors + Intel + Battlecards"| LLM["🧠 Gemini 2.5 Flash"]
+    USER["👤 User Query"] --> CTX["📦 Workspace Context Assembler"]
+    CTX --> |"Profile + Radar + Signals + Playbooks"| LLM["🧠 Gemini 3.6 Flash"]
     LLM --> RESP["💬 Strategic Response"]
-    RESP --> CONV["🔄 Conversation Memory"]
-    CONV --> |"Multi-turn context"| CTX
-
-    style USER fill:#0d1117,stroke:#A78BFA,stroke-width:2px,color:#c9d1d9
-    style CTX fill:#0d1117,stroke:#FFD21E,stroke-width:2px,color:#FFD21E
-    style LLM fill:#1a1040,stroke:#A78BFA,stroke-width:2px,color:#d8b4fe
-    style RESP fill:#0d1117,stroke:#00C853,stroke-width:2px,color:#00C853
-    style CONV fill:#161b22,stroke:#A78BFA,stroke-width:1px,color:#c9d1d9
+    RESP --> CONV["🔄 Conversation History"]
+    CONV --> CTX
 ```
 
-> **Fallback:** When Gemini is unavailable, Oracle generates intelligent contextual reports using your live workspace data — competitor counts, high-impact signals, and rule-based strategic recommendations.
+### 💡 Strategy Quick-Prompt Chips
+
+- 🎯 **Competitor SWOT**: Full SWOT breakdown of any tracked rival.
+- 💰 **Pricing Strategy**: Pricing response strategy based on detected competitor moves.
+- 📝 **Pitch Draft**: Custom 60-second displacement pitch scripts.
+- 🛡️ **Objection Handling**: Real-time sales counter-scripts.
+- 📊 **Executive Briefing**: Weekly summary of all market movements.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## ⚔️ Competitive War Room Simulator
 
-<div align="center">
+> **"What if we drop prices by 30%?"** — The War Room models competitive market dynamics using game-theory simulation.
 
-[![Game Theory](https://img.shields.io/badge/Engine-Game_Theory_Simulation-EC4899?style=for-the-badge)](.)
-[![Risk Scoring](https://img.shields.io/badge/Output-Dynamic_Risk_Scoring-F59E0B?style=for-the-badge)](.)
-[![Playbook](https://img.shields.io/badge/Result-Counter--Offensive_Playbook-10B981?style=for-the-badge)](.)
+### 📊 Simulation Output
 
-</div>
-
-<br/>
-
-> **"What happens if we drop prices by 30%?"** — The War Room runs a full market simulation powered by Gemini, modeling how each competitor is likely to react, with timelines, risk scores, and a step-by-step counter-offensive playbook.
-
-<br/>
-
-### 📊 Simulation Output Structure
-
-```
-┌────────────────────────────────────────────────────────────────┐
-│                    ⚔️  WAR ROOM SIMULATION                     │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  📋 SCENARIO:  "Drop pricing 30% across all tiers"             │
-│                                                                │
-│  🎯 RISK SCORE:     ████████░░  8/10 — HIGH RISK               │
-│                                                                │
-│  📈 MARKET IMPACT:                                             │
-│     "Aggressive pricing will trigger a race-to-bottom in       │
-│      the mid-market segment within 2-3 weeks..."               │
-│                                                                │
-│  👥 COMPETITOR RESPONSES:                                      │
-│  ┌────────────┬──────────────────────┬───────┬─────────┐       │
-│  │ Competitor  │ Predicted Action      │ Prob  │ When     │      │
-│  ├────────────┼──────────────────────┼───────┼─────────┤       │
-│  │ Rival A     │ Match pricing +       │ 85%   │ 1-2 wks  │      │
-│  │             │  launch ad blitz      │       │          │      │
-│  │ Rival B     │ Highlight premium     │ 60%   │ 2-4 wks  │      │
-│  │             │  positioning          │       │          │      │
-│  └────────────┴──────────────────────┴───────┴─────────┘       │
-│                                                                │
-│  🛡️ COUNTER-OFFENSIVE PLAYBOOK:                                │
-│     Step 1 → Days 1-7:  Distribute battlecards to sales        │
-│     Step 2 → Weeks 2-4: Publish customer success stories       │
-│     Step 3 → Month 2:   Release differentiation features       │
-│                                                                │
-│  ⚖️ VERDICT: PROCEED WITH CAUTION                              │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
-```
-
-### 🎮 Pre-Built Scenario Templates
-
-| Template | Description |
-|:---|:---|
-| 💰 **Price Drop** | "Drop prices by 30% across all tiers" |
-| 🚀 **AI Feature Launch** | "Launch an AI-powered feature competitor doesn't have" |
-| 🆓 **Freemium Pivot** | "Introduce a free tier to capture market share" |
-| 🏢 **Enterprise Push** | "Pivot to enterprise-only with premium support" |
-
-> 💡 Or type any custom hypothesis — e.g., *"Acquire competitor X's top engineer and launch a PR campaign"*
+- 🎯 **Dynamic Risk Score**: 1–10 risk rating with threat level badge (`CRITICAL`, `HIGH`, `MODERATE`, `LOW`).
+- 📈 **Market Impact Summary**: Broad market ripple effect analysis.
+- 👥 **Competitor Responses**: Predicted reactions, probability percentages, and response timelines per rival.
+- 🛡️ **Counter-Offensive Playbook**: Step-by-step tactical timeline (Days 1-7, Weeks 2-4, Month 2).
+- ⚖️ **Strategic Verdict**: Clear decision recommendation (e.g. `PROCEED WITH CAUTION`).
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## 🃏 Auto-Generated Battlecards
+## 🧩 Chrome Extension
 
-> Every tracked competitor gets an **auto-generated battlecard** powered by LLM analysis. Battlecards are living documents that evolve as new intelligence signals are captured.
+Register competitors directly from your browser tab using the **Manifest V3 Chrome Extension**.
 
-<br/>
-
-<table>
-<tr>
-<td width="50%">
-
-### 📋 Card Contents
-
-Each battlecard includes:
-- ✅ **Strengths** — What they do well
-- ❌ **Weaknesses** — Where they fall short
-- 🎯 **Killer Questions** — Ask prospects to expose competitor gaps
-- 💣 **Sales Landmines** — Trigger questions that shift the deal in your favor
-
-</td>
-<td width="50%">
-
-### 🔄 Lifecycle
-
-| Stage | Mechanism |
+| Feature | Description |
 |:---|:---|
-| **Generation** | Auto-created on first competitor scrape |
-| **Refresh** | One-click regenerate from latest intel data |
-| **Sync** | Status tracked: `synced` / `pending` / `failed` |
-| **CRM Push** | Auto-syncs to Notion / Airtable alongside intel cards |
-
-</td>
-</tr>
-</table>
-
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-
-## 🤖 Model Configurations
-
-<div align="center">
-
-| Component | Model | Runtime | Disk | RAM | Latency |
-|:---|:---|:---|:---:|:---:|:---:|
-| 🔍 **Embeddings** | `Xenova/all-MiniLM-L6-v2` | ONNX (JavaScript) | ~90 MB | ~80 MB | < 0.5s |
-| 🧠 **LLM (Cloud)** | `gemini-2.5-flash` | Google API | — | — | < 1.5s |
-| 🧠 **LLM (Local)** | `Qwen2.5-0.5B-Instruct` | llama-cli (GGUF Q4_K_M) | ~382 MB | ~350 MB | 7–15s |
-| 🔧 **Fallback** | Rule-based heuristic | Node.js keyword matching | — | — | < 1ms |
-| 🔮 **Oracle** | `gemini-2.5-flash` | Google API (contextual) | — | — | < 2s |
-| ⚔️ **War Room** | `gemini-2.5-flash` | Google API (game-theory) | — | — | < 3s |
-
-</div>
-
-> 💡 Configure your Gemini API key and other integration credentials via the **dashboard Settings tab** — no `.env` changes needed.
+| 🖱️ **One-Click Add** | Auto-detects URL and domain name from current active tab |
+| 🔴 **Live Badge** | Service worker polls every 60s to light up an unread intel count badge |
+| 🔑 **API Key Auth** | Requests authenticated via `Bearer` token |
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
@@ -667,15 +443,15 @@ npm run install:all
 
 > 💡 **No Python required.** All ML inference runs natively in Node.js.
 
-### 2️⃣ Configure
+### 2️⃣ Environment Configuration
 
 ```bash
 cp .env.example .env
-# Only PORT and NODE_ENV are needed — all API keys (Gemini, Slack,
+# Only PORT and NODE_ENV are needed in .env — all API keys (Gemini, Slack,
 # Notion, Airtable, SMTP) are configured via the dashboard Settings tab.
 ```
 
-### 3️⃣ Launch
+### 3️⃣ Launch Application
 
 ```bash
 npm run dev
@@ -683,143 +459,54 @@ npm run dev
 
 | Service | URL |
 |:---|:---|
-| 🖥️ Backend API | `http://localhost:3000` |
-| 🎨 Dashboard | `http://localhost:5173` |
+| 🖥️ Backend Server | `http://localhost:3000` |
+| 🎨 React Dashboard | `http://localhost:5173` |
 
-### 4️⃣ Test
+### 4️⃣ Run Integration Verification Tests
 
 ```bash
 npm test
 ```
 
-> Validates: Scraping → Semantic Detection → LLM Inference → Battlecards → CRM Sync
+> Runs all 5 integration test suites: Scraping → ONNX Detection → LLM Prediction → CRM Retry Queue → BattleGuard Metrics & DB Persistence.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🔐 Environment Variables
 
-Create a `.env` in the project root (copy from `.env.example`). Only `PORT` is strictly required — all integration credentials are managed via the **dashboard Settings tab** and persisted in SQLite.
-
 | Variable | Required | Default | Description |
 |:---|:---:|:---:|:---|
-| `PORT` | ✅ | `3000` | Express server port |
-| `NODE_ENV` | — | `development` | `production` for optimized builds |
-| `PUPPETEER_EXECUTABLE_PATH` | — | bundled | Override Chrome binary (e.g. `/usr/bin/google-chrome-stable`) |
-
-> **Note:** `GEMINI_API_KEY`, `SLACK_WEBHOOK_URL`, Notion, Airtable, and SMTP credentials are all configured through the **dashboard Settings tab** — no `.env` entry needed.
+| `PORT` | ✅ | `3000` | Express backend port |
+| `NODE_ENV` | — | `development` | Environment mode (`production` / `development`) |
+| `GEMINI_MODEL` | — | `gemini-3.6-flash` | Override default prediction model |
+| `PUPPETEER_EXECUTABLE_PATH` | — | bundled | Chrome binary path override |
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 📡 API Reference
 
-Dashboard endpoints use `X-Workspace-Id` header (defaults to `default`).
-Extension endpoints require `Authorization: Bearer <api_key>`.
+Dashboard endpoints require `x-workspace-id` header (defaults to `default`).
 
 <details>
-<summary><b>📋 Dashboard Endpoints</b></summary>
+<summary><b>📋 Dashboard & BattleGuard Endpoints</b></summary>
 <br/>
 
 | Method | Endpoint | Description |
 |:---|:---|:---|
-| `GET` | `/health` | Health check |
+| `GET` | `/health` | Server health check |
 | `GET` | `/api/profile` | Get business profile |
 | `POST` | `/api/profile` | Save business profile |
-| `GET` | `/api/competitors` | List competitors |
-| `POST` | `/api/competitors` | Add competitor |
-| `GET` | `/api/competitors/:id` | Competitor details |
-| `PUT` | `/api/competitors/:id` | Update competitor |
-| `DELETE` | `/api/competitors/:id` | Remove competitor |
-| `POST` | `/api/competitors/:id/check` | Trigger immediate scrape |
-| `GET` | `/api/intelligence` | Get intel cards |
-| `PUT` | `/api/intelligence/:id` | Update card (read/unread) |
-| `POST` | `/api/intelligence/read-all` | Mark all read |
-| `POST` | `/api/intelligence/:id/retry` | Retry failed CRM sync |
-| `GET` | `/api/settings` | Get settings |
-| `POST` | `/api/settings` | Save settings |
-| `POST` | `/api/settings/test-email` | Test SMTP |
-| `GET` | `/api/debug-status` | Pipeline debug info |
-
-</details>
-
-<details>
-<summary><b>🃏 Battlecard Endpoints</b></summary>
-<br/>
-
-| Method | Endpoint | Description |
-|:---|:---|:---|
-| `GET` | `/api/battlecards` | List all battlecards |
+| `GET` | `/api/competitors` | List monitored competitors |
+| `POST` | `/api/competitors` | Register new competitor |
+| `POST` | `/api/competitors/:id/check` | Trigger immediate scrape & change detection |
+| `GET` | `/api/intelligence` | List intelligence cards |
+| `GET` | `/api/battlecards` | List all battlecards & BattleGuard playbooks |
 | `GET` | `/api/battlecards/:competitorId` | Get battlecard for competitor |
-| `POST` | `/api/battlecards/:competitorId/generate` | Generate / refresh battlecard |
-| `DELETE` | `/api/battlecards/:competitorId` | Delete battlecard |
-
-</details>
-
-<details>
-<summary><b>🔮 AI Strategy Co-Pilot & War Room Endpoints</b></summary>
-<br/>
-
-| Method | Endpoint | Description |
-|:---|:---|:---|
-| `POST` | `/api/oracle/chat` | Send message to MIRA Oracle (AI Co-Pilot) |
-| `POST` | `/api/warroom/simulate` | Run War Room "What-If" simulation |
-
-**Oracle Request Body:**
-```json
-{
-  "message": "How should we counter Competitor X's new AI feature?",
-  "history": [
-    { "role": "user", "text": "Previous question..." },
-    { "role": "assistant", "text": "Previous answer..." }
-  ]
-}
-```
-
-**War Room Request Body:**
-```json
-{
-  "move": "Drop pricing by 30% across all tiers"
-}
-```
-
-**War Room Response Structure:**
-```json
-{
-  "scenario": "Drop pricing by 30% across all tiers",
-  "risk_score": 8,
-  "risk_level": "HIGH",
-  "market_impact_summary": "Aggressive pricing will trigger...",
-  "competitor_responses": [
-    {
-      "competitor_name": "Rival A",
-      "predicted_action": "Match pricing + launch ad blitz",
-      "likelihood_pct": 85,
-      "timeframe": "1-2 Weeks",
-      "threat_severity": "High"
-    }
-  ],
-  "counter_offensive_playbook": [
-    {
-      "step": 1,
-      "phase": "Immediate (Days 1-7)",
-      "action": "Distribute battlecards to SDRs",
-      "details": "Equip sales team before competitors adjust messaging"
-    }
-  ],
-  "strategic_verdict": "PROCEED WITH CAUTION"
-}
-```
-
-</details>
-
-<details>
-<summary><b>🧩 Extension Endpoints</b></summary>
-<br/>
-
-| Method | Endpoint | Description |
-|:---|:---|:---|
-| `GET` | `/api/extension/status` | Connection check |
-| `GET` | `/api/extension/unread-count` | Unread card count (badge) |
-| `POST` | `/api/extension/add-competitor` | Register competitor from browser |
+| `POST` | `/api/battlecards/:competitorId/generate` | Generate / refresh BattleGuard playbook |
+| `POST` | `/api/oracle/chat` | Send query to MIRA Oracle AI Co-Pilot |
+| `POST` | `/api/warroom/simulate` | Run War Room scenario simulation |
+| `GET` | `/api/settings` | Get settings (Gemini API key, Model selection, Webhooks) |
+| `POST` | `/api/settings` | Update workspace settings |
 
 </details>
 
@@ -828,58 +515,30 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 ## 🔌 Integration Guides
 
 <details>
-<summary><b>📓 Notion CRM</b></summary>
+<summary><b>📓 Notion CRM Integration</b></summary>
 <br/>
 
-1. Create an integration at [**Notion My Integrations**](https://www.notion.so/my-integrations)
-2. Create a database with these properties:
-
-| Property | Type |
-|:---|:---|
-| Title | `Title` |
-| Competitor Name | `Select` |
-| URL | `URL` |
-| Category | `Select` |
-| Impact Score | `Number` |
-| Recommended Action | `Text` |
-| Summary | `Text` |
-| Justification | `Text` |
-| Screenshot URL | `URL` |
-
-3. Connect integration to database → `...` → **Connect to**
-4. Copy **Database ID** from page URL
-5. Enter credentials in dashboard **Settings**
+1. Create an integration at [Notion My Integrations](https://www.notion.so/my-integrations).
+2. Share your target database with the integration.
+3. Paste the **Notion Integration Token** and **Database ID** in MIRA **Settings**.
 
 </details>
 
 <details>
-<summary><b>📊 Airtable CRM</b></summary>
+<summary><b>📊 Airtable CRM Integration</b></summary>
 <br/>
 
-1. Generate a PAT with `data.records:write` at [**Airtable Tokens**](https://airtable.com/create/tokens)
-2. Create a Base → Table named **Competitor Intel**
-3. Enter Base ID, Table name, and Token in dashboard Settings
+1. Generate a Personal Access Token (PAT) with `data.records:write` permissions at [Airtable Tokens](https://airtable.com/create/tokens).
+2. Enter your **Base ID**, **Table Name** (e.g. `Competitor Intel`), and **Token** in MIRA **Settings**.
 
 </details>
 
 <details>
-<summary><b>💬 Slack</b></summary>
+<summary><b>💬 Slack Webhook Alerts</b></summary>
 <br/>
 
-1. Create an [**Incoming Webhook**](https://api.slack.com/messaging/webhooks) in your workspace
-2. Paste the webhook URL in dashboard Settings
-3. Impact Score **≥ 8** → instant Slack alert ⚡
-
-</details>
-
-<details>
-<summary><b>📧 Email (SMTP)</b></summary>
-<br/>
-
-1. For Gmail: generate an **App Password** at [security.google.com](https://security.google.com)
-2. Configure in Settings: `smtp.gmail.com` / Port `587`
-3. Click **Test SMTP Connection** to verify
-4. Periodic digests arrive automatically 📬
+1. Create an **Incoming Webhook** in your Slack workspace.
+2. Paste the URL into MIRA **Settings** $\rightarrow$ High-impact changes ($\ge 8/10$) trigger instant alerts.
 
 </details>
 
@@ -895,17 +554,15 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 
 <br/>
 
-| Layer | Technologies |
+| Layer | Technology |
 |:---|:---|
-| 🖥️ **Backend** | Node.js 20, Express 4, SQLite (`sqlite3`), UUID |
-| 🎨 **Frontend** | React 18, Vite 5, Tailwind CSS 3, Lucide React |
-| 🕸️ **Scraping** | Axios, Cheerio, Puppeteer (headless Chromium) |
-| 🧠 **AI / ML** | HuggingFace Transformers (ONNX), Gemini 2.5 Flash, Qwen GGUF |
-| 🔮 **Strategy AI** | MIRA Oracle (Co-Pilot), War Room Simulator (Game Theory) |
-| 🃏 **Battlecards** | LLM-powered auto-generation with CRM sync |
-| 🔌 **Integrations** | Notion SDK, Airtable REST, Slack Webhooks, Nodemailer |
+| 🖥️ **Backend** | Node.js 20, Express 4, SQLite (`sqlite3`), Axios, Cheerio, Puppeteer |
+| 🎨 **Frontend** | React 18, Vite 5, Tailwind CSS 3, Lucide React Icons |
+| 🧠 **AI & Prediction** | Google Gemini 3.6 Flash, HuggingFace ONNX (`all-MiniLM-L6-v2`), Qwen2.5 GGUF |
+| 🛡️ **Sales Enablement** | BattleGuard Engine, Defense Index Gauge, Objection Simulator |
+| 🔮 **Strategy AI** | MIRA Oracle Co-Pilot, War Room Simulator |
+| 🔌 **Integrations** | Notion SDK, Airtable REST API, Slack Webhooks, Nodemailer SMTP |
 | 🧩 **Extension** | Chrome Manifest V3, Service Workers |
-| 🔧 **Tooling** | Concurrently, Nodemon, Docker |
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
@@ -914,53 +571,37 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 ```
 📦 MIRA — Autonomous Competitor Intelligence Engine
 │
-├── 📂 client/                     # React + Vite + Tailwind CSS dashboard
+├── 📂 client/                     # React + Vite + Tailwind CSS Dashboard
 │   ├── src/
-│   │   ├── App.jsx                # Root dashboard application (all views)
-│   │   ├── index.css              # Global + Tailwind styles
-│   │   ├── main.jsx               # React entry point
-│   │   └── components/
-│   │       ├── BattlecardsView.jsx   # 🃏 Auto-generated battlecards UI
-│   │       ├── CommandPalette.jsx    # 🔍 Cmd+K global search & quick actions
-│   │       ├── Sidebar.jsx           # 📱 Navigation sidebar
-│   │       ├── SkeletonLoader.jsx    # 💀 Loading state placeholders
-│   │       ├── StrategyCopilotModal.jsx # 🔮 MIRA Oracle AI chat modal
-│   │       ├── TopBar.jsx            # 🔝 Top navigation bar
-│   │       ├── VisualDiffModal.jsx   # 🗂️ Side-by-side content diff viewer
-│   │       └── WarRoomView.jsx       # ⚔️ War Room scenario simulator
-│   ├── index.html
-│   ├── tailwind.config.js         # Tailwind theme configuration
-│   └── vite.config.js             # Vite config with API proxy to :3000
+│   │   ├── App.jsx                # Root application & Settings panel
+│   │   ├── components/
+│   │   │   ├── BattlecardsView.jsx   # 🛡️ Battlecards & BattleGuard Defense Center
+│   │   │   ├── CommandPalette.jsx    # 🔍 Cmd+K global search & quick actions
+│   │   │   ├── Sidebar.jsx           # 📱 Navigation sidebar
+│   │   │   ├── StrategyCopilotModal.jsx # 🔮 MIRA Oracle AI chat modal
+│   │   │   ├── VisualDiffModal.jsx   # 🗂️ Content diff modal
+│   │   │   └── WarRoomView.jsx       # ⚔️ War Room scenario simulator
+│   └── vite.config.js             # Vite configuration
 │
-├── 📂 server/                     # Node.js + Express backend
+├── 📂 server/                     # Express Backend Engine
 │   └── src/
-│       ├── index.js               # Express server, routes, scheduler
-│       ├── scraper.js             # Double-engine scraper (Axios + Puppeteer)
-│       ├── detector.js            # Semantic change detection (ONNX)
-│       ├── llm.js                 # LLM inference + Oracle + War Room + Battlecards
+│       ├── index.js               # Express server, routes, cron runner
+│       ├── scraper.js             # Double-engine scraper (Cheerio + Puppeteer)
+│       ├── detector.js            # ONNX semantic change detection
+│       ├── llm.js                 # Gemini 3.6 Flash + Oracle + War Room + BattleGuard
 │       ├── crm.js                 # Notion & Airtable CRM adapter
 │       ├── queue.js               # Sequential processing queue
-│       ├── slack.js               # Slack webhook alerts
-│       ├── mailer.js              # SMTP email digest
-│       ├── enrichment.js          # DNS & header enrichment
-│       ├── db.js                  # SQLite database layer
-│       └── verify-test.js         # Integration tests
+│       ├── slack.js               # Slack webhook notifier
+│       ├── db.js                  # SQLite database layer & schema migrations
+│       └── verify-test.js         # Integration test suite
 │
-├── 📂 extension/                  # Chrome Extension (MV3)
+├── 📂 extension/                  # Chrome Extension (Manifest V3)
 │   ├── manifest.json
 │   ├── popup.html / popup.js      # One-click competitor registration
-│   ├── options.html / options.js  # Server URL & API key config
-│   ├── background.js              # Badge polling service worker
-│   └── icon*.png                  # Icons (16, 48, 128)
+│   └── background.js              # Live unread badge polling service worker
 │
-├── 📂 docs/                       # Documentation & screenshots
-│   ├── images/
-│   ├── railway_deployment_guide.md
-│   └── walkthrough.md
-├── data_exporter.py               # CSV/Markdown export utility
-├── Dockerfile                     # Production container (Node 20 + Chrome)
-├── package.json                   # Workspace orchestrator
-└── .env.example                   # Environment template
+├── Dockerfile                     # Production Container (Node 20 + Chrome)
+└── package.json                   # Project scripts & dependencies
 ```
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
@@ -969,14 +610,11 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 
 ### Railway (Recommended)
 
-The `Dockerfile` installs Google Chrome Stable, downloads ONNX models, builds the Vite client, and starts Express — all automatically.
+The included `Dockerfile` builds the React frontend, configures Chromium, installs ONNX dependencies, and launches the Express server automatically:
 
-1. Create a project on [**Railway**](https://railway.app)
-2. Link your GitHub repo
-3. Set env vars: `PORT=3000`, `NODE_ENV=production`
-4. Deploy 🚀
-
-> All integration credentials (Gemini, Slack, Notion, etc.) are configured via the dashboard Settings after deploy — no extra env vars needed.
+1. Connect your repository to [Railway](https://railway.app).
+2. Set environment variables: `PORT=3000`, `NODE_ENV=production`.
+3. Deploy! 🚀
 
 ### Docker (Manual)
 
@@ -989,50 +627,40 @@ docker run -p 3000:3000 --env-file .env mira
 
 ## ⚠️ Known Limitations
 
-| Issue | Details |
+| Area | Limitation & Handling |
 |:---|:---|
-| ⏳ **Cold Start** | First run downloads models (~90 MB ONNX + ~382 MB GGUF). Cached after. |
-| 🤖 **Anti-Bot** | Some sites block headless scrapers → graceful Axios fallback. |
-| 📋 **Sequential Queue** | One-at-a-time processing to stay under 512 MB RAM. |
-| 🔄 **Rate Limits** | Gemini may throttle → auto-fallback to GGUF → heuristics. |
-| 🔮 **Oracle Fallback** | Without Gemini key, Oracle provides data-driven reports (not conversational AI). |
-| ⚔️ **War Room Fallback** | Without Gemini key, simulations use deterministic rule-based modeling. |
+| ⏳ **Initial Cold Start** | First run caches the ~90 MB ONNX model. Cached on disk thereafter. |
+| 🤖 **Anti-Bot Defenses** | Sites with Cloudflare aggressive challenges fall back gracefully to Cheerio/Axios. |
+| 📋 **Sequential Queue** | Single-worker queue keeps memory consumption under 512 MB RAM. |
+| 🔄 **API Rate Limits** | Auto-retries on HTTP 429 and falls back to local CPU GGUF inference. |
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🤝 Contributing
 
 1. **Fork** the repository
-2. **Branch** → `git checkout -b feature/your-feature`
-3. **Commit** → `git commit -m 'Add your feature'`
-4. **Push** → `git push origin feature/your-feature`
-5. **PR** → Open a Pull Request
+2. **Create Branch** → `git checkout -b feature/amazing-feature`
+3. **Commit Changes** → `git commit -m 'feat: Add amazing feature'`
+4. **Push Branch** → `git push origin feature/amazing-feature`
+5. **Open Pull Request**
 
-Please ensure `npm test` passes before submitting.
+Please run `npm test` before submitting PRs.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 📜 License
 
-Licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
 
 <br/>
-
-<!-- Footer Accent -->
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 <div align="center">
 
-
-
-<br/>
-
 [![MIT](https://img.shields.io/badge/License-MIT-A78BFA?style=for-the-badge&labelColor=0d1117)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/NitheshK4/Autonomous-Competitor-Intelligence-Engine?style=for-the-badge&logo=github&color=FFD21E&labelColor=0d1117)](https://github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/stargazers)
-[![Issues](https://img.shields.io/github/issues/NitheshK4/Autonomous-Competitor-Intelligence-Engine?style=for-the-badge&logo=github&color=F87171&labelColor=0d1117)](https://github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/issues)
 
 <br/>
 
-<sub>🔮 MIRA Oracle • ⚔️ War Room Simulator • 🃏 Auto-Battlecards • 🧠 Semantic Intelligence • 🕸️ Smart Scraping</sub>
+<sub>🔮 MIRA Oracle • 🛡️ BattleGuard Sales Defense • 🔮 Gemini 3.6 Flash • ⚔️ War Room Simulator • 🧠 ONNX Semantic Detection</sub>
 
 </div>
