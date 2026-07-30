@@ -18,7 +18,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js_20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Gemini](https://img.shields.io/badge/Gemini_2.5-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Gemini](https://img.shields.io/badge/Gemini_3.6-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
 [![HuggingFace](https://img.shields.io/badge/🤗_ONNX-FFD21E?style=for-the-badge)](https://huggingface.co)
 [![Chrome MV3](https://img.shields.io/badge/Chrome_MV3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com)
 
@@ -75,7 +75,7 @@
 
 ## 🌟 Overview
 
-> **MIRA** (**M**arket **I**ntelligence & **R**esearch **A**utomation) is an autonomous, self-healing competitor monitoring engine with an **AI-powered strategy co-pilot** and **competitive war room simulator**. It scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **ONNX sentence embeddings**, analyzes business impact with **Gemini 2.5 Flash** (with a local **Qwen GGUF** fallback), generates **auto-battlecards**, and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
+> **MIRA** (**M**arket **I**ntelligence & **R**esearch **A**utomation) is an autonomous, self-healing competitor monitoring engine with an **AI-powered strategy co-pilot** and **competitive war room simulator**. It scrapes competitor websites on a configurable schedule, detects *meaningful* content changes using **ONNX sentence embeddings**, analyzes business impact with **Gemini 3.6 Flash** (with a local **Qwen GGUF** fallback), generates **auto-battlecards**, and pushes real-time alerts to **Slack**, **Email**, and **Notion / Airtable CRM** — all within a **512 MB RAM** footprint.
 
 <br/>
 
@@ -83,7 +83,7 @@
 
 | 🔬 Scrape | 🧠 Detect | 📊 Analyze & Score | ⚔️ Simulate | 🚨 Alert |
 |:---:|:---:|:---:|:---:|:---:|
-| Axios + Puppeteer | ONNX Embeddings | Gemini 2.5 Flash / Qwen | War Room + Oracle | Slack + Email + CRM |
+| Axios + Puppeteer | ONNX Embeddings | Gemini 3.6 Flash / Qwen | War Room + Oracle | Slack + Email + CRM |
 | Static & JS pages | Cosine similarity | Impact 1–10 + Battlecards | Game-theory simulation | Real-time webhooks |
 
 </div>
@@ -285,7 +285,7 @@ const newEmbed = await embedder("Current Price: $100",
 
 ### 📊 Stage 2 — LLM Analysis & Scoring
 
-**Cloud:** Gemini 2.5 Flash API
+**Cloud:** Gemini 3.6 Flash API
 **Local:** Qwen2.5-0.5B GGUF via llama-cli (CPU)
 
 Detected changes are analyzed in a **single inference pass**. The LLM returns structured output:
@@ -308,7 +308,7 @@ Detected changes are analyzed in a **single inference pass**. The LLM returns st
 
 ```
 ┌─────────────────────┐     ┌──────────────────────────┐     ┌─────────────────────────┐
-│  Gemini 2.5 Flash   │────▶│  Qwen2.5-0.5B GGUF       │────▶│  Rule-Based Heuristics  │
+│  Gemini 3.6 Flash   │────▶│  Qwen2.5-0.5B GGUF       │────▶│  Rule-Based Heuristics  │
 │  (Cloud, <1.5s)     │     │  (Local, CPU, 7-15s)      │     │  (Keyword match, <1ms)  │
 └─────────────────────┘     └──────────────────────────┘     └─────────────────────────┘
 ```
@@ -462,7 +462,7 @@ Built with **React 18 + Tailwind CSS + Vite**, the dashboard features:
 
 <div align="center">
 
-[![Gemini Powered](https://img.shields.io/badge/Powered_by-Gemini_2.5_Flash-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Gemini Powered](https://img.shields.io/badge/Powered_by-Gemini_3.6_Flash-8E75FF?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
 [![Context-Aware](https://img.shields.io/badge/Context-Live_Workspace_Data-00C853?style=for-the-badge)](.)
 [![Conversational](https://img.shields.io/badge/Interface-Conversational_AI-FF6D00?style=for-the-badge)](.)
 
@@ -510,7 +510,7 @@ Pre-built strategy prompts for instant access:
 ```mermaid
 graph LR
     USER["👤 User Query"] --> CTX["📦 Context Assembler"]
-    CTX --> |"Profile + Competitors + Intel + Battlecards"| LLM["🧠 Gemini 2.5 Flash"]
+    CTX --> |"Profile + Competitors + Intel + Battlecards"| LLM["🧠 Gemini 3.6 Flash"]
     LLM --> RESP["💬 Strategic Response"]
     RESP --> CONV["🔄 Conversation Memory"]
     CONV --> |"Multi-turn context"| CTX
@@ -633,11 +633,11 @@ Each battlecard includes:
 | Component | Model | Runtime | Disk | RAM | Latency |
 |:---|:---|:---|:---:|:---:|:---:|
 | 🔍 **Embeddings** | `Xenova/all-MiniLM-L6-v2` | ONNX (JavaScript) | ~90 MB | ~80 MB | < 0.5s |
-| 🧠 **LLM (Cloud)** | `gemini-2.5-flash` | Google API | — | — | < 1.5s |
+| 🧠 **LLM (Cloud)** | `gemini-3.6-flash` | Google API | — | — | < 1.5s |
 | 🧠 **LLM (Local)** | `Qwen2.5-0.5B-Instruct` | llama-cli (GGUF Q4_K_M) | ~382 MB | ~350 MB | 7–15s |
 | 🔧 **Fallback** | Rule-based heuristic | Node.js keyword matching | — | — | < 1ms |
-| 🔮 **Oracle** | `gemini-2.5-flash` | Google API (contextual) | — | — | < 2s |
-| ⚔️ **War Room** | `gemini-2.5-flash` | Google API (game-theory) | — | — | < 3s |
+| 🔮 **Oracle** | `gemini-3.6-flash` | Google API (contextual) | — | — | < 2s |
+| ⚔️ **War Room** | `gemini-3.6-flash` | Google API (game-theory) | — | — | < 3s |
 
 </div>
 
@@ -900,7 +900,7 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 | 🖥️ **Backend** | Node.js 20, Express 4, SQLite (`sqlite3`), UUID |
 | 🎨 **Frontend** | React 18, Vite 5, Tailwind CSS 3, Lucide React |
 | 🕸️ **Scraping** | Axios, Cheerio, Puppeteer (headless Chromium) |
-| 🧠 **AI / ML** | HuggingFace Transformers (ONNX), Gemini 2.5 Flash, Qwen GGUF |
+| 🧠 **AI / ML** | HuggingFace Transformers (ONNX), Gemini 3.6 Flash, Qwen GGUF |
 | 🔮 **Strategy AI** | MIRA Oracle (Co-Pilot), War Room Simulator (Game Theory) |
 | 🃏 **Battlecards** | LLM-powered auto-generation with CRM sync |
 | 🔌 **Integrations** | Notion SDK, Airtable REST, Slack Webhooks, Nodemailer |
