@@ -102,16 +102,6 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans);
-  background-color: #050711;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(147, 83, 211, 0.18) 0%, transparent 60%),
-    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 100% 100%, 28px 28px;
-  color: var(--text);
-  -webkit-font-smoothing: antialiased;
-html, body {
-  height: 100%;
-  font-family: var(--font-sans);
   background-color: #F4F0EA;
   background-image: 
     radial-gradient(#000000 1.2px, transparent 1.2px);
