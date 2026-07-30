@@ -287,7 +287,7 @@ Analyze the competitor's changes above and generate the classified intelligence 
       for (let i = 0; i < retries; i++) {
         try {
           res = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiApiKey}`,
             {
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.2 }
@@ -566,7 +566,7 @@ Generate the tactical AI sales battlecard for ${compName} now. Format inside <js
 `;
 
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${activeGeminiKey}`,
         {
           contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
         },
@@ -693,7 +693,7 @@ ${cardsSummary}`;
       const fullPrompt = `${systemInstruction}\n\nCONVERSATION HISTORY:\n${historyFormatted}\n\nUser Question: ${userMessage}\n\nMIRA Oracle Response:`;
 
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${activeGeminiKey}`,
         {
           contents: [{ parts: [{ text: fullPrompt }] }],
           generationConfig: { temperature: 0.4 }
@@ -822,7 +822,7 @@ Simulate market reactions specifically analyzing each registered competitor and 
 `;
 
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeGeminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${activeGeminiKey}`,
         {
           contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
         },
