@@ -1,94 +1,94 @@
 /* ============================================================
-   MIRA — CHAMPAGNE GOLD & EXECUTIVE CREAM DESIGN SYSTEM
-   Warm Ivory Cream Canvas (#FAF7F2) · Champagne Gold Accents (#D97706)
-   Deep Slate Charcoal Cards (#0F172A) · Refined Executive Luxury
+   MIRA — NORDIC SLATE & EMERALD MINT DESIGN SYSTEM
+   Deep Slate Navy Canvas (#0B0F19) · Emerald Mint Highlights (#10B981)
+   Sleek Translucent Slate Cards (#1E293B) · Supabase/Stripe Developer Aesthetic
    ============================================================ */
 
 /* ------- CSS Design Tokens ------- */
 :root {
-  /* Warm Ivory & Executive Charcoal Palette */
-  --bg:               #FAF7F2;
-  --bg-deep:          #F3ECE0;
-  --surface-clay:     #FFFFFF;
-  --surface-solid:    #FFFFFF;
-  --surface-hover:    #FFFDF7;
-  --surface-active:   #FEF3C7;
-  --surface-recessed: #F0E8D9;
+  /* Slate Navy & Emerald Mint Palette */
+  --bg:               #0B0F19;
+  --bg-deep:          #070A12;
+  --surface-clay:     rgba(30, 41, 59, 0.85);
+  --surface-solid:    #1E293B;
+  --surface-hover:    rgba(51, 65, 85, 0.90);
+  --surface-active:   rgba(71, 85, 105, 0.95);
+  --surface-recessed: #0F172A;
 
-  /* Executive Champagne Gold Accents */
-  --amber:            #D97706;
-  --amber-glow:       rgba(217, 119, 6, 0.25);
-  --cyan:             #0284C7;
-  --cyan-glow:        rgba(2, 132, 199, 0.25);
-  --violet:           #7C3AED;
-  --violet-glow:      rgba(124, 58, 237, 0.25);
-  --indigo:           #4F46E5;
-  --rose:             #E11D48;
-  --rose-glow:        rgba(225, 29, 72, 0.25);
-  --emerald:          #059669;
-  --emerald-glow:     rgba(5, 150, 105, 0.25);
-  --purple:           #9333EA;
-  --blue:             #2563EB;
+  /* Emerald Mint & Cyan Accents */
+  --emerald:          #10B981;
+  --emerald-glow:     rgba(16, 185, 129, 0.35);
+  --cyan:             #06B6D4;
+  --cyan-glow:        rgba(6, 182, 212, 0.35);
+  --violet:           #8B5CF6;
+  --violet-glow:      rgba(139, 92, 246, 0.35);
+  --indigo:           #6366F1;
+  --rose:             #F43F5E;
+  --rose-glow:        rgba(244, 63, 94, 0.35);
+  --amber:            #F59E0B;
+  --amber-glow:       rgba(245, 158, 11, 0.35);
+  --purple:           #A855F7;
+  --blue:             #3B82F6;
 
   /* Legacy color aliases */
   --yellow:           #F59E0B;
-  --yellow-dk:        #B45309;
-  --pink:             #E11D48;
-  --pink-dk:          #BE123C;
-  --blue-dk:          #0369A1;
-  --green:            #059669;
-  --green-dk:         #047857;
-  --orange:           #D97706;
-  --orange-dk:        #B45309;
-  --purple-dk:        #7E22CE;
-  --red:              #E11D48;
+  --yellow-dk:        #D97706;
+  --pink:             #F43F5E;
+  --pink-dk:          #E11D48;
+  --blue-dk:          #0284C7;
+  --green:            #10B981;
+  --green-dk:         #059669;
+  --orange:           #F97316;
+  --orange-dk:        #EA580C;
+  --purple-dk:        #9333EA;
+  --red:              #F43F5E;
 
-  /* Executive Charcoal Typography */
-  --black:            #0F172A;
-  --text:             #0F172A;
-  --text-muted:       #475569;
+  /* High-Contrast Readability Colors */
+  --black:            #000000;
+  --text:             #F8FAFC;
+  --text-muted:       #94A3B8;
   --text-subtle:      #64748B;
 
-  /* Soft Luxury Shadows & Specular Outlines */
+  /* Modern Slate Elevation & Mint Glow Shadows */
   --clay-card-shadow: 
-    0 10px 30px rgba(15, 23, 42, 0.08),
-    0 0 15px rgba(217, 119, 6, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.80);
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(16, 185, 129, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
   --clay-card-hover: 
-    0 16px 40px rgba(15, 23, 42, 0.14),
-    0 0 25px rgba(217, 119, 6, 0.20),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
+    0 16px 40px rgba(0, 0, 0, 0.60),
+    0 0 30px rgba(16, 185, 129, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 
   --brutal-card-shadow: var(--clay-card-shadow);
   --brutal-card-hover:  var(--clay-card-hover);
 
   --clay-btn-shadow:
-    0 4px 16px rgba(217, 119, 6, 0.30),
+    0 4px 16px rgba(16, 185, 129, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
 
   --clay-btn-pressed:
-    0 2px 6px rgba(0, 0, 0, 0.20),
-    inset 0 2px 4px rgba(0, 0, 0, 0.20);
+    0 2px 6px rgba(0, 0, 0, 0.50),
+    inset 0 2px 4px rgba(0, 0, 0, 0.30);
 
   --clay-inset-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
-    inset 0 0 0 1px rgba(217, 119, 6, 0.20);
+    inset 3px 3px 6px rgba(0, 0, 0, 0.60),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 
-  --glass-bg:         #FFFFFF;
-  --glass-border:     1.5px solid rgba(217, 119, 6, 0.20);
-  --glass-border-light: 1.5px solid rgba(217, 119, 6, 0.35);
-  --glass-border-subtle: 1px solid rgba(217, 119, 6, 0.12);
-  --glass-blur:       none;
-  --glass-blur-heavy: none;
+  --glass-bg:         var(--surface-clay);
+  --glass-border:     1px solid rgba(255, 255, 255, 0.10);
+  --glass-border-light: 1px solid rgba(255, 255, 255, 0.18);
+  --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.05);
+  --glass-blur:       blur(16px);
+  --glass-blur-heavy: blur(24px);
 
-  --shadow-sm:        0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-sm:        0 4px 12px rgba(0, 0, 0, 0.25);
   --shadow-md:        var(--clay-card-shadow);
   --shadow-lg:        var(--clay-card-hover);
-  --shadow-xl:        0 20px 50px rgba(15, 23, 42, 0.16);
+  --shadow-xl:        0 20px 50px rgba(0, 0, 0, 0.70), 0 0 40px rgba(16, 185, 129, 0.30);
 
-  --border:           1.5px solid rgba(217, 119, 6, 0.20);
-  --border-2:         1px solid rgba(217, 119, 6, 0.12);
+  --border:           1px solid rgba(255, 255, 255, 0.10);
+  --border-2:         1px solid rgba(255, 255, 255, 0.05);
 
   /* Typography */
   --font-sans:        'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -108,11 +108,11 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans);
-  background-color: #FAF7F2;
+  background-color: #0B0F19;
   background-image: 
-    radial-gradient(rgba(217, 119, 6, 0.12) 1.2px, transparent 1.2px);
+    radial-gradient(rgba(16, 185, 129, 0.15) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
-  color: #0F172A;
+  color: #F8FAFC;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -121,14 +121,14 @@ html, body {
 
 #root { position: relative; z-index: 1; min-height: 100vh; }
 
-/* Custom Executive Gold Scrollbar */
+/* Custom Nordic Scrollbar */
 ::-webkit-scrollbar       { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #F3ECE0; }
+::-webkit-scrollbar-track { background: #070A12; }
 ::-webkit-scrollbar-thumb { 
-  background: rgba(217, 119, 6, 0.40); 
+  background: rgba(16, 185, 129, 0.40); 
   border-radius: 99px; 
 }
-::-webkit-scrollbar-thumb:hover { background: #D97706; }
+::-webkit-scrollbar-thumb:hover { background: #10B981; }
 
 /* ============================================================
    APP SHELL LAYOUT
@@ -140,7 +140,7 @@ html, body {
 }
 
 /* ============================================================
-   SIDEBAR (Executive Charcoal & Champagne Gold Drawer)
+   SIDEBAR (Nordic Slate & Emerald Mint Drawer)
    ============================================================ */
 .sidebar-drawer {
   width: 295px;
@@ -154,8 +154,8 @@ html, body {
   justify-content: space-between;
   padding: 24px 20px;
   background: #0F172A;
-  border-right: 1.5px solid rgba(217, 119, 6, 0.25);
-  box-shadow: 10px 0 40px rgba(15, 23, 42, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.50);
   z-index: 50;
   overflow-y: auto;
 }
@@ -167,7 +167,7 @@ html, body {
   gap: 14px;
   padding: 10px 12px 18px;
   cursor: pointer;
-  border-bottom: 1.5px solid rgba(217, 119, 6, 0.20);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   margin-bottom: 22px;
   transition: transform 0.2s ease;
 }
@@ -177,12 +177,12 @@ html, body {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 }
 .sidebar-brand-name {
   font-size: 24px;
@@ -193,7 +193,7 @@ html, body {
 }
 .sidebar-brand-sub {
   font-size: 10.5px;
-  color: #F59E0B;
+  color: #10B981;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -212,7 +212,7 @@ html, body {
   font-size: 15px;
   font-weight: 700;
   color: #94A3B8;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
   transition: all 0.20s ease;
@@ -220,8 +220,8 @@ html, body {
 }
 .nav-item:hover {
   color: #FFFFFF;
-  background: rgba(217, 119, 6, 0.15);
-  border-color: rgba(217, 119, 6, 0.35);
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.30);
   transform: translateX(3px);
 }
 .nav-item:active {
@@ -233,10 +233,10 @@ html, body {
 .nav-item.active-battlecards,
 .nav-item.active-warroom,
 .nav-item.active-settings {
-  background: linear-gradient(135deg, rgba(217, 119, 6, 0.35) 0%, rgba(180, 83, 9, 0.20) 100%);
-  border: 1.5px solid #D97706;
-  color: #F59E0B;
-  box-shadow: 0 0 20px rgba(217, 119, 6, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.15) 100%);
+  border: 1px solid #10B981;
+  color: #10B981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
 
 .nav-item-icon {
@@ -248,7 +248,7 @@ html, body {
   border-radius: var(--radius-sm);
   flex-shrink: 0;
   background: rgba(0, 0, 0, 0.30);
-  border: 1px solid rgba(217, 119, 6, 0.20);
+  border: 1px solid rgba(16, 185, 129, 0.20);
 }
 
 .nav-item-icon {
@@ -361,14 +361,16 @@ html, body {
   align-items: center;
   gap: 16px;
   padding: 14px 28px;
-  background: #FFFFFF;
-  border-bottom: 1.5px solid rgba(217, 119, 6, 0.20);
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.40);
 }
 .top-bar-page-title {
   font-size: 13.5px;
   font-weight: 800;
-  color: #0F172A;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -379,8 +381,8 @@ html, body {
 .page-title-dot {
   width: 9px; height: 9px;
   border-radius: 50%;
-  background: #D97706;
-  box-shadow: 0 0 10px rgba(217, 119, 6, 0.50);
+  background: #10B981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.60);
   animation: pulse-dot 2s ease-in-out infinite;
 }
 @keyframes pulse-dot { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.5; transform:scale(0.85);} }
@@ -393,26 +395,26 @@ html, body {
   max-width: 580px;
   padding: 12px 22px;
   border-radius: var(--radius-full);
-  background: #FAF7F2;
-  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(217, 119, 6, 0.15);
-  border: 1.5px solid rgba(217, 119, 6, 0.20);
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.50), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   transition: all 0.20s ease;
   gap: 12px;
 }
 .top-bar-search:hover {
-  background: #FFFFFF;
-  border-color: #D97706;
-  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.18);
+  background: rgba(0, 0, 0, 0.50);
+  border-color: rgba(16, 185, 129, 0.40);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.20);
 }
-.top-bar-search-placeholder { font-size: 14.5px; color: #64748B; font-weight: 600; flex: 1; }
+.top-bar-search-placeholder { font-size: 14.5px; color: #94A3B8; font-weight: 600; flex: 1; }
 .top-bar-search-kbd {
   font-size: 11px;
   font-family: var(--font-mono);
   font-weight: 800;
-  color: #B45309;
-  background: #FEF3C7;
-  border: 1px solid rgba(217, 119, 6, 0.35);
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.30);
   padding: 3px 8px;
   border-radius: var(--radius-sm);
 }
@@ -421,20 +423,20 @@ html, body {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
   border-radius: var(--radius-md);
-  background: #FFFFFF;
-  border: 1.5px solid rgba(217, 119, 6, 0.20);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
-  color: #475569;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+  color: #94A3B8;
   cursor: pointer;
   position: relative;
   transition: all 0.20s ease;
 }
 .top-bar-icon-btn:hover {
-  background: #FEF3C7;
-  color: #B45309;
-  border-color: #D97706;
+  background: rgba(16, 185, 129, 0.15);
+  color: #FFFFFF;
+  border-color: rgba(16, 185, 129, 0.40);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
 }
 .top-bar-icon-btn:active {
   transform: translateY(1px) scale(0.97);
@@ -445,12 +447,12 @@ html, body {
   top: -3px; right: -3px;
   width: 20px; height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+  background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%);
   color: #FFFFFF;
   font-size: 10.5px;
   font-weight: 900;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.40);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.50);
 }
 
 /* ============================================================
@@ -460,13 +462,13 @@ html, body {
 .page-title {
   font-size: 32px;
   font-weight: 900;
-  color: #0F172A;
+  color: #FFFFFF;
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
   gap: 14px;
 }
-.page-subtitle { font-size: 15px; color: #475569; font-weight: 600; margin-top: 6px; }
+.page-subtitle { font-size: 15px; color: #94A3B8; font-weight: 600; margin-top: 6px; }
 
 /* ============================================================
    BENTO GRID
@@ -482,13 +484,15 @@ html, body {
 .bento-span-6  { grid-column: span 1; }
 
 /* ============================================================
-   EXECUTIVE LUXURY CARDS (.mira-glass, .brutal-card, .clay-card)
+   NORDIC SLATE CARDS (.mira-glass, .brutal-card, .clay-card)
    ============================================================ */
 .mira-glass, .brutal-card, .clay-card {
-  background: #FFFFFF;
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 0 15px rgba(217, 119, 6, 0.08);
-  border: 1.5px solid rgba(217, 119, 6, 0.20);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   overflow: hidden;
   position: relative;
   transition: all 0.22s ease;
@@ -499,9 +503,9 @@ html, body {
 }
 .mira-glass-hover:hover, .brutal-card-hover:hover, .clay-card-hover:hover,
 .mira-glass:hover {
-  background: #FFFDF7;
-  border-color: #D97706;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14), 0 0 25px rgba(217, 119, 6, 0.20);
+  background: rgba(51, 65, 85, 0.90);
+  border-color: rgba(16, 185, 129, 0.40);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.60), 0 0 30px rgba(16, 185, 129, 0.25);
   transform: translateY(-3px);
 }
 
@@ -701,81 +705,80 @@ button *, .btn *, .mira-btn * {
   white-space: nowrap;
   transition: all 0.20s ease;
   letter-spacing: 0.01em;
-  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 .btn:hover, .mira-btn:hover {
-  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
   color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(217, 119, 6, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .btn:active, .mira-btn:active {
   transform: translateY(1px) scale(0.98);
 }
 
 .btn-primary, .mira-btn-primary {
-  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 4px 18px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 }
 .btn-primary:hover, .mira-btn-primary:hover {
-  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-  box-shadow: 0 8px 25px rgba(217, 119, 6, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  background: linear-gradient(135deg, #34D399 0%, #059669 100%);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 .btn-primary:active, .mira-btn-primary:active {
   transform: translateY(1px) scale(0.98);
 }
 
 .mira-btn-secondary {
-  background: #FFFFFF;
-  color: #0F172A;
-  border: 1.5px solid rgba(217, 119, 6, 0.25);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
 }
 .mira-btn-secondary:hover {
-  background: #FEF3C7;
-  color: #B45309;
-  border-color: #D97706;
-  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.20);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.20);
 }
 
 .btn-emerald, .mira-btn-emerald {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   color: #FFFFFF;
   font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.30);
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
 }
 .btn-emerald:hover, .mira-btn-emerald:hover {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.45);
+  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.50);
 }
 
 .btn-danger, .mira-btn-danger {
-  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+  background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%);
   color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.30);
-  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
 }
 .btn-danger:hover, .mira-btn-danger:hover {
-  background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
-  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.45);
+  background: linear-gradient(135deg, #FB7185 0%, #F43F5E 100%);
+  box-shadow: 0 6px 20px rgba(244, 63, 94, 0.50);
 }
 
 .mira-btn-cyan {
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
   color: #FFFFFF;
   font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.30);
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
 }
 .mira-btn-cyan:hover {
-  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
-  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+  background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.50);
 }
 
 .btn-sm, .mira-btn-sm { padding: 7px 14px; font-size: 11.5px; }
