@@ -1,0 +1,21 @@
+{
+  "name": "mira/intelligence-engine-php",
+  "description": "PHP Subsystem, SDK, and War Room Simulator for MIRA Competitor Intelligence Engine",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "MIRA Development Team"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mira\\": "src/"
+    }
+  }
+}
