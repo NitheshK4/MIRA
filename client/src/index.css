@@ -1,88 +1,94 @@
 /* ============================================================
-   MIRA — CYBERPUNK POP NEOBRUTALISM DESIGN SYSTEM
-   Electric Yellow (#FFE600) · Neon Hot Pink (#FF007A) · Laser Cyan (#00F0FF)
-   Midnight Charcoal (#12131C) · 3px Solid Black Outlines · 6px Solid Drop Shadows
+   MIRA — GLASSMORPHIC CYBER NEON DESIGN SYSTEM
+   Dark Violet Obsidian (#080B1A) · Laser Cyan (#00F0FF) · Radiant Violet (#8B5CF6)
+   Frosted Translucent Glass (`backdrop-filter: blur(20px)`) · Glowing Neon Auroras
    ============================================================ */
 
 /* ------- CSS Design Tokens ------- */
 :root {
-  /* Cyberpunk Neobrutalist Base Palette */
-  --bg:               #12131C;
-  --bg-deep:          #0A0B10;
-  --surface-clay:     #1E1F2E;
-  --surface-solid:    #1E1F2E;
-  --surface-hover:    #2A2B3D;
-  --surface-active:   #34354A;
-  --surface-recessed: #161722;
+  /* Dark Violet Obsidian Base Palette */
+  --bg:               #080B1A;
+  --bg-deep:          #040610;
+  --surface-clay:     rgba(18, 24, 48, 0.78);
+  --surface-solid:    #121830;
+  --surface-hover:    rgba(28, 36, 68, 0.85);
+  --surface-active:   rgba(36, 46, 84, 0.90);
+  --surface-recessed: #0B0E22;
 
-  /* High Impact Cyberpunk Pop Accents */
-  --yellow:           #FFE600;
-  --yellow-glow:      rgba(255, 230, 0, 0.45);
-  --pink:             #FF007A;
-  --pink-glow:        rgba(255, 0, 122, 0.45);
+  /* Laser Neon & Glowing Accents */
   --cyan:             #00F0FF;
   --cyan-glow:        rgba(0, 240, 255, 0.45);
-  --violet:           #A855F7;
-  --rose:             #FF007A;
-  --rose-glow:        rgba(255, 0, 122, 0.45);
-  --emerald:          #00FF94;
-  --emerald-glow:     rgba(0, 255, 148, 0.45);
-  --amber:            #FFE600;
-  --amber-glow:       rgba(255, 230, 0, 0.45);
+  --violet:           #8B5CF6;
+  --violet-glow:      rgba(139, 92, 246, 0.45);
+  --indigo:           #6366F1;
+  --rose:             #FF2A6D;
+  --rose-glow:        rgba(255, 42, 109, 0.45);
+  --emerald:          #05FF91;
+  --emerald-glow:     rgba(5, 255, 145, 0.45);
+  --amber:            #FFB800;
+  --amber-glow:       rgba(255, 184, 0, 0.45);
   --purple:           #C084FC;
   --blue:             #00F0FF;
 
   /* Legacy color aliases */
+  --yellow:           #FFB800;
   --yellow-dk:        #D97706;
+  --pink:             #FF2A6D;
   --pink-dk:          #E11D48;
   --blue-dk:          #0284C7;
-  --green:            #00FF94;
+  --green:            #05FF91;
   --green-dk:         #059669;
-  --orange:           #FF6B00;
-  --orange-dk:        #C2410C;
+  --orange:           #FF7A00;
+  --orange-dk:        #EA580C;
   --purple-dk:        #9333EA;
-  --red:              #FF007A;
+  --red:              #FF2A6D;
 
   /* High-Contrast Readability Colors */
   --black:            #000000;
-  --text:             #FFFFFF;
-  --text-muted:       #CBD5E1;
-  --text-subtle:      #94A3B8;
+  --text:             #F8FAFC;
+  --text-muted:       #94A3B8;
+  --text-subtle:      #64748B;
 
-  /* Cyberpunk Neobrutalist Solid Drop Shadows */
+  /* Glassmorphic Cyber Elevation & Glowing Shadows */
   --clay-card-shadow: 
-    5px 5px 0px #000000;
+    0 12px 36px rgba(0, 0, 0, 0.60),
+    0 0 20px rgba(139, 92, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 
   --clay-card-hover: 
-    8px 8px 0px #000000;
+    0 18px 48px rgba(0, 0, 0, 0.75),
+    0 0 30px rgba(0, 240, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
 
   --brutal-card-shadow: var(--clay-card-shadow);
   --brutal-card-hover:  var(--clay-card-hover);
 
   --clay-btn-shadow:
-    4px 4px 0px #000000;
+    0 4px 16px rgba(139, 92, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 
   --clay-btn-pressed:
-    1px 1px 0px #000000;
+    0 2px 6px rgba(0, 0, 0, 0.60),
+    inset 0 2px 4px rgba(0, 0, 0, 0.40);
 
   --clay-inset-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.50),
-    inset 0 0 0 2px #000000;
+    inset 4px 4px 8px rgba(0, 0, 0, 0.70),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 
-  --glass-bg:         #1E1F2E;
-  --glass-border:     3px solid #000000;
-  --glass-border-light: 3px solid #000000;
-  --glass-border-subtle: 2.5px solid #000000;
-  --glass-blur:       none;
-  --glass-blur-heavy: none;
+  --glass-bg:         var(--surface-clay);
+  --glass-border:     1px solid rgba(255, 255, 255, 0.12);
+  --glass-border-light: 1px solid rgba(255, 255, 255, 0.22);
+  --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.06);
+  --glass-blur:       blur(20px);
+  --glass-blur-heavy: blur(30px);
 
-  --shadow-sm:        3px 3px 0px #000000;
-  --shadow-md:        5px 5px 0px #000000;
-  --shadow-lg:        8px 8px 0px #000000;
-  --shadow-xl:        10px 10px 0px #000000;
+  --shadow-sm:        0 4px 12px rgba(0, 0, 0, 0.30);
+  --shadow-md:        var(--clay-card-shadow);
+  --shadow-lg:        var(--clay-card-hover);
+  --shadow-xl:        0 24px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(0, 240, 255, 0.40);
 
-  --border:           3px solid #000000;
-  --border-2:         2.5px solid #000000;
+  --border:           1px solid rgba(255, 255, 255, 0.12);
+  --border-2:         1px solid rgba(255, 255, 255, 0.06);
 
   /* Typography */
   --font-sans:        'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -90,9 +96,9 @@
 
   /* Border Radii */
   --radius-sm:        12px;
-  --radius-md:        18px;
-  --radius-lg:        26px;
-  --radius-xl:        32px;
+  --radius-md:        20px;
+  --radius-lg:        28px;
+  --radius-xl:        36px;
   --radius-full:      9999px;
 }
 
@@ -102,11 +108,13 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans);
-  background-color: #12131C;
+  background-color: #080B1A;
   background-image: 
-    radial-gradient(rgba(255, 230, 0, 0.15) 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
-  color: #FFFFFF;
+    radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.25) 0%, transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(0, 240, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 28px 28px;
+  color: #F8FAFC;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -115,15 +123,14 @@ html, body {
 
 #root { position: relative; z-index: 1; min-height: 100vh; }
 
-/* Custom Cyberpunk Scrollbar */
-::-webkit-scrollbar       { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #12131C; border-left: 2.5px solid #000000; }
+/* Custom Glassmorphic Scrollbar */
+::-webkit-scrollbar       { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #040610; }
 ::-webkit-scrollbar-thumb { 
-  background: #FFE600; 
-  border: 2px solid #000000;
+  background: rgba(139, 92, 246, 0.40); 
   border-radius: 99px; 
 }
-::-webkit-scrollbar-thumb:hover { background: #FF007A; }
+::-webkit-scrollbar-thumb:hover { background: #00F0FF; }
 
 /* ============================================================
    APP SHELL LAYOUT
@@ -135,7 +142,7 @@ html, body {
 }
 
 /* ============================================================
-   SIDEBAR (Cyberpunk Pop Neobrutalist Drawer)
+   SIDEBAR (Glassmorphic Cyber Neon Drawer)
    ============================================================ */
 .sidebar-drawer {
   width: 295px;
@@ -148,9 +155,11 @@ html, body {
   flex-direction: column;
   justify-content: space-between;
   padding: 24px 20px;
-  background: #181926;
-  border-right: 3px solid #000000;
-  box-shadow: 6px 0 0px #000000;
+  background: rgba(14, 20, 42, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.60);
   z-index: 50;
   overflow-y: auto;
 }
@@ -162,42 +171,41 @@ html, body {
   gap: 14px;
   padding: 10px 12px 18px;
   cursor: pointer;
-  border-bottom: 3px solid #000000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
   margin-bottom: 22px;
   transition: transform 0.2s ease;
 }
-.sidebar-brand:hover { transform: translate(-2px, -2px); }
+.sidebar-brand:hover { transform: scale(1.02); }
 
 .sidebar-brand-icon {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-sm);
-  background: #FFE600;
-  border: 2.5px solid #000000;
+  background: linear-gradient(135deg, #8B5CF6 0%, #00F0FF 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 3.5px 3.5px 0px #000000;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 }
 .sidebar-brand-name {
   font-size: 24px;
   font-weight: 900;
-  color: #FFE600;
+  color: #FFFFFF;
   letter-spacing: -0.02em;
   line-height: 1;
 }
 .sidebar-brand-sub {
   font-size: 10.5px;
-  color: #FF007A;
-  font-weight: 900;
+  color: #00F0FF;
+  font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-top: 4px;
 }
 
 /* Nav Menu */
-.nav-menu { display: flex; flex-direction: column; gap: 10px; }
+.nav-menu { display: flex; flex-direction: column; gap: 8px; }
 .nav-item {
   width: 100%;
   display: flex;
@@ -206,55 +214,33 @@ html, body {
   padding: 12px 16px;
   border-radius: var(--radius-sm);
   font-size: 15px;
-  font-weight: 800;
-  color: #FFFFFF;
-  background: #1E1F2E;
-  border: 2.5px solid #000000;
-  box-shadow: 3.5px 3.5px 0px #000000;
+  font-weight: 700;
+  color: #94A3B8;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.20s ease;
   text-align: left;
 }
 .nav-item:hover {
-  color: #000000;
-  background: #FFE600;
-  transform: translate(-3px, -3px);
-  box-shadow: 5.5px 5.5px 0px #000000;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateX(3px);
 }
 .nav-item:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #000000;
+  transform: scale(0.98);
 }
 
-.nav-item.active-dashboard {
-  background: #FF007A;
-  color: #FFFFFF;
-  border: 2.5px solid #000000;
-  box-shadow: 4.5px 4.5px 0px #000000;
-}
-.nav-item.active-feed {
-  background: #FFE600;
-  color: #000000;
-  border: 2.5px solid #000000;
-  box-shadow: 4.5px 4.5px 0px #000000;
-}
-.nav-item.active-battlecards {
-  background: #00F0FF;
-  color: #000000;
-  border: 2.5px solid #000000;
-  box-shadow: 4.5px 4.5px 0px #000000;
-}
-.nav-item.active-warroom {
-  background: #00FF94;
-  color: #000000;
-  border: 2.5px solid #000000;
-  box-shadow: 4.5px 4.5px 0px #000000;
-}
+.nav-item.active-dashboard,
+.nav-item.active-feed,
+.nav-item.active-battlecards,
+.nav-item.active-warroom,
 .nav-item.active-settings {
-  background: #A855F7;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(0, 240, 255, 0.20) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.50);
   color: #FFFFFF;
-  border: 2.5px solid #000000;
-  box-shadow: 4.5px 4.5px 0px #000000;
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.30);
 }
 
 .nav-item-icon {
@@ -265,8 +251,8 @@ html, body {
   justify-content: center;
   border-radius: var(--radius-sm);
   flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1.5px solid #000000;
+  background: rgba(0, 0, 0, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 .nav-item-icon {
@@ -379,30 +365,31 @@ html, body {
   align-items: center;
   gap: 16px;
   padding: 14px 28px;
-  background: #181926;
-  border-bottom: 3px solid #000000;
-  box-shadow: 0 5px 0px #000000;
+  background: rgba(14, 20, 42, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.40);
 }
 .top-bar-page-title {
-  font-size: 14px;
-  font-weight: 900;
-  color: #FFE600;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   gap: 8px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
 }
 .page-title-dot {
-  width: 10px; height: 10px;
+  width: 9px; height: 9px;
   border-radius: 50%;
-  background: #FF007A;
-  border: 1.5px solid #000000;
-  box-shadow: 2px 2px 0px #000000;
+  background: #00F0FF;
+  box-shadow: 0 0 10px #00F0FF;
   animation: pulse-dot 2s ease-in-out infinite;
 }
-@keyframes pulse-dot { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.6; transform:scale(0.85);} }
+@keyframes pulse-dot { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.5; transform:scale(0.85);} }
 
 .top-bar-search {
   display: flex;
@@ -410,30 +397,28 @@ html, body {
   justify-content: space-between;
   flex: 1;
   max-width: 580px;
-  padding: 11px 20px;
+  padding: 12px 22px;
   border-radius: var(--radius-full);
-  background: #1E1F2E;
-  border: 2.5px solid #000000;
-  box-shadow: 3.5px 3.5px 0px #000000;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.60), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.20s ease;
   gap: 12px;
 }
 .top-bar-search:hover {
-  background: #2A2B3D;
-  border-color: #FFE600;
-  transform: translate(-2px, -2px);
-  box-shadow: 5.5px 5.5px 0px #000000;
+  background: rgba(0, 0, 0, 0.50);
+  border-color: rgba(0, 240, 255, 0.40);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.20);
 }
-.top-bar-search-placeholder { font-size: 14px; color: #CBD5E1; font-weight: 700; flex: 1; }
+.top-bar-search-placeholder { font-size: 14.5px; color: #94A3B8; font-weight: 600; flex: 1; }
 .top-bar-search-kbd {
   font-size: 11px;
   font-family: var(--font-mono);
-  font-weight: 900;
-  color: #000000;
-  background: #FFE600;
-  border: 1.5px solid #000000;
-  box-shadow: 2px 2px 0px #000000;
+  font-weight: 800;
+  color: #00F0FF;
+  background: rgba(139, 92, 246, 0.25);
+  border: 1px solid rgba(0, 240, 255, 0.30);
   padding: 3px 8px;
   border-radius: var(--radius-sm);
 }
@@ -442,37 +427,36 @@ html, body {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
   border-radius: var(--radius-md);
-  background: #1E1F2E;
-  border: 2.5px solid #000000;
-  box-shadow: 3.5px 3.5px 0px #000000;
-  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+  color: #94A3B8;
   cursor: pointer;
   position: relative;
-  transition: all 0.18s ease;
+  transition: all 0.20s ease;
 }
 .top-bar-icon-btn:hover {
-  background: #FFE600;
-  color: #000000;
-  transform: translate(-2px, -2px);
-  box-shadow: 5.5px 5.5px 0px #000000;
+  background: rgba(139, 92, 246, 0.25);
+  color: #FFFFFF;
+  border-color: rgba(0, 240, 255, 0.40);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
 }
 .top-bar-icon-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #000000;
+  transform: translateY(1px) scale(0.97);
 }
 
 .notif-badge {
   position: absolute;
-  top: -4px; right: -4px;
+  top: -3px; right: -3px;
   width: 20px; height: 20px;
   border-radius: 50%;
-  background: #FF007A;
-  border: 1.5px solid #000000;
+  background: linear-gradient(135deg, #FF2A6D 0%, #BE123C 100%);
   color: #FFFFFF;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 900;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 2px 2px 0px #000000;
+  box-shadow: 0 0 10px rgba(255, 42, 109, 0.50);
 }
 
 /* ============================================================
@@ -488,7 +472,7 @@ html, body {
   align-items: center;
   gap: 14px;
 }
-.page-subtitle { font-size: 15px; color: #CBD5E1; font-weight: 700; margin-top: 6px; }
+.page-subtitle { font-size: 15px; color: #94A3B8; font-weight: 600; margin-top: 6px; }
 
 /* ============================================================
    BENTO GRID
@@ -504,27 +488,29 @@ html, body {
 .bento-span-6  { grid-column: span 1; }
 
 /* ============================================================
-   CYBERPUNK POP NEOBRUTALIST CARDS (.mira-glass, .brutal-card, .clay-card)
+   GLASSMORPHIC CARDS (.mira-glass, .brutal-card, .clay-card)
    ============================================================ */
 .mira-glass, .brutal-card, .clay-card {
-  background: #1E1F2E;
+  background: rgba(18, 24, 48, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: var(--radius-md);
-  box-shadow: 6px 6px 0px #000000;
-  border: 3px solid #000000;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.60), 0 0 20px rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   overflow: hidden;
   position: relative;
-  transition: all 0.20s ease;
+  transition: all 0.22s ease;
 }
 
 .mira-glass-hover, .brutal-card-hover, .clay-card-hover {
-  transition: all 0.20s ease;
+  transition: all 0.22s ease;
 }
 .mira-glass-hover:hover, .brutal-card-hover:hover, .clay-card-hover:hover,
 .mira-glass:hover {
-  background: #252638;
-  border-color: #FFE600;
-  box-shadow: 9px 9px 0px #000000;
-  transform: translate(-3px, -3px);
+  background: rgba(26, 34, 68, 0.88);
+  border-color: rgba(0, 240, 255, 0.40);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.75), 0 0 30px rgba(0, 240, 255, 0.25);
+  transform: translateY(-3px);
 }
 
 /* ============================================================
@@ -716,91 +702,87 @@ button *, .btn *, .mira-btn * {
   gap: 8px;
   border-radius: var(--radius-full);
   font-size: 13.5px;
-  font-weight: 900;
+  font-weight: 800;
   cursor: pointer;
   font-family: var(--font-sans);
   padding: 10px 22px;
   white-space: nowrap;
-  transition: all 0.18s ease;
-  letter-spacing: 0.02em;
-  background: #FFE600;
-  color: #000000;
-  box-shadow: 4px 4px 0px #000000;
-  border: 2.5px solid #000000;
+  transition: all 0.20s ease;
+  letter-spacing: 0.01em;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(0, 240, 255, 0.20) 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(0, 240, 255, 0.40);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.30);
 }
 .btn:hover, .mira-btn:hover {
-  background: #FF007A;
+  background: linear-gradient(135deg, #8B5CF6 0%, #00F0FF 100%);
   color: #FFFFFF;
-  transform: translate(-3px, -3px);
-  box-shadow: 6.5px 6.5px 0px #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .btn:active, .mira-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #000000;
+  transform: translateY(1px) scale(0.98);
 }
 
 .btn-primary, .mira-btn-primary {
-  background: #FF007A;
+  background: linear-gradient(135deg, #8B5CF6 0%, #00F0FF 100%);
   color: #FFFFFF;
-  border: 2.5px solid #000000;
-  box-shadow: 4.5px 4.5px 0px #000000;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 22px rgba(139, 92, 246, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 }
 .btn-primary:hover, .mira-btn-primary:hover {
-  background: #FFE600;
-  color: #000000;
-  box-shadow: 7px 7px 0px #000000;
+  background: linear-gradient(135deg, #9333EA 0%, #22D3EE 100%);
+  box-shadow: 0 0 32px rgba(0, 240, 255, 0.60), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 .btn-primary:active, .mira-btn-primary:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #000000;
+  transform: translateY(1px) scale(0.98);
 }
 
 .mira-btn-secondary {
-  background: #1E1F2E;
-  color: #FFFFFF;
-  border: 2.5px solid #000000;
-  box-shadow: 4px 4px 0px #000000;
+  background: rgba(255, 255, 255, 0.05);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
 }
 .mira-btn-secondary:hover {
-  background: #FFE600;
-  color: #000000;
-  box-shadow: 6.5px 6.5px 0px #000000;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.20);
 }
 
 .btn-emerald, .mira-btn-emerald {
-  background: #00FF94;
+  background: linear-gradient(135deg, #05FF91 0%, #059669 100%);
   color: #000000;
-  border: 2.5px solid #000000;
-  box-shadow: 4px 4px 0px #000000;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 18px rgba(5, 255, 145, 0.40);
 }
 .btn-emerald:hover, .mira-btn-emerald:hover {
-  background: #FFE600;
-  color: #000000;
-  box-shadow: 6.5px 6.5px 0px #000000;
+  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+  box-shadow: 0 0 28px rgba(5, 255, 145, 0.55);
 }
 
 .btn-danger, .mira-btn-danger {
-  background: #FF007A;
+  background: linear-gradient(135deg, #FF2A6D 0%, #BE123C 100%);
   color: #FFFFFF;
-  border: 2.5px solid #000000;
-  box-shadow: 4px 4px 0px #000000;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 18px rgba(255, 42, 109, 0.40);
 }
 .btn-danger:hover, .mira-btn-danger:hover {
-  background: #FFE600;
-  color: #000000;
-  box-shadow: 6.5px 6.5px 0px #000000;
+  background: linear-gradient(135deg, #FB7185 0%, #E11D48 100%);
+  box-shadow: 0 0 28px rgba(255, 42, 109, 0.55);
 }
 
 .mira-btn-cyan {
-  background: #00F0FF;
+  background: linear-gradient(135deg, #00F0FF 0%, #0284C7 100%);
   color: #000000;
-  border: 2.5px solid #000000;
-  box-shadow: 4px 4px 0px #000000;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.40);
 }
 .mira-btn-cyan:hover {
-  background: #FFE600;
-  color: #000000;
-  box-shadow: 6.5px 6.5px 0px #000000;
+  background: linear-gradient(135deg, #38BDF8 0%, #00F0FF 100%);
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.60);
 }
 
 .btn-sm, .mira-btn-sm { padding: 7px 14px; font-size: 11.5px; }
