@@ -723,59 +723,56 @@ button *, .btn *, .mira-btn * {
   pointer-events: none;
 }
 
-.btn, .mira-btn {
+.btn, .mira-btn, .btn-primary, .btn-secondary, .mira-btn-primary, .mira-btn-secondary, .mira-btn-cyan, .mira-btn-emerald, .mira-btn-danger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   border-radius: var(--radius-full);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 900;
   cursor: pointer;
   font-family: var(--font-sans);
-  padding: 10px 20px;
+  padding: 12px 24px;
   white-space: nowrap;
-  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-  letter-spacing: 0.01em;
-  background: #F7EFE3;
-  color: #073B4C;
-  border: 1px solid rgba(7, 59, 76, 0.12);
-  box-shadow: 0 4px 12px rgba(7, 59, 76, 0.05);
-}
-.btn:hover, .mira-btn:hover {
-  background: #FFF3E0;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 159, 28, 0.2);
-  border-color: #FF9F1C;
-}
-.btn:active, .mira-btn:active {
-  transform: translateY(0);
+  transition: all 0.20s ease;
+  letter-spacing: 0.02em;
 }
 
-/* Primary CTA: Orange-to-Coral Gradient */
+.btn:hover, .mira-btn:hover {
+  transform: translateY(-2px);
+}
+.btn:active, .mira-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
 .btn-primary, .mira-btn-primary {
-  background: linear-gradient(135deg, #FF9F1C 0%, #FF5D5D 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 15px rgba(255, 93, 93, 0.4);
+  background: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
+  color: #000000;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 .btn-primary:hover, .mira-btn-primary:hover {
-  background: linear-gradient(135deg, #FF8C00 0%, #E64A4A 100%);
-  box-shadow: 0 8px 25px rgba(255, 159, 28, 0.5);
+  background: linear-gradient(135deg, #38BDF8 0%, #00F0FF 100%);
+  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.70), inset 0 1px 0 rgba(255, 255, 255, 0.60);
   transform: translateY(-2px);
 }
 .btn-primary:active, .mira-btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(1px) scale(0.98);
 }
 
-.mira-btn-secondary {
-  background: #F7EFE3;
-  color: #073B4C;
-  border: 1px solid rgba(7, 59, 76, 0.1);
+.btn-secondary, .mira-btn-secondary {
+  background: rgba(13, 21, 42, 0.90);
+  color: #FFFFFF;
+  border: 1.5px solid rgba(0, 240, 255, 0.30);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(0, 240, 255, 0.12);
 }
-.mira-btn-secondary:hover {
-  background: #FFF3E0;
-  border-color: #FF9F1C;
+.btn-secondary:hover, .mira-btn-secondary:hover {
+  background: rgba(0, 240, 255, 0.18);
+  color: #00F0FF;
+  border-color: #00F0FF;
+  box-shadow: 0 0 22px rgba(0, 240, 255, 0.35);
 }
 
 .btn-emerald, .mira-btn-emerald {
