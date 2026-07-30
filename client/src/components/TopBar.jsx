@@ -59,7 +59,7 @@ export default function TopBar({
         className="top-bar-search"
         style={{ maxWidth: 380 }}
       >
-        <Search size={14} color="#94A3B8" />
+        <Search size={14} color="#3D6B78" />
         <span className="top-bar-search-placeholder">
           Search competitors, alerts…
         </span>

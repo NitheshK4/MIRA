@@ -246,27 +246,28 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
 
   if (competitors.length === 0) {
     return (
-      <div className="card-glass" style={{ padding: '48px', textAlign: 'center' }}>
-        <Swords size={48} style={{ color: '#8B5CF6', marginBottom: '16px', opacity: 0.8 }} />
-        <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>No Competitors Configured</h2>
-        <p style={{ color: '#94A3B8', maxWidth: '480px', margin: '0 auto 24px auto', fontSize: '14px' }}>
+      <div className="card-glass" style={{ padding: '48px', textAlign: 'center', background: '#FFFFFF', borderRadius: '16px', border: '1px solid rgba(7, 59, 76, 0.08)' }}>
+        <Swords size={48} style={{ color: '#FF9F1C', marginBottom: '16px', opacity: 0.9 }} />
+        <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#073B4C', marginBottom: '8px' }}>No Competitors Configured</h2>
+        <p style={{ color: '#3D6B78', maxWidth: '480px', margin: '0 auto 24px auto', fontSize: '14px' }}>
           Add your first competitor in the Dashboard tab to unlock AI-powered battlecards for your sales team.
         </p>
         <button
           onClick={handleSeedDemo}
           disabled={seeding}
           style={{
-            background: 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)',
+            background: 'linear-gradient(135deg, #FF9F1C 0%, #FF5D5D 100%)',
             color: '#fff',
             border: 'none',
-            borderRadius: '8px',
+            borderRadius: '99px',
             padding: '10px 20px',
-            fontWeight: 600,
+            fontWeight: 800,
             fontSize: '13px',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            boxShadow: '0 4px 15px rgba(255, 93, 93, 0.4)'
           }}
         >
           <Sparkles size={16} />
@@ -282,14 +283,14 @@ ${cardData.objection_handling.map(o => `### Prospect: ${o.objection}\n**Response
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ padding: '8px', background: 'rgba(139, 92, 246, 0.15)', borderRadius: '10px', color: '#A78BFA', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
+            <div style={{ padding: '8px', background: 'rgba(255, 159, 28, 0.15)', borderRadius: '10px', color: '#FF9F1C', border: '1px solid rgba(255, 159, 28, 0.3)' }}>
               <Swords size={22} />
             </div>
             <div>
-              <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.02em' }}>
+              <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#073B4C', margin: 0, letterSpacing: '-0.02em' }}>
                 Competitive Battlecards
               </h1>
-              <p style={{ color: '#94A3B8', fontSize: '13px', margin: 0 }}>
+              <p style={{ color: '#3D6B78', fontSize: '13px', margin: 0, fontWeight: 500 }}>
                 AI-synthesized tactical playbooks, objection handlers, and landmines for sales enablement.
               </p>
             </div>

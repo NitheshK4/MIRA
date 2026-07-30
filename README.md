@@ -889,7 +889,7 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 
 <div align="center">
 
-<img src="https://skillicons.dev/icons?i=nodejs,react,vite,tailwind,sqlite,docker,html,css,js&theme=dark" alt="Tech Stack" />
+<img src="https://skillicons.dev/icons?i=nodejs,react,vite,tailwind,sqlite,docker,php,html,css,js&theme=dark" alt="Tech Stack" />
 
 </div>
 
@@ -898,7 +898,8 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 | Layer | Technologies |
 |:---|:---|
 | 🖥️ **Backend** | Node.js 20, Express 4, SQLite (`sqlite3`), UUID |
-| 🎨 **Frontend** | React 18, Vite 5, Tailwind CSS 3, Lucide React |
+| 🎨 **Frontend** | React 18, Vite 5, Tailwind CSS 3, Lucide React, PHP (SSR Dashboard) |
+| 🐘 **PHP SDK & SSR** | `MiraClient.php`, Server-Side Rendered Dashboard & CSV Exporter |
 | 🕸️ **Scraping** | Axios, Cheerio, Puppeteer (headless Chromium) |
 | 🧠 **AI / ML** | HuggingFace Transformers (ONNX), Gemini 3.6 Flash, Qwen GGUF |
 | 🔮 **Strategy AI** | MIRA Oracle (Co-Pilot), War Room Simulator (Game Theory) |
@@ -913,6 +914,24 @@ Extension endpoints require `Authorization: Bearer <api_key>`.
 
 ```
 📦 MIRA — Autonomous Competitor Intelligence Engine
+│
+├── 📂 php/                        # Complete PHP Subsystem & Intelligence Portal
+│   ├── 📂 src/
+│   │   ├── 📂 Console/            # PHP CLI Command Runners
+│   │   │   └── MiraCliCommand.php
+│   │   ├── 📂 Core/               # Configuration & Environment Manager
+│   │   │   └── Config.php
+│   │   └── 📂 Services/           # War Room Simulator & Battlecard Services
+│   │       ├── BattlecardService.php
+│   │       └── WarRoomSimulator.php
+│   ├── 📂 tests/                  # PHP Subsystem Unit Test Suite
+│   │   └── MiraClientTest.php
+│   ├── MiraClient.php             # Object-Oriented PHP SDK API Client
+│   ├── mira.php                   # Executable PHP CLI tool
+│   ├── index.php                  # Server-Side Rendered PHP Dashboard
+│   ├── export.php                 # PHP CSV/JSON Intelligence Exporter
+│   ├── composer.json              # PSR-4 Package Manifest
+│   └── README.md                  # PHP Subsystem Documentation
 │
 ├── 📂 client/                     # React + Vite + Tailwind CSS dashboard
 │   ├── src/

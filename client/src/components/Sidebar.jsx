@@ -95,6 +95,9 @@ export default function Sidebar({
               className="sidebar-brand"
               style={{ flex:1 }}
             >
+              <div className="sidebar-brand-icon">
+                <Sparkles size={20} color="#FFFFFF" />
+              </div>
               <div>
                 <div className="sidebar-brand-name">MIRA</div>
                 <div className="sidebar-brand-sub">Intelligence Layer</div>
@@ -121,7 +124,7 @@ export default function Sidebar({
             </button>
           </div>
 
-          {/* Nav */}
+          {/* Nav menu */}
           <nav className="nav-menu">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -144,7 +147,7 @@ export default function Sidebar({
                   {item.badge ? (
                     <span className="nav-item-badge">{item.badge}</span>
                   ) : isActive ? (
-                    <ChevronRight size={13} style={{ opacity: 0.6 }} />
+                    <ChevronRight size={13} style={{ opacity: 0.8 }} />
                   ) : null}
                 </button>
               );
@@ -175,20 +178,20 @@ export default function Sidebar({
             <button
               type="button"
               onClick={onOpenOracle}
-              className="w-full mb-3 p-3 rounded-xl bg-gradient-to-r from-violet-600/20 via-sky-600/20 to-violet-600/20 border border-violet-500/30 hover:border-violet-500 text-white flex items-center justify-between group transition-all shadow-lg"
+              className="w-full mb-3 p-3 rounded-xl bg-gradient-to-r from-teal-500/20 via-sky-500/20 to-orange-500/20 border border-teal-400/30 hover:border-orange-400 text-white flex items-center justify-between group transition-all shadow-lg"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-violet-500/20 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
+                <div className="w-7 h-7 rounded-lg bg-teal-500/20 flex items-center justify-center text-teal-300 group-hover:scale-110 transition-transform">
                   <Brain size={14} />
                 </div>
                 <div className="text-left">
                   <div className="text-xs font-bold text-white flex items-center gap-1 font-['Outfit']">
-                    MIRA Oracle <Sparkles size={10} className="text-amber-400" />
+                    MIRA Oracle <Sparkles size={10} className="text-amber-300" />
                   </div>
-                  <div className="text-[10px] text-slate-400">AI Strategy Co-Pilot</div>
+                  <div className="text-[10px] text-slate-300">AI Strategy Co-Pilot</div>
                 </div>
               </div>
-              <ChevronRight size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight size={14} className="text-slate-300 group-hover:translate-x-0.5 transition-transform" />
             </button>
           )}
 
@@ -202,12 +205,12 @@ export default function Sidebar({
                 style={{
                   marginLeft:'auto',
                   display:'flex', alignItems:'center', gap:'4px',
-                  background: 'rgba(6,182,212,0.15)',
-                  border: '1px solid rgba(6,182,212,0.35)',
+                  background: 'rgba(255,209,102,0.15)',
+                  border: '1px solid rgba(255,209,102,0.35)',
                   borderRadius: '4px',
                   padding: '2px 8px',
                   cursor: 'pointer',
-                  color: '#38BDF8',
+                  color: '#FFD166',
                   fontSize: '9px',
                   fontWeight: 800,
                   textTransform:'uppercase',
