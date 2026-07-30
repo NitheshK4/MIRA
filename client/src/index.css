@@ -1,32 +1,32 @@
 /* ============================================================
-   MIRA — CLAYMORPHISM DESIGN SYSTEM
-   3D Soft Tactile Clay Cards · Inset Dual Highlights · Debossed Slots
-   Inflated 3D Volume · Smooth Tactile Micro-Animations
+   MIRA — BENTO UI + BRUTALMORPHISM DESIGN SYSTEM
+   Neobrutalist Thick Borders · Frosted Glass Fills · High Contrast Shadows
+   Asymmetric Bento Cards · Bold Micro-Animations
    ============================================================ */
 
 /* ------- CSS Design Tokens ------- */
 :root {
-  /* Clay Dark Base Palette */
-  --bg:               #0C0F1D;
-  --bg-deep:          #080A14;
-  --surface-clay:     #1B2238;
-  --surface-solid:    #161B2E;
-  --surface-hover:    #222B45;
-  --surface-active:   #283352;
-  --surface-recessed: #101524;
+  /* Bento-Brutal Dark Base Palette */
+  --bg:               #070914;
+  --bg-deep:          #04050A;
+  --surface-clay:     rgba(22, 28, 48, 0.88);
+  --surface-solid:    #151B2E;
+  --surface-hover:    #1E2742;
+  --surface-active:   #253052;
+  --surface-recessed: #0C0F1D;
 
-  /* Clay Color Palette Accents */
+  /* Color Accents */
   --cyan:             #06B6D4;
-  --cyan-glow:        rgba(6, 182, 212, 0.35);
+  --cyan-glow:        rgba(6, 182, 212, 0.45);
   --violet:           #8B5CF6;
-  --violet-glow:      rgba(139, 92, 246, 0.35);
+  --violet-glow:      rgba(139, 92, 246, 0.45);
   --indigo:           #6366F1;
   --rose:             #F43F5E;
-  --rose-glow:        rgba(244, 63, 94, 0.35);
+  --rose-glow:        rgba(244, 63, 94, 0.45);
   --emerald:          #10B981;
-  --emerald-glow:     rgba(16, 185, 129, 0.35);
+  --emerald-glow:     rgba(16, 185, 129, 0.45);
   --amber:            #F59E0B;
-  --amber-glow:       rgba(245, 158, 11, 0.35);
+  --amber-glow:       rgba(245, 158, 11, 0.45);
   --purple:           #A855F7;
   --blue:             #3B82F6;
 
@@ -49,56 +49,56 @@
   --text-muted:       #94A3B8;
   --text-subtle:      #64748B;
 
-  /* Clay 3D Inset & Drop Shadow System */
-  --clay-card-shadow: 
-    inset 3px 3px 6px rgba(255, 255, 255, 0.12),
-    inset -4px -4px 10px rgba(0, 0, 0, 0.55),
-    8px 12px 28px rgba(0, 0, 0, 0.40);
+  /* Neobrutalist High-Contrast Drop Shadow & Border System */
+  --brutal-border-color: rgba(139, 92, 246, 0.35);
+  --brutal-card-shadow: 
+    4px 4px 0px #000000,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 
-  --clay-card-hover: 
-    inset 4px 4px 8px rgba(255, 255, 255, 0.18),
-    inset -5px -5px 12px rgba(0, 0, 0, 0.65),
-    12px 18px 36px rgba(0, 0, 0, 0.50);
+  --brutal-card-hover: 
+    7px 7px 0px #000000,
+    0 0 25px rgba(139, 92, 246, 0.30),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+
+  --clay-card-shadow: var(--brutal-card-shadow);
+  --clay-card-hover:  var(--brutal-card-hover);
 
   --clay-btn-shadow:
-    inset 2px 2px 4px rgba(255, 255, 255, 0.30),
-    inset -3px -3px 6px rgba(0, 0, 0, 0.45),
-    4px 8px 18px rgba(0, 0, 0, 0.35);
+    3px 3px 0px #000000,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 
   --clay-btn-pressed:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.60),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.10),
-    0 2px 4px rgba(0, 0, 0, 0.25);
+    1px 1px 0px #000000,
+    inset 2px 2px 4px rgba(0, 0, 0, 0.60);
 
   --clay-inset-shadow:
-    inset 4px 4px 8px rgba(0, 0, 0, 0.50),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.06),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.30);
+    inset 3px 3px 6px rgba(0, 0, 0, 0.60),
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
 
   --glass-bg:         var(--surface-clay);
-  --glass-border:     1px solid rgba(255, 255, 255, 0.08);
-  --glass-border-light: 1px solid rgba(255, 255, 255, 0.14);
-  --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.04);
-  --glass-blur:       none;
-  --glass-blur-heavy: none;
+  --glass-border:     2px solid rgba(255, 255, 255, 0.12);
+  --glass-border-light: 2px solid rgba(255, 255, 255, 0.22);
+  --glass-border-subtle: 2px solid rgba(255, 255, 255, 0.08);
+  --glass-blur:       blur(16px);
+  --glass-blur-heavy: blur(24px);
 
-  --shadow-sm:        0 4px 10px rgba(0, 0, 0, 0.25);
-  --shadow-md:        var(--clay-card-shadow);
-  --shadow-lg:        var(--clay-card-hover);
-  --shadow-xl:        inset 4px 4px 10px rgba(255, 255, 255, 0.2), inset -6px -6px 14px rgba(0, 0, 0, 0.7), 16px 24px 48px rgba(0, 0, 0, 0.6);
+  --shadow-sm:        2px 2px 0px #000000;
+  --shadow-md:        var(--brutal-card-shadow);
+  --shadow-lg:        var(--brutal-card-hover);
+  --shadow-xl:        8px 8px 0px #000000, 0 0 35px rgba(139, 92, 246, 0.35);
 
-  --border:           1px solid rgba(255, 255, 255, 0.08);
-  --border-2:         1px solid rgba(255, 255, 255, 0.04);
+  --border:           2px solid rgba(255, 255, 255, 0.12);
+  --border-2:         2px solid rgba(255, 255, 255, 0.08);
 
   /* Typography */
   --font-sans:        'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono:        'JetBrains Mono', 'Fira Code', monospace;
 
-  /* High Border Radii for Claymorphism */
+  /* Bento Border Radii */
   --radius-sm:        12px;
   --radius-md:        20px;
-  --radius-lg:        28px;
-  --radius-xl:        36px;
+  --radius-lg:        26px;
+  --radius-xl:        32px;
   --radius-full:      9999px;
 }
 
@@ -518,25 +518,29 @@ body::after {
 .bento-span-6  { grid-column: span 1; }
 
 /* ============================================================
-   CLAY CARDS (.mira-glass, .brutal-card, .clay-card)
+   BENTO-BRUTAL CARDS (.mira-glass, .brutal-card, .clay-card)
    ============================================================ */
 .mira-glass, .brutal-card, .clay-card {
   background: var(--surface-clay);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: var(--radius-md);
-  box-shadow: var(--clay-card-shadow);
+  box-shadow: var(--brutal-card-shadow);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   overflow: hidden;
   position: relative;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: none;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .mira-glass-hover, .brutal-card-hover, .clay-card-hover {
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.mira-glass-hover:hover, .brutal-card-hover:hover, .clay-card-hover:hover {
+.mira-glass-hover:hover, .brutal-card-hover:hover, .clay-card-hover:hover,
+.mira-glass:hover {
   background: var(--surface-hover);
-  box-shadow: var(--clay-card-hover);
-  transform: translateY(-3px);
+  border-color: rgba(139, 92, 246, 0.50);
+  box-shadow: var(--brutal-card-hover);
+  transform: translate(-3px, -3px);
 }
 
 /* ============================================================
@@ -733,71 +737,81 @@ button *, .btn *, .mira-btn * {
   font-family: var(--font-sans);
   padding: 10px 20px;
   white-space: nowrap;
-  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.20s cubic-bezier(0.34, 1.56, 0.64, 1);
   letter-spacing: 0.01em;
   background: linear-gradient(145deg, #27314D 0%, #1A2036 100%);
   color: #FFFFFF;
-  box-shadow: var(--clay-btn-shadow);
-  border: none;
+  box-shadow: 3px 3px 0px #000000;
+  border: 2px solid rgba(255, 255, 255, 0.16);
 }
 .btn:hover, .mira-btn:hover {
   background: linear-gradient(145deg, #303D60 0%, #202844 100%);
-  transform: translateY(-2px);
-  box-shadow: var(--clay-card-hover);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #000000, 0 0 15px rgba(139, 92, 246, 0.25);
+  border-color: rgba(255, 255, 255, 0.30);
 }
 .btn:active, .mira-btn:active {
-  transform: translateY(1px) scale(0.97);
-  box-shadow: var(--clay-btn-pressed);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #000000;
 }
 
 .btn-primary, .mira-btn-primary {
   background: linear-gradient(145deg, #8B5CF6 0%, #6D28D9 100%);
   color: #FFFFFF;
-  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 8px 18px rgba(139, 92, 246, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 3px 3px 0px #000000, 0 0 15px rgba(139, 92, 246, 0.35);
 }
 .btn-primary:hover, .mira-btn-primary:hover {
   background: linear-gradient(145deg, #9333EA 0%, #7C3AED 100%);
-  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.5), inset -4px -4px 8px rgba(0, 0, 0, 0.5), 6px 12px 24px rgba(139, 92, 246, 0.5);
+  box-shadow: 5px 5px 0px #000000, 0 0 25px rgba(139, 92, 246, 0.50);
 }
 .btn-primary:active, .mira-btn-primary:active {
-  transform: translateY(1px) scale(0.97);
-  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.6), inset -1px -1px 3px rgba(255, 255, 255, 0.2);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #000000;
 }
 
 .mira-btn-secondary {
   background: linear-gradient(145deg, #222A42 0%, #161B2E 100%);
   color: #F8FAFC;
-  box-shadow: var(--clay-btn-shadow);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 3px 3px 0px #000000;
 }
 .mira-btn-secondary:hover {
   background: linear-gradient(145deg, #2C3756 0%, #1D243D 100%);
+  box-shadow: 5px 5px 0px #000000;
 }
 
 .btn-emerald, .mira-btn-emerald {
   background: linear-gradient(145deg, #10B981 0%, #047857 100%);
   color: #FFFFFF;
-  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 8px 18px rgba(16, 185, 129, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 3px 3px 0px #000000;
 }
 .btn-emerald:hover, .mira-btn-emerald:hover {
   background: linear-gradient(145deg, #34D399 0%, #059669 100%);
+  box-shadow: 5px 5px 0px #000000;
 }
 
 .btn-danger, .mira-btn-danger {
   background: linear-gradient(145deg, #F43F5E 0%, #BE123C 100%);
   color: #FFFFFF;
-  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 8px 18px rgba(244, 63, 94, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 3px 3px 0px #000000;
 }
 .btn-danger:hover, .mira-btn-danger:hover {
   background: linear-gradient(145deg, #FB7185 0%, #E11D48 100%);
+  box-shadow: 5px 5px 0px #000000;
 }
 
 .mira-btn-cyan {
   background: linear-gradient(145deg, #06B6D4 0%, #0E7490 100%);
   color: #FFFFFF;
-  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.4), 4px 8px 18px rgba(6, 182, 212, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 3px 3px 0px #000000;
 }
 .mira-btn-cyan:hover {
   background: linear-gradient(145deg, #22D3EE 0%, #0284C7 100%);
+  box-shadow: 5px 5px 0px #000000;
 }
 
 .btn-sm, .mira-btn-sm { padding: 7px 14px; font-size: 11.5px; }
