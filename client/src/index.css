@@ -236,6 +236,7 @@ html, body {
 .nav-item.active-dashboard,
 .nav-item.active-feed,
 .nav-item.active-battlecards,
+.nav-item.active-killcards,
 .nav-item.active-warroom,
 .nav-item.active-settings {
   background: linear-gradient(135deg, rgba(0, 240, 255, 0.25) 0%, rgba(99, 102, 241, 0.20) 100%);

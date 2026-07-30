@@ -54,6 +54,12 @@ export default function Sidebar({
       activeClass: 'active-battlecards',
     },
     { 
+      id: 'killcards', 
+      label: 'Live Kill Cards 🎯', 
+      icon: Swords,
+      activeClass: 'active-killcards',
+    },
+    { 
       id: 'warroom', 
       label: 'War Room ⚔️', 
       icon: Swords,

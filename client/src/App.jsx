@@ -53,6 +53,7 @@ import CommandPalette from './components/CommandPalette.jsx';
 import VisualDiffModal from './components/VisualDiffModal.jsx';
 import BattlecardsView from './components/BattlecardsView.jsx';
 import WarRoomView from './components/WarRoomView.jsx';
+import KillCardCopilot from './components/KillCardCopilot.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
@@ -541,6 +542,18 @@ export default function App() {
                 <BattlecardsView
                   workspaceId={workspaceId}
                   competitors={competitors}
+                />
+              )}
+
+              {activeTab === 'killcards' && (
+                <KillCardCopilot
+                  competitors={competitors}
+                  onOpenOracle={(prompt) => {
+                    setIsOracleOpen(true);
+                    if (prompt && setOracleInitialQuery) {
+                      setOracleInitialQuery(prompt);
+                    }
+                  }}
                 />
               )}
 
