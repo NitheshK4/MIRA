@@ -40,7 +40,7 @@ async function downloadLlamaCli() {
     const releaseRes = await axios.get('https://api.github.com/repos/ggml-org/llama.cpp/releases/latest', {
       headers: { 'User-Agent': 'acie-installer' }
     });
-    
+
     const assets = releaseRes.data.assets;
     let targetAsset = null;
     const platform = process.platform;
@@ -74,7 +74,7 @@ async function downloadLlamaCli() {
 async function downloadAndExtract(url, platform) {
   const tempFile = path.join(BIN_DIR, 'llama_temp.tar.gz');
   const writer = fsSync.createWriteStream(tempFile);
-  
+
   const response = await axios({
     url,
     method: 'GET',
@@ -92,7 +92,7 @@ async function downloadAndExtract(url, platform) {
   try {
     // Standard extraction via tar utility (preserves symlinks on disk)
     execSync(`tar -xzf "${tempFile}" -C "${BIN_DIR}"`);
-    
+
     let resolvedCliPath = '';
 
     // Recursively scan BIN_DIR for llama-cli
@@ -119,7 +119,7 @@ async function downloadAndExtract(url, platform) {
 
     // Make executable
     fsSync.chmodSync(resolvedCliPath, '755');
-    
+
     // Also chmod any other binaries in the same folder if present
     try {
       const parentDir = path.dirname(resolvedCliPath);
@@ -131,7 +131,7 @@ async function downloadAndExtract(url, platform) {
           fsSync.chmodSync(siblingPath, '755');
         }
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // Save path
     fsSync.writeFileSync(LLAMA_PATH_FILE, resolvedCliPath, 'utf-8');
@@ -140,7 +140,7 @@ async function downloadAndExtract(url, platform) {
     // Cleanup temp zip
     try {
       fsSync.unlinkSync(tempFile);
-    } catch (e) {}
+    } catch (e) { }
 
     return resolvedCliPath;
   } catch (err) {
@@ -157,7 +157,7 @@ async function downloadModel() {
 
   console.log('Downloading Qwen2.5-0.5B GGUF model (~382MB) from Hugging Face...');
   const writer = fs.createWriteStream(MODEL_PATH);
-  
+
   const response = await axios({
     url: MODEL_URL,
     method: 'GET',
@@ -167,7 +167,7 @@ async function downloadModel() {
   // Track progress
   let downloadedBytes = 0;
   const totalBytes = parseInt(response.headers['content-length'] || '0', 10);
-  
+
   response.data.on('data', (chunk) => {
     downloadedBytes += chunk.length;
     if (totalBytes > 0 && downloadedBytes % (10 * 1024 * 1024) < chunk.length) {
@@ -432,15 +432,14 @@ ${userPrompt}<|im_end|>
     child.on('close', async (code) => {
       const duration = ((Date.now() - startTime) / 1000).toFixed(1);
       console.log(`llama-cli process exited with code ${code} in ${duration}s`);
-      
+
       // Cleanup temp prompt file
       try {
         fs.unlinkSync(tempPromptFile);
-      } catch (e) {}
+      } catch (e) { }
 
       if (code !== 0) {
-        console.warn(`LLM inference process exited with code ${code}. Falling back to heuristic rule-based analysis.`);
-        return resolve(generateFallbackAnalysis(diffText));
+        return reject(new Error(`LLM inference failed with code ${code}. Stderr: ${stderr}`));
       }
 
       // Parse structured tags
@@ -486,7 +485,7 @@ ${userPrompt}<|im_end|>
       child.kill();
       try {
         fs.unlinkSync(tempPromptFile);
-      } catch (e) {}
+      } catch (e) { }
       reject(new Error('LLM inference timed out (exceeded 90 seconds limit).'));
     }, 90000);
   });
@@ -505,7 +504,7 @@ Competitor Page Title: ${parsedEnrichment.title || 'N/A'}
 Meta Description: ${parsedEnrichment.description || 'N/A'}
 Tech Stack / Keywords: ${Array.isArray(parsedEnrichment.keywords) ? parsedEnrichment.keywords.slice(0, 10).join(', ') : 'N/A'}
 `;
-    } catch (e) {}
+    } catch (e) { }
   }
 
   const profileContext = businessProfile ? `
@@ -666,7 +665,7 @@ Target Audience: ${profile.customers || 'General Businesses'}
 Pricing Tier: ${profile.price_point || 'Standard Pricing'}
 ` : 'Our business profile is not configured.';
 
-  const competitorsSummary = competitors.length > 0 
+  const competitorsSummary = competitors.length > 0
     ? competitors.map(c => `- ${c.name} (${c.url}) - Status: ${c.status}`).join('\n')
     : 'No competitors registered in radar yet.';
 
@@ -750,7 +749,7 @@ Current Pricing: ${profile.price_point || 'Standard Tier'}
     const card = battlecards.find(b => String(b.competitor_id) === String(c.id));
     const compIntel = intelCards.filter(i => String(i.competitor_id) === String(c.id)).slice(0, 3);
     const intelStr = compIntel.map(i => `[${i.category}]: ${i.summary}`).join('; ');
-    
+
     let bcardStr = '';
     if (card) {
       const weaknesses = typeof card.weaknesses === 'string' ? card.weaknesses : JSON.stringify(card.weaknesses || []);
@@ -763,7 +762,7 @@ Current Pricing: ${profile.price_point || 'Standard Tier'}
       try {
         const parsed = typeof c.enrichment_data === 'string' ? JSON.parse(c.enrichment_data) : c.enrichment_data;
         enrichStr = `Title: ${parsed.title || ''} | Description: ${parsed.description || ''}`;
-      } catch (e) {}
+      } catch (e) { }
     }
 
     return `Competitor Name: "${c.name || c.url}"
@@ -855,7 +854,7 @@ Simulate market reactions specifically analyzing each registered competitor and 
 
   // Deep Contextual Dynamic Fallback Engine
   console.log(`Running dynamic contextual War Room simulation fallback for "${proposedMove}"...`);
-  
+
   const moveLower = proposedMove.toLowerCase();
   let riskScore = 5;
   let riskLevel = 'MEDIUM';
@@ -871,32 +870,32 @@ Simulate market reactions specifically analyzing each registered competitor and 
     verdict = 'HIGHLY RECOMMEND - STRONG DIFFERENTIATOR';
   }
 
-  const compResponses = competitors.length > 0 
+  const compResponses = competitors.length > 0
     ? competitors.map((c, i) => {
-        const compName = c.name || c.url;
-        let action = `Evaluate pricing and release targeted ad messaging contrasting platform capabilities against ${profile?.business_name || 'our brand'}.`;
-        if (moveLower.includes('price')) {
-          action = `Initiate defensive tier adjustments and emphasize enterprise SLA support to retain high-value accounts against ${profile?.business_name || 'our company'}.`;
-        } else if (moveLower.includes('ai') || moveLower.includes('agent')) {
-          action = `Announce upcoming roadmap updates or partner integration features to mitigate market momentum loss to ${profile?.business_name || 'our brand'}.`;
-        }
-        return {
-          competitor_name: compName,
-          predicted_action: action,
-          likelihood_pct: Math.min(95, 85 - i * 10),
-          timeframe: `${i + 1}-${i + 2} Weeks`,
-          threat_severity: i === 0 ? 'High' : 'Moderate'
-        };
-      })
+      const compName = c.name || c.url;
+      let action = `Evaluate pricing and release targeted ad messaging contrasting platform capabilities against ${profile?.business_name || 'our brand'}.`;
+      if (moveLower.includes('price')) {
+        action = `Initiate defensive tier adjustments and emphasize enterprise SLA support to retain high-value accounts against ${profile?.business_name || 'our company'}.`;
+      } else if (moveLower.includes('ai') || moveLower.includes('agent')) {
+        action = `Announce upcoming roadmap updates or partner integration features to mitigate market momentum loss to ${profile?.business_name || 'our brand'}.`;
+      }
+      return {
+        competitor_name: compName,
+        predicted_action: action,
+        likelihood_pct: Math.min(95, 85 - i * 10),
+        timeframe: `${i + 1}-${i + 2} Weeks`,
+        threat_severity: i === 0 ? 'High' : 'Moderate'
+      };
+    })
     : [
-        {
-          competitor_name: 'Primary Market Competitor',
-          predicted_action: `Launch competitive counter-campaign targeting ${profile?.business_name || 'our'} prospective buyers.`,
-          likelihood_pct: 85,
-          timeframe: '1-2 Weeks',
-          threat_severity: 'High'
-        }
-      ];
+      {
+        competitor_name: 'Primary Market Competitor',
+        predicted_action: `Launch competitive counter-campaign targeting ${profile?.business_name || 'our'} prospective buyers.`,
+        likelihood_pct: 85,
+        timeframe: '1-2 Weeks',
+        threat_severity: 'High'
+      }
+    ];
 
   return {
     scenario: proposedMove,

@@ -14,6 +14,7 @@ export default function TopBar({
   onMobileMenuToggle, 
   unreadCount,
   onRefresh,
+  isRefreshing,
   activeTab 
 }) {
   const pageLabels = {
@@ -70,11 +71,19 @@ export default function TopBar({
         {/* Refresh */}
         <button
           type="button"
-          onClick={onRefresh}
-          className="top-bar-icon-btn"
-          title="Refresh Data"
+          onClick={(e) => {
+            if (e.shiftKey) {
+              window.location.reload();
+            } else {
+              onRefresh && onRefresh();
+            }
+          }}
+          onDoubleClick={() => window.location.reload()}
+          className="top-bar-icon-btn group relative"
+          title="Click to Refresh Data (Double-click or Shift-click for Full Page Reload)"
+          disabled={isRefreshing}
         >
-          <RefreshCw size={14} />
+          <RefreshCw size={14} className={isRefreshing ? 'animate-spin text-violet-400' : 'group-hover:rotate-180 transition-transform duration-500'} />
         </button>
 
         {/* Alerts */}

@@ -13,15 +13,15 @@ let dbInstance = null;
 
 async function runMigrations(db) {
   console.log('Running SQLite workspace migrations...');
-  
+
   // 1. Add workspace_id columns to existing tables
   try {
     await db.exec('ALTER TABLE competitors ADD COLUMN workspace_id TEXT DEFAULT "default"');
-  } catch (e) {}
-  
+  } catch (e) { }
+
   try {
     await db.exec('ALTER TABLE intelligence_cards ADD COLUMN workspace_id TEXT DEFAULT "default"');
-  } catch (e) {}
+  } catch (e) { }
 
   // Remove UNIQUE constraint from competitors(url) if present
   try {
@@ -69,13 +69,13 @@ async function runMigrations(db) {
     }
   } catch (err) {
     console.warn('Competitors table migration failed:', err.message);
-    try { await db.exec('PRAGMA foreign_keys = ON'); } catch (_) {}
+    try { await db.exec('PRAGMA foreign_keys = ON'); } catch (_) { }
   }
 
   // Create composite unique index scoped to workspace_id and url
   try {
     await db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_competitors_workspace_url ON competitors(workspace_id, url)');
-  } catch (e) {}
+  } catch (e) { }
 
   // 2. Migrate profile table to support workspace_id PK
   const profileInfo = await db.all('PRAGMA table_info(profile)');
@@ -273,17 +273,17 @@ async function getDb() {
   // Try adding dynamic columns to existing tables
   try {
     await dbInstance.exec('ALTER TABLE competitors ADD COLUMN enrichment_data TEXT');
-  } catch (e) {}
+  } catch (e) { }
 
   try {
     await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN target_icp TEXT');
-  } catch (e) {}
+  } catch (e) { }
   try {
     await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN switching_triggers TEXT');
-  } catch (e) {}
+  } catch (e) { }
   try {
     await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN elevator_pitch TEXT');
-  } catch (e) {}
+  } catch (e) { }
 
   // Run schema migrations for workspace isolation support
   await runMigrations(dbInstance);
@@ -574,23 +574,19 @@ async function removeFromCrmQueue(cardId) {
 }
 
 // Settings operations
-async function getSetting(workspaceId = 'default', key) {
+async function getSetting(workspaceId = 'global', key) {
   let finalWorkspaceId = workspaceId;
   let finalKey = key;
   if (key === undefined) {
     finalKey = workspaceId;
-    finalWorkspaceId = 'default';
+    finalWorkspaceId = 'global';
   }
+
+  const isGlobalKey = finalKey !== 'api_key';
+  const queryWorkspaceId = isGlobalKey ? 'global' : finalWorkspaceId;
 
   const db = await getDb();
-  let row = await db.get('SELECT value FROM settings WHERE workspace_id = ? AND key = ?', [finalWorkspaceId, finalKey]);
-
-  if (!row && finalWorkspaceId !== 'default') {
-    row = await db.get('SELECT value FROM settings WHERE workspace_id = "default" AND key = ?', [finalKey]);
-  }
-  if (!row && finalWorkspaceId !== 'global') {
-    row = await db.get('SELECT value FROM settings WHERE workspace_id = "global" AND key = ?', [finalKey]);
-  }
+  let row = await db.get('SELECT value FROM settings WHERE workspace_id = ? AND key = ?', [queryWorkspaceId, finalKey]);
 
   if (!row) {
     // Dynamically seed default values for the global or workspace-specific configurations
@@ -621,7 +617,7 @@ async function getSetting(workspaceId = 'default', key) {
     if (finalKey in defaults) {
       await db.run(
         'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES (?, ?, ?)',
-        [finalWorkspaceId, finalKey, defaults[finalKey]]
+        [queryWorkspaceId, finalKey, defaults[finalKey]]
       );
       row = { value: defaults[finalKey] };
     }
@@ -693,35 +689,24 @@ async function getSetting(workspaceId = 'default', key) {
   return val;
 }
 
-async function setSetting(workspaceId = 'default', key, value) {
+async function setSetting(workspaceId = 'global', key, value) {
   let finalWorkspaceId = workspaceId;
   let finalKey = key;
   let finalValue = value;
   if (value === undefined) {
     finalValue = key;
     finalKey = workspaceId;
-    finalWorkspaceId = 'default';
+    finalWorkspaceId = 'global';
   }
 
+  const isGlobalKey = finalKey !== 'api_key';
+  const saveWorkspaceId = isGlobalKey ? 'global' : finalWorkspaceId;
+
   const db = await getDb();
-  // Save under requested workspace_id
   await db.run(
     'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES (?, ?, ?)',
-    [finalWorkspaceId, finalKey, finalValue]
+    [saveWorkspaceId, finalKey, finalValue]
   );
-  // Synchronize to default and global workspaces for background workers
-  if (finalWorkspaceId !== 'default') {
-    await db.run(
-      'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES ("default", ?, ?)',
-      [finalKey, finalValue]
-    );
-  }
-  if (finalWorkspaceId !== 'global') {
-    await db.run(
-      'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES ("global", ?, ?)',
-      [finalKey, finalValue]
-    );
-  }
   return finalValue;
 }
 
