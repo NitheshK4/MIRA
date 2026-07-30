@@ -1,94 +1,95 @@
 /* ============================================================
-   MIRA — NORDIC SLATE & EMERALD MINT DESIGN SYSTEM
-   Deep Slate Navy Canvas (#0B0F19) · Emerald Mint Highlights (#10B981)
-   Sleek Translucent Slate Cards (#1E293B) · Supabase/Stripe Developer Aesthetic
+   MIRA — DEEP ROYAL SAPPHIRE & ELECTRIC CYAN DESIGN SYSTEM
+   Royal Sapphire Obsidian (#060B1E) · Electric Laser Cyan (#00F0FF)
+   Neon Indigo Highlights (#6366F1) · Linear/Raycast High-Tech Theme
    ============================================================ */
 
 /* ------- CSS Design Tokens ------- */
 :root {
-  /* Slate Navy & Emerald Mint Palette */
-  --bg:               #0B0F19;
-  --bg-deep:          #070A12;
-  --surface-clay:     rgba(30, 41, 59, 0.85);
-  --surface-solid:    #1E293B;
-  --surface-hover:    rgba(51, 65, 85, 0.90);
-  --surface-active:   rgba(71, 85, 105, 0.95);
-  --surface-recessed: #0F172A;
+  /* Royal Sapphire Base Palette */
+  --bg:               #060B1E;
+  --bg-deep:          #030612;
+  --surface-clay:     rgba(13, 21, 42, 0.85);
+  --surface-solid:    #0D152A;
+  --surface-hover:    rgba(22, 33, 62, 0.90);
+  --surface-active:   rgba(30, 44, 80, 0.95);
+  --surface-recessed: #080E24;
 
-  /* Emerald Mint & Cyan Accents */
-  --emerald:          #10B981;
-  --emerald-glow:     rgba(16, 185, 129, 0.35);
-  --cyan:             #06B6D4;
-  --cyan-glow:        rgba(6, 182, 212, 0.35);
+  /* Laser Cyan & Indigo Accents */
+  --cyan:             #00F0FF;
+  --cyan-glow:        rgba(0, 240, 255, 0.45);
+  --indigo:           #6366F1;
+  --indigo-glow:      rgba(99, 102, 241, 0.45);
   --violet:           #8B5CF6;
   --violet-glow:      rgba(139, 92, 246, 0.35);
-  --indigo:           #6366F1;
-  --rose:             #F43F5E;
-  --rose-glow:        rgba(244, 63, 94, 0.35);
-  --amber:            #F59E0B;
-  --amber-glow:       rgba(245, 158, 11, 0.35);
-  --purple:           #A855F7;
-  --blue:             #3B82F6;
+  --emerald:          #00FF94;
+  --emerald-glow:     rgba(0, 255, 148, 0.35);
+  --rose:             #FF2A6D;
+  --rose-glow:        rgba(255, 42, 109, 0.35);
+  --amber:            #FFB800;
+  --amber-glow:       rgba(255, 184, 0, 0.35);
+  --purple:           #C084FC;
+  --blue:             #38BDF8;
 
   /* Legacy color aliases */
-  --yellow:           #F59E0B;
+  --yellow:           #FFB800;
   --yellow-dk:        #D97706;
-  --pink:             #F43F5E;
+  --pink:             #FF2A6D;
   --pink-dk:          #E11D48;
   --blue-dk:          #0284C7;
-  --green:            #10B981;
+  --green:            #00FF94;
   --green-dk:         #059669;
-  --orange:           #F97316;
+  --orange:           #FF7A00;
   --orange-dk:        #EA580C;
   --purple-dk:        #9333EA;
-  --red:              #F43F5E;
+  --red:              #FF2A6D;
 
   /* High-Contrast Readability Colors */
   --black:            #000000;
-  --text:             #F8FAFC;
+  --text:             #FFFFFF;
   --text-muted:       #94A3B8;
   --text-subtle:      #64748B;
 
-  /* Modern Slate Elevation & Mint Glow Shadows */
+  /* High-Tech Specular & Glowing Shadows */
   --clay-card-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.45),
-    0 0 20px rgba(16, 185, 129, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    0 12px 36px rgba(0, 0, 0, 0.65),
+    0 0 22px rgba(0, 240, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 
   --clay-card-hover: 
-    0 16px 40px rgba(0, 0, 0, 0.60),
-    0 0 30px rgba(16, 185, 129, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    0 18px 48px rgba(0, 0, 0, 0.80),
+    0 0 35px rgba(0, 240, 255, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 
   --brutal-card-shadow: var(--clay-card-shadow);
   --brutal-card-hover:  var(--clay-card-hover);
 
   --clay-btn-shadow:
-    0 4px 16px rgba(16, 185, 129, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 4px 18px rgba(0, 240, 255, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.40);
 
   --clay-btn-pressed:
-    0 2px 6px rgba(0, 0, 0, 0.50),
-    inset 0 2px 4px rgba(0, 0, 0, 0.30);
+    0 2px 6px rgba(0, 0, 0, 0.60),
+    inset 0 2px 4px rgba(0, 0, 0, 0.40);
 
   --clay-inset-shadow:
-    inset 3px 3px 6px rgba(0, 0, 0, 0.60),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    inset 4px 4px 8px rgba(0, 0, 0, 0.70),
+    inset 0 0 0 1px rgba(0, 240, 255, 0.20);
 
   --glass-bg:         var(--surface-clay);
-  --glass-border:     1px solid rgba(255, 255, 255, 0.10);
-  --glass-border-light: 1px solid rgba(255, 255, 255, 0.18);
-  --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.05);
-  --glass-blur:       blur(16px);
-  --glass-blur-heavy: blur(24px);
+  --glass-border:     1px solid rgba(0, 240, 255, 0.20);
+  --glass-border-light: 1px solid rgba(0, 240, 255, 0.35);
+  --glass-border-subtle: 1px solid rgba(0, 240, 255, 0.10);
+  --glass-blur:       blur(20px);
+  --glass-blur-heavy: blur(30px);
 
-  --shadow-sm:        0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-sm:        0 4px 12px rgba(0, 0, 0, 0.35);
   --shadow-md:        var(--clay-card-shadow);
   --shadow-lg:        var(--clay-card-hover);
-  --shadow-xl:        0 20px 50px rgba(0, 0, 0, 0.70), 0 0 40px rgba(16, 185, 129, 0.30);
+  --shadow-xl:        0 24px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(0, 240, 255, 0.35);
 
-  --border:           1px solid rgba(255, 255, 255, 0.10);
-  --border-2:         1px solid rgba(255, 255, 255, 0.05);
+  --border:           1px solid rgba(0, 240, 255, 0.20);
+  --border-2:         1px solid rgba(0, 240, 255, 0.10);
 
   /* Typography */
   --font-sans:        'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -108,11 +109,13 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans);
-  background-color: #0B0F19;
+  background-color: #060B1E;
   background-image: 
-    radial-gradient(rgba(16, 185, 129, 0.15) 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
-  color: #F8FAFC;
+    radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(0, 240, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(rgba(0, 240, 255, 0.12) 1.2px, transparent 1.2px);
+  background-size: 100% 100%, 100% 100%, 24px 24px;
+  color: #FFFFFF;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -121,14 +124,14 @@ html, body {
 
 #root { position: relative; z-index: 1; min-height: 100vh; }
 
-/* Custom Nordic Scrollbar */
+/* Custom High-Tech Sapphire Scrollbar */
 ::-webkit-scrollbar       { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #070A12; }
+::-webkit-scrollbar-track { background: #030612; }
 ::-webkit-scrollbar-thumb { 
-  background: rgba(16, 185, 129, 0.40); 
+  background: rgba(0, 240, 255, 0.40); 
   border-radius: 99px; 
 }
-::-webkit-scrollbar-thumb:hover { background: #10B981; }
+::-webkit-scrollbar-thumb:hover { background: #00F0FF; }
 
 /* ============================================================
    APP SHELL LAYOUT
@@ -140,7 +143,7 @@ html, body {
 }
 
 /* ============================================================
-   SIDEBAR (Nordic Slate & Emerald Mint Drawer)
+   SIDEBAR (Deep Royal Sapphire & Electric Cyan Drawer)
    ============================================================ */
 .sidebar-drawer {
   width: 295px;
@@ -153,9 +156,11 @@ html, body {
   flex-direction: column;
   justify-content: space-between;
   padding: 24px 20px;
-  background: #0F172A;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.50);
+  background: rgba(13, 21, 42, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(0, 240, 255, 0.18);
+  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.60);
   z-index: 50;
   overflow-y: auto;
 }
@@ -167,7 +172,7 @@ html, body {
   gap: 14px;
   padding: 10px 12px 18px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.18);
   margin-bottom: 22px;
   transition: transform 0.2s ease;
 }
@@ -177,12 +182,12 @@ html, body {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  background: linear-gradient(135deg, #00F0FF 0%, #6366F1 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 }
 .sidebar-brand-name {
   font-size: 24px;
@@ -193,7 +198,7 @@ html, body {
 }
 .sidebar-brand-sub {
   font-size: 10.5px;
-  color: #10B981;
+  color: #00F0FF;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -213,15 +218,15 @@ html, body {
   font-weight: 700;
   color: #94A3B8;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.08);
   cursor: pointer;
   transition: all 0.20s ease;
   text-align: left;
 }
 .nav-item:hover {
   color: #FFFFFF;
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.30);
+  background: rgba(0, 240, 255, 0.12);
+  border-color: rgba(0, 240, 255, 0.35);
   transform: translateX(3px);
 }
 .nav-item:active {
@@ -233,10 +238,10 @@ html, body {
 .nav-item.active-battlecards,
 .nav-item.active-warroom,
 .nav-item.active-settings {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.15) 100%);
-  border: 1px solid #10B981;
-  color: #10B981;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25) 0%, rgba(99, 102, 241, 0.20) 100%);
+  border: 1px solid #00F0FF;
+  color: #00F0FF;
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30);
 }
 
 .nav-item-icon {
@@ -247,8 +252,8 @@ html, body {
   justify-content: center;
   border-radius: var(--radius-sm);
   flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.30);
-  border: 1px solid rgba(16, 185, 129, 0.20);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 240, 255, 0.20);
 }
 
 .nav-item-icon {
@@ -361,11 +366,11 @@ html, body {
   align-items: center;
   gap: 16px;
   padding: 14px 28px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.40);
+  background: rgba(13, 21, 42, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.18);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.50);
 }
 .top-bar-page-title {
   font-size: 13.5px;
@@ -381,8 +386,8 @@ html, body {
 .page-title-dot {
   width: 9px; height: 9px;
   border-radius: 50%;
-  background: #10B981;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.60);
+  background: #00F0FF;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.60);
   animation: pulse-dot 2s ease-in-out infinite;
 }
 @keyframes pulse-dot { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.5; transform:scale(0.85);} }
@@ -395,26 +400,26 @@ html, body {
   max-width: 580px;
   padding: 12px 22px;
   border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.35);
-  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.50), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.40);
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.60), inset 0 0 0 1px rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.18);
   cursor: pointer;
   transition: all 0.20s ease;
   gap: 12px;
 }
 .top-bar-search:hover {
-  background: rgba(0, 0, 0, 0.50);
-  border-color: rgba(16, 185, 129, 0.40);
-  box-shadow: 0 0 18px rgba(16, 185, 129, 0.20);
+  background: rgba(0, 0, 0, 0.60);
+  border-color: rgba(0, 240, 255, 0.50);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
 }
 .top-bar-search-placeholder { font-size: 14.5px; color: #94A3B8; font-weight: 600; flex: 1; }
 .top-bar-search-kbd {
   font-size: 11px;
   font-family: var(--font-mono);
   font-weight: 800;
-  color: #10B981;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.30);
+  color: #00F0FF;
+  background: rgba(0, 240, 255, 0.18);
+  border: 1px solid rgba(0, 240, 255, 0.35);
   padding: 3px 8px;
   border-radius: var(--radius-sm);
 }
@@ -424,19 +429,19 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   color: #94A3B8;
   cursor: pointer;
   position: relative;
   transition: all 0.20s ease;
 }
 .top-bar-icon-btn:hover {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(0, 240, 255, 0.18);
   color: #FFFFFF;
-  border-color: rgba(16, 185, 129, 0.40);
+  border-color: rgba(0, 240, 255, 0.50);
   transform: translateY(-2px);
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.30);
 }
 .top-bar-icon-btn:active {
   transform: translateY(1px) scale(0.97);
@@ -447,12 +452,12 @@ html, body {
   top: -3px; right: -3px;
   width: 20px; height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%);
+  background: linear-gradient(135deg, #FF2A6D 0%, #BE123C 100%);
   color: #FFFFFF;
   font-size: 10.5px;
   font-weight: 900;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 10px rgba(244, 63, 94, 0.50);
+  box-shadow: 0 0 12px rgba(255, 42, 109, 0.55);
 }
 
 /* ============================================================
@@ -484,15 +489,15 @@ html, body {
 .bento-span-6  { grid-column: span 1; }
 
 /* ============================================================
-   NORDIC SLATE CARDS (.mira-glass, .brutal-card, .clay-card)
+   DEEP ROYAL SAPPHIRE CARDS (.mira-glass, .brutal-card, .clay-card)
    ============================================================ */
 .mira-glass, .brutal-card, .clay-card {
-  background: rgba(30, 41, 59, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(13, 21, 42, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 22px rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.20);
   overflow: hidden;
   position: relative;
   transition: all 0.22s ease;
@@ -503,9 +508,9 @@ html, body {
 }
 .mira-glass-hover:hover, .brutal-card-hover:hover, .clay-card-hover:hover,
 .mira-glass:hover {
-  background: rgba(51, 65, 85, 0.90);
-  border-color: rgba(16, 185, 129, 0.40);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.60), 0 0 30px rgba(16, 185, 129, 0.25);
+  background: rgba(22, 33, 62, 0.90);
+  border-color: rgba(0, 240, 255, 0.50);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.80), 0 0 35px rgba(0, 240, 255, 0.30);
   transform: translateY(-3px);
 }
 
@@ -705,30 +710,32 @@ button *, .btn *, .mira-btn * {
   white-space: nowrap;
   transition: all 0.20s ease;
   letter-spacing: 0.01em;
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
+  color: #000000;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  box-shadow: 0 4px 18px rgba(0, 240, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 .btn:hover, .mira-btn:hover {
-  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #38BDF8 0%, #00F0FF 100%);
+  color: #000000;
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 25px rgba(0, 240, 255, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.60);
 }
 .btn:active, .mira-btn:active {
   transform: translateY(1px) scale(0.98);
 }
 
 .btn-primary, .mira-btn-primary {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  background: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
+  color: #000000;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 .btn-primary:hover, .mira-btn-primary:hover {
-  background: linear-gradient(135deg, #34D399 0%, #059669 100%);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  background: linear-gradient(135deg, #38BDF8 0%, #00F0FF 100%);
+  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.70), inset 0 1px 0 rgba(255, 255, 255, 0.60);
 }
 .btn-primary:active, .mira-btn-primary:active {
   transform: translateY(1px) scale(0.98);
@@ -736,49 +743,49 @@ button *, .btn *, .mira-btn * {
 
 .mira-btn-secondary {
   background: rgba(255, 255, 255, 0.05);
-  color: #F8FAFC;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+  color: #FFFFFF;
+  border: 1px solid rgba(0, 240, 255, 0.20);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 .mira-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.20);
+  background: rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.40);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.25);
 }
 
 .btn-emerald, .mira-btn-emerald {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: #FFFFFF;
-  font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(135deg, #00FF94 0%, #059669 100%);
+  color: #000000;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 255, 148, 0.40);
 }
 .btn-emerald:hover, .mira-btn-emerald:hover {
-  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.50);
+  background: linear-gradient(135deg, #34D399 0%, #00FF94 100%);
+  box-shadow: 0 6px 22px rgba(0, 255, 148, 0.55);
 }
 
 .btn-danger, .mira-btn-danger {
-  background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%);
+  background: linear-gradient(135deg, #FF2A6D 0%, #BE123C 100%);
   color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(255, 42, 109, 0.40);
 }
 .btn-danger:hover, .mira-btn-danger:hover {
-  background: linear-gradient(135deg, #FB7185 0%, #F43F5E 100%);
-  box-shadow: 0 6px 20px rgba(244, 63, 94, 0.50);
+  background: linear-gradient(135deg, #FB7185 0%, #FF2A6D 100%);
+  box-shadow: 0 6px 22px rgba(255, 42, 109, 0.55);
 }
 
 .mira-btn-cyan {
-  background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
-  color: #FFFFFF;
-  font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+  background: linear-gradient(135deg, #00F0FF 0%, #0284C7 100%);
+  color: #000000;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.40);
 }
 .mira-btn-cyan:hover {
-  background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
-  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.50);
+  background: linear-gradient(135deg, #38BDF8 0%, #00F0FF 100%);
+  box-shadow: 0 6px 22px rgba(0, 240, 255, 0.60);
 }
 
 .btn-sm, .mira-btn-sm { padding: 7px 14px; font-size: 11.5px; }
