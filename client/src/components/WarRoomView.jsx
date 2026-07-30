@@ -86,27 +86,27 @@ export default function WarRoomView({ competitors = [], profile }) {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header Banner */}
-      <div className="mira-glass p-8 relative overflow-hidden border-violet-500/20">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-violet-500/15 via-sky-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="mira-glass p-8 relative overflow-hidden border-orange-500/20">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-yellow-400/20 via-orange-400/15 to-rose-400/20 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-500 text-xs font-bold uppercase tracking-wider">
               <Swords className="w-3.5 h-3.5" /> Multi-Agent Market Simulator
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tight font-['Outfit'] flex items-center gap-3">
+            <h1 className="text-3xl font-black text-[#073B4C] tracking-tight font-['Outfit'] flex items-center gap-3">
               Competitive War Room
             </h1>
-            <p className="text-slate-300 text-xs leading-relaxed">
+            <p className="text-slate-500 text-xs leading-relaxed">
               Test strategic hypotheses against your monitored competitors. Our game-theory AI predicts counter-moves, calculates threat severity, and synthesizes a step-by-step offensive playbook.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-[#0D0F17]/80 p-3.5 rounded-2xl border border-slate-800">
-            <Building2 className="w-8 h-8 text-sky-400 p-1.5 bg-sky-500/10 rounded-xl" />
+          <div className="flex items-center gap-3 bg-[#F7EFE3] p-3.5 rounded-2xl border border-slate-200">
+            <Building2 className="w-8 h-8 text-[#118AB2] p-1.5 bg-[#118AB2]/10 rounded-xl" />
             <div>
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Target Radar</div>
-              <div className="text-xs font-black text-white">{competitors.length} Monitored Competitors</div>
+              <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Target Radar</div>
+              <div className="text-xs font-black text-[#073B4C]">{competitors.length} Monitored Competitors</div>
             </div>
           </div>
         </div>
@@ -114,8 +114,8 @@ export default function WarRoomView({ competitors = [], profile }) {
 
       {/* Preset Scenario Cards */}
       <div className="space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-          <Zap className="w-3.5 h-3.5 text-amber-400" /> Select a Strategic Move Hypothesis
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+          <Zap className="w-3.5 h-3.5 text-amber-500" /> Select a Strategic Move Hypothesis
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -130,21 +130,21 @@ export default function WarRoomView({ competitors = [], profile }) {
                 }}
                 className={`mira-glass p-5 cursor-pointer transition-all duration-300 relative group flex flex-col justify-between ${
                   isSelected 
-                    ? 'border-violet-500 bg-violet-500/10 shadow-lg shadow-violet-500/10 scale-[1.02]' 
-                    : 'hover:border-slate-700 hover:bg-slate-900/60'
+                    ? 'border-[#FF9F1C] bg-[#FFF3E0] shadow-lg shadow-orange-500/10 scale-[1.02]' 
+                    : 'hover:border-orange-300 hover:bg-[#FFF8EE]'
                 }`}
               >
                 <div className="space-y-2">
                   <div className="text-2xl">{scenario.icon}</div>
-                  <h4 className="text-sm font-bold text-white font-['Outfit'] group-hover:text-violet-300 transition-colors">
+                  <h4 className="text-sm font-bold text-[#073B4C] font-['Outfit'] group-hover:text-[#118AB2] transition-colors">
                     {scenario.title}
                   </h4>
-                  <p className="text-slate-400 text-[11px] leading-snug line-clamp-3">
+                  <p className="text-slate-500 text-[11px] leading-snug line-clamp-3">
                     {scenario.move}
                   </p>
                 </div>
 
-                <div className="pt-4 flex items-center justify-between text-[11px] font-bold text-violet-400">
+                <div className="pt-4 flex items-center justify-between text-[11px] font-bold text-[#118AB2]">
                   <span>Simulate Scenario</span>
                   <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -221,19 +221,19 @@ export default function WarRoomView({ competitors = [], profile }) {
       {/* Simulation Loading Screen */}
       {simulating && (
         <div className="mira-glass p-12 text-center space-y-6 relative overflow-hidden">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-sky-400 p-[1.5px] mx-auto animate-pulse">
-            <div className="w-full h-full bg-[#090A0F] rounded-[14px] flex items-center justify-center text-violet-400">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FFD166] via-[#FF9F1C] to-[#FF5D5D] p-[1.5px] mx-auto animate-pulse shadow-lg shadow-orange-500/20">
+            <div className="w-full h-full bg-[#FFF8EE] rounded-[14px] flex items-center justify-center text-[#FF9F1C]">
               <Swords className="w-8 h-8 animate-bounce" />
             </div>
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-black text-white font-['Outfit']">Simulating Competitor Reactions...</h3>
-            <p className="text-slate-400 text-xs max-w-md mx-auto">
+            <h3 className="text-lg font-black text-[#073B4C] font-['Outfit']">Simulating Competitor Reactions...</h3>
+            <p className="text-slate-500 text-xs max-w-md mx-auto">
               Evaluating competitive strategy, expected price undercutting, marketing responses, and tactical counter-measures.
             </p>
           </div>
-          <div className="w-48 h-1 bg-slate-800 rounded-full mx-auto overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-r from-violet-500 via-sky-400 to-emerald-400 animate-pulse"></div>
+          <div className="w-48 h-1 bg-slate-200 rounded-full mx-auto overflow-hidden">
+            <div className="w-full h-full bg-gradient-to-r from-[#FFD166] via-[#FF9F1C] to-[#FF5D5D] animate-pulse"></div>
           </div>
         </div>
       )}
@@ -246,25 +246,25 @@ export default function WarRoomView({ competitors = [], profile }) {
             {/* Risk Gauge Card */}
             <div className="mira-glass p-6 space-y-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-xs uppercase font-bold tracking-wider">Market Risk Score</span>
-                <ShieldAlert className={`w-5 h-5 text-${getRiskColor(simulationResult.risk_score)}-400`} />
+                <span className="text-slate-500 text-xs uppercase font-bold tracking-wider">Market Risk Score</span>
+                <ShieldAlert className={`w-5 h-5 text-${getRiskColor(simulationResult.risk_score)}-500`} />
               </div>
 
               <div className="flex items-baseline gap-3">
-                <span className={`text-4xl font-black font-['Outfit'] text-${getRiskColor(simulationResult.risk_score)}-400`}>
+                <span className={`text-4xl font-black font-['Outfit'] text-${getRiskColor(simulationResult.risk_score)}-500`}>
                   {simulationResult.risk_score}
                 </span>
-                <span className="text-slate-400 text-xs">/ 10</span>
+                <span className="text-slate-500 text-xs">/ 10</span>
                 <span className={`mira-badge-${getRiskColor(simulationResult.risk_score)} ml-auto px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold`}>
                   {simulationResult.risk_level} RISK
                 </span>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                 <div 
                   className={`h-full bg-gradient-to-r ${
-                    simulationResult.risk_score <= 4 ? 'from-emerald-500 to-teal-400' :
+                    simulationResult.risk_score <= 4 ? 'from-teal-500 to-emerald-400' :
                     simulationResult.risk_score <= 7 ? 'from-amber-500 to-yellow-400' :
                     'from-rose-500 to-pink-500'
                   }`}
@@ -274,19 +274,19 @@ export default function WarRoomView({ competitors = [], profile }) {
             </div>
 
             {/* Strategic Verdict Card */}
-            <div className="mira-glass p-6 md:col-span-2 space-y-3 flex flex-col justify-between border-violet-500/20">
+            <div className="mira-glass p-6 md:col-span-2 space-y-3 flex flex-col justify-between border-orange-500/20">
               <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-xs uppercase font-bold tracking-wider">Strategic Recommendation</span>
-                <span className="mira-badge-violet px-3 py-1 rounded-full text-xs font-bold">
+                <span className="text-slate-500 text-xs uppercase font-bold tracking-wider">Strategic Recommendation</span>
+                <span className="mira-badge-ocean px-3 py-1 rounded-full text-xs font-bold">
                   {simulationResult.strategic_verdict}
                 </span>
               </div>
 
               <div className="space-y-1">
-                <h3 className="text-sm font-bold text-white font-['Outfit']">
+                <h3 className="text-sm font-bold text-[#073B4C] font-['Outfit']">
                   "{simulationResult.scenario}"
                 </h3>
-                <p className="text-slate-300 text-xs leading-relaxed">
+                <p className="text-slate-600 text-xs leading-relaxed font-medium">
                   {simulationResult.market_impact_summary}
                 </p>
               </div>
@@ -295,8 +295,8 @@ export default function WarRoomView({ competitors = [], profile }) {
 
           {/* Predicted Competitor Reactions */}
           <div className="space-y-4">
-            <h3 className="text-sm font-black text-white font-['Outfit'] flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-sky-400" />
+            <h3 className="text-sm font-black text-[#073B4C] font-['Outfit'] flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-[#118AB2]" />
               Predicted Competitor Responses ({simulationResult.competitor_responses?.length || 0})
             </h3>
 

@@ -31,7 +31,7 @@ function renderFormattedMessage(text) {
 
     if (trimmed.startsWith('### ')) {
       return (
-        <h4 key={idx} className="text-sm font-black text-violet-300 font-['Outfit'] mt-2 mb-1 flex items-center gap-1.5">
+        <h4 key={idx} className="text-sm font-black text-[#FFD166] font-['Outfit'] mt-2 mb-1 flex items-center gap-1.5">
           {trimmed.replace('### ', '')}
         </h4>
       );
@@ -249,11 +249,11 @@ export default function StrategyCopilotModal({ isOpen, onClose, onLaunchWarRoom 
 
           {loading && (
             <div className="flex gap-3">
-              <div className="w-7 h-7 rounded-lg bg-slate-800 text-sky-400 border border-slate-700 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-slate-800 text-teal-400 border border-slate-700 flex items-center justify-center">
                 <Bot className="w-3.5 h-3.5" />
               </div>
-              <div className="bg-[#111628] border border-slate-800 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-400 flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-violet-400 animate-spin" />
+              <div className="bg-[#052A37] border border-slate-700/80 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-300 flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#FFD166] animate-spin" />
                 <span>Analyzing market context & competitor moves...</span>
               </div>
             </div>
@@ -263,17 +263,17 @@ export default function StrategyCopilotModal({ isOpen, onClose, onLaunchWarRoom 
         </div>
 
         {/* Input Bar */}
-        <div className="p-3.5 border-t border-slate-800/80 bg-[#0D101F]">
+        <div className="p-3.5 border-t border-slate-800/80 bg-[#052A37]">
           <form 
             onSubmit={(e) => {
               e.preventDefault();
               handleSendMessage();
             }}
-            className="flex items-center gap-2 bg-[#080A12] border border-slate-800 rounded-xl p-1.5 px-3 focus-within:border-violet-500/60 transition-colors"
+            className="flex items-center gap-2 bg-[#073B4C] border border-slate-700 rounded-xl p-1.5 px-3 focus-within:border-orange-400 transition-colors"
           >
             <input 
               type="text" 
-              className="flex-1 bg-transparent border-none text-xs text-white placeholder-slate-500 focus:outline-none py-1.5"
+              className="flex-1 bg-transparent border-none text-xs text-white placeholder-slate-400 focus:outline-none py-1.5"
               placeholder="Ask MIRA Oracle a strategic question..."
               value={input}
               onChange={e => setInput(e.target.value)}
@@ -283,7 +283,7 @@ export default function StrategyCopilotModal({ isOpen, onClose, onLaunchWarRoom 
             <button 
               type="submit"
               disabled={loading || !input.trim()}
-              className="w-8 h-8 rounded-lg bg-violet-600 text-white flex items-center justify-center hover:bg-violet-500 disabled:opacity-30 transition-colors flex-shrink-0 shadow-md"
+              className="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 text-white flex items-center justify-center hover:opacity-90 disabled:opacity-30 transition-all flex-shrink-0 shadow-md"
             >
               <Send className="w-3.5 h-3.5" />
             </button>
