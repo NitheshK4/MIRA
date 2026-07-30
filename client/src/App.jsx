@@ -550,9 +550,6 @@ export default function App() {
                   competitors={competitors}
                   onOpenOracle={(prompt) => {
                     setIsOracleOpen(true);
-                    if (prompt && setOracleInitialQuery) {
-                      setOracleInitialQuery(prompt);
-                    }
                   }}
                 />
               )}
