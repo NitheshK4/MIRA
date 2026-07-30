@@ -1,94 +1,94 @@
 /* ============================================================
-   MIRA — GLASSMORPHIC CYBER NEON DESIGN SYSTEM
-   Dark Violet Obsidian (#080B1A) · Laser Cyan (#00F0FF) · Radiant Violet (#8B5CF6)
-   Frosted Translucent Glass (`backdrop-filter: blur(20px)`) · Glowing Neon Auroras
+   MIRA — CHAMPAGNE GOLD & EXECUTIVE CREAM DESIGN SYSTEM
+   Warm Ivory Cream Canvas (#FAF7F2) · Champagne Gold Accents (#D97706)
+   Deep Slate Charcoal Cards (#0F172A) · Refined Executive Luxury
    ============================================================ */
 
 /* ------- CSS Design Tokens ------- */
 :root {
-  /* Dark Violet Obsidian Base Palette */
-  --bg:               #080B1A;
-  --bg-deep:          #040610;
-  --surface-clay:     rgba(18, 24, 48, 0.78);
-  --surface-solid:    #121830;
-  --surface-hover:    rgba(28, 36, 68, 0.85);
-  --surface-active:   rgba(36, 46, 84, 0.90);
-  --surface-recessed: #0B0E22;
+  /* Warm Ivory & Executive Charcoal Palette */
+  --bg:               #FAF7F2;
+  --bg-deep:          #F3ECE0;
+  --surface-clay:     #FFFFFF;
+  --surface-solid:    #FFFFFF;
+  --surface-hover:    #FFFDF7;
+  --surface-active:   #FEF3C7;
+  --surface-recessed: #F0E8D9;
 
-  /* Laser Neon & Glowing Accents */
-  --cyan:             #00F0FF;
-  --cyan-glow:        rgba(0, 240, 255, 0.45);
-  --violet:           #8B5CF6;
-  --violet-glow:      rgba(139, 92, 246, 0.45);
-  --indigo:           #6366F1;
-  --rose:             #FF2A6D;
-  --rose-glow:        rgba(255, 42, 109, 0.45);
-  --emerald:          #05FF91;
-  --emerald-glow:     rgba(5, 255, 145, 0.45);
-  --amber:            #FFB800;
-  --amber-glow:       rgba(255, 184, 0, 0.45);
-  --purple:           #C084FC;
-  --blue:             #00F0FF;
+  /* Executive Champagne Gold Accents */
+  --amber:            #D97706;
+  --amber-glow:       rgba(217, 119, 6, 0.25);
+  --cyan:             #0284C7;
+  --cyan-glow:        rgba(2, 132, 199, 0.25);
+  --violet:           #7C3AED;
+  --violet-glow:      rgba(124, 58, 237, 0.25);
+  --indigo:           #4F46E5;
+  --rose:             #E11D48;
+  --rose-glow:        rgba(225, 29, 72, 0.25);
+  --emerald:          #059669;
+  --emerald-glow:     rgba(5, 150, 105, 0.25);
+  --purple:           #9333EA;
+  --blue:             #2563EB;
 
   /* Legacy color aliases */
-  --yellow:           #FFB800;
-  --yellow-dk:        #D97706;
-  --pink:             #FF2A6D;
-  --pink-dk:          #E11D48;
-  --blue-dk:          #0284C7;
-  --green:            #05FF91;
-  --green-dk:         #059669;
-  --orange:           #FF7A00;
-  --orange-dk:        #EA580C;
-  --purple-dk:        #9333EA;
-  --red:              #FF2A6D;
+  --yellow:           #F59E0B;
+  --yellow-dk:        #B45309;
+  --pink:             #E11D48;
+  --pink-dk:          #BE123C;
+  --blue-dk:          #0369A1;
+  --green:            #059669;
+  --green-dk:         #047857;
+  --orange:           #D97706;
+  --orange-dk:        #B45309;
+  --purple-dk:        #7E22CE;
+  --red:              #E11D48;
 
-  /* High-Contrast Readability Colors */
-  --black:            #000000;
-  --text:             #F8FAFC;
-  --text-muted:       #94A3B8;
+  /* Executive Charcoal Typography */
+  --black:            #0F172A;
+  --text:             #0F172A;
+  --text-muted:       #475569;
   --text-subtle:      #64748B;
 
-  /* Glassmorphic Cyber Elevation & Glowing Shadows */
+  /* Soft Luxury Shadows & Specular Outlines */
   --clay-card-shadow: 
-    0 12px 36px rgba(0, 0, 0, 0.60),
-    0 0 20px rgba(139, 92, 246, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    0 10px 30px rgba(15, 23, 42, 0.08),
+    0 0 15px rgba(217, 119, 6, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80);
 
   --clay-card-hover: 
-    0 18px 48px rgba(0, 0, 0, 0.75),
-    0 0 30px rgba(0, 240, 255, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+    0 16px 40px rgba(15, 23, 42, 0.14),
+    0 0 25px rgba(217, 119, 6, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
 
   --brutal-card-shadow: var(--clay-card-shadow);
   --brutal-card-hover:  var(--clay-card-hover);
 
   --clay-btn-shadow:
-    0 4px 16px rgba(139, 92, 246, 0.35),
+    0 4px 16px rgba(217, 119, 6, 0.30),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
 
   --clay-btn-pressed:
-    0 2px 6px rgba(0, 0, 0, 0.60),
-    inset 0 2px 4px rgba(0, 0, 0, 0.40);
+    0 2px 6px rgba(0, 0, 0, 0.20),
+    inset 0 2px 4px rgba(0, 0, 0, 0.20);
 
   --clay-inset-shadow:
-    inset 4px 4px 8px rgba(0, 0, 0, 0.70),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(217, 119, 6, 0.20);
 
-  --glass-bg:         var(--surface-clay);
-  --glass-border:     1px solid rgba(255, 255, 255, 0.12);
-  --glass-border-light: 1px solid rgba(255, 255, 255, 0.22);
-  --glass-border-subtle: 1px solid rgba(255, 255, 255, 0.06);
-  --glass-blur:       blur(20px);
-  --glass-blur-heavy: blur(30px);
+  --glass-bg:         #FFFFFF;
+  --glass-border:     1.5px solid rgba(217, 119, 6, 0.20);
+  --glass-border-light: 1.5px solid rgba(217, 119, 6, 0.35);
+  --glass-border-subtle: 1px solid rgba(217, 119, 6, 0.12);
+  --glass-blur:       none;
+  --glass-blur-heavy: none;
 
-  --shadow-sm:        0 4px 12px rgba(0, 0, 0, 0.30);
+  --shadow-sm:        0 4px 12px rgba(15, 23, 42, 0.06);
   --shadow-md:        var(--clay-card-shadow);
   --shadow-lg:        var(--clay-card-hover);
-  --shadow-xl:        0 24px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(0, 240, 255, 0.40);
+  --shadow-xl:        0 20px 50px rgba(15, 23, 42, 0.16);
 
-  --border:           1px solid rgba(255, 255, 255, 0.12);
-  --border-2:         1px solid rgba(255, 255, 255, 0.06);
+  --border:           1.5px solid rgba(217, 119, 6, 0.20);
+  --border-2:         1px solid rgba(217, 119, 6, 0.12);
 
   /* Typography */
   --font-sans:        'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -108,13 +108,11 @@
 html, body {
   height: 100%;
   font-family: var(--font-sans);
-  background-color: #080B1A;
+  background-color: #FAF7F2;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.25) 0%, transparent 55%),
-    radial-gradient(circle at 100% 100%, rgba(0, 240, 255, 0.18) 0%, transparent 60%),
-    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 28px 28px;
-  color: #F8FAFC;
+    radial-gradient(rgba(217, 119, 6, 0.12) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+  color: #0F172A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -123,14 +121,14 @@ html, body {
 
 #root { position: relative; z-index: 1; min-height: 100vh; }
 
-/* Custom Glassmorphic Scrollbar */
+/* Custom Executive Gold Scrollbar */
 ::-webkit-scrollbar       { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #040610; }
+::-webkit-scrollbar-track { background: #F3ECE0; }
 ::-webkit-scrollbar-thumb { 
-  background: rgba(139, 92, 246, 0.40); 
+  background: rgba(217, 119, 6, 0.40); 
   border-radius: 99px; 
 }
-::-webkit-scrollbar-thumb:hover { background: #00F0FF; }
+::-webkit-scrollbar-thumb:hover { background: #D97706; }
 
 /* ============================================================
    APP SHELL LAYOUT
@@ -142,7 +140,7 @@ html, body {
 }
 
 /* ============================================================
-   SIDEBAR (Glassmorphic Cyber Neon Drawer)
+   SIDEBAR (Executive Charcoal & Champagne Gold Drawer)
    ============================================================ */
 .sidebar-drawer {
   width: 295px;
@@ -155,11 +153,9 @@ html, body {
   flex-direction: column;
   justify-content: space-between;
   padding: 24px 20px;
-  background: rgba(14, 20, 42, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: 10px 0 40px rgba(0, 0, 0, 0.60);
+  background: #0F172A;
+  border-right: 1.5px solid rgba(217, 119, 6, 0.25);
+  box-shadow: 10px 0 40px rgba(15, 23, 42, 0.15);
   z-index: 50;
   overflow-y: auto;
 }
@@ -171,7 +167,7 @@ html, body {
   gap: 14px;
   padding: 10px 12px 18px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  border-bottom: 1.5px solid rgba(217, 119, 6, 0.20);
   margin-bottom: 22px;
   transition: transform 0.2s ease;
 }
@@ -181,12 +177,12 @@ html, body {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #8B5CF6 0%, #00F0FF 100%);
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 }
 .sidebar-brand-name {
   font-size: 24px;
@@ -197,7 +193,7 @@ html, body {
 }
 .sidebar-brand-sub {
   font-size: 10.5px;
-  color: #00F0FF;
+  color: #F59E0B;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -216,7 +212,7 @@ html, body {
   font-size: 15px;
   font-weight: 700;
   color: #94A3B8;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
   transition: all 0.20s ease;
@@ -224,8 +220,8 @@ html, body {
 }
 .nav-item:hover {
   color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(217, 119, 6, 0.15);
+  border-color: rgba(217, 119, 6, 0.35);
   transform: translateX(3px);
 }
 .nav-item:active {
@@ -237,10 +233,10 @@ html, body {
 .nav-item.active-battlecards,
 .nav-item.active-warroom,
 .nav-item.active-settings {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(0, 240, 255, 0.20) 100%);
-  border: 1px solid rgba(0, 240, 255, 0.50);
-  color: #FFFFFF;
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.35) 0%, rgba(180, 83, 9, 0.20) 100%);
+  border: 1.5px solid #D97706;
+  color: #F59E0B;
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
 
 .nav-item-icon {
@@ -252,7 +248,7 @@ html, body {
   border-radius: var(--radius-sm);
   flex-shrink: 0;
   background: rgba(0, 0, 0, 0.30);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(217, 119, 6, 0.20);
 }
 
 .nav-item-icon {
@@ -365,16 +361,14 @@ html, body {
   align-items: center;
   gap: 16px;
   padding: 14px 28px;
-  background: rgba(14, 20, 42, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.40);
+  background: #FFFFFF;
+  border-bottom: 1.5px solid rgba(217, 119, 6, 0.20);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
 }
 .top-bar-page-title {
   font-size: 13.5px;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #0F172A;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -385,8 +379,8 @@ html, body {
 .page-title-dot {
   width: 9px; height: 9px;
   border-radius: 50%;
-  background: #00F0FF;
-  box-shadow: 0 0 10px #00F0FF;
+  background: #D97706;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.50);
   animation: pulse-dot 2s ease-in-out infinite;
 }
 @keyframes pulse-dot { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.5; transform:scale(0.85);} }
@@ -399,26 +393,26 @@ html, body {
   max-width: 580px;
   padding: 12px 22px;
   border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.35);
-  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.60), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: #FAF7F2;
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(217, 119, 6, 0.15);
+  border: 1.5px solid rgba(217, 119, 6, 0.20);
   cursor: pointer;
   transition: all 0.20s ease;
   gap: 12px;
 }
 .top-bar-search:hover {
-  background: rgba(0, 0, 0, 0.50);
-  border-color: rgba(0, 240, 255, 0.40);
-  box-shadow: 0 0 18px rgba(0, 240, 255, 0.20);
+  background: #FFFFFF;
+  border-color: #D97706;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.18);
 }
-.top-bar-search-placeholder { font-size: 14.5px; color: #94A3B8; font-weight: 600; flex: 1; }
+.top-bar-search-placeholder { font-size: 14.5px; color: #64748B; font-weight: 600; flex: 1; }
 .top-bar-search-kbd {
   font-size: 11px;
   font-family: var(--font-mono);
   font-weight: 800;
-  color: #00F0FF;
-  background: rgba(139, 92, 246, 0.25);
-  border: 1px solid rgba(0, 240, 255, 0.30);
+  color: #B45309;
+  background: #FEF3C7;
+  border: 1px solid rgba(217, 119, 6, 0.35);
   padding: 3px 8px;
   border-radius: var(--radius-sm);
 }
@@ -427,20 +421,20 @@ html, body {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
-  color: #94A3B8;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(217, 119, 6, 0.20);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  color: #475569;
   cursor: pointer;
   position: relative;
   transition: all 0.20s ease;
 }
 .top-bar-icon-btn:hover {
-  background: rgba(139, 92, 246, 0.25);
-  color: #FFFFFF;
-  border-color: rgba(0, 240, 255, 0.40);
+  background: #FEF3C7;
+  color: #B45309;
+  border-color: #D97706;
   transform: translateY(-2px);
-  box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.25);
 }
 .top-bar-icon-btn:active {
   transform: translateY(1px) scale(0.97);
@@ -451,12 +445,12 @@ html, body {
   top: -3px; right: -3px;
   width: 20px; height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF2A6D 0%, #BE123C 100%);
+  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
   color: #FFFFFF;
   font-size: 10.5px;
   font-weight: 900;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 10px rgba(255, 42, 109, 0.50);
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.40);
 }
 
 /* ============================================================
@@ -466,13 +460,13 @@ html, body {
 .page-title {
   font-size: 32px;
   font-weight: 900;
-  color: #FFFFFF;
+  color: #0F172A;
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
   gap: 14px;
 }
-.page-subtitle { font-size: 15px; color: #94A3B8; font-weight: 600; margin-top: 6px; }
+.page-subtitle { font-size: 15px; color: #475569; font-weight: 600; margin-top: 6px; }
 
 /* ============================================================
    BENTO GRID
@@ -488,15 +482,13 @@ html, body {
 .bento-span-6  { grid-column: span 1; }
 
 /* ============================================================
-   GLASSMORPHIC CARDS (.mira-glass, .brutal-card, .clay-card)
+   EXECUTIVE LUXURY CARDS (.mira-glass, .brutal-card, .clay-card)
    ============================================================ */
 .mira-glass, .brutal-card, .clay-card {
-  background: rgba(18, 24, 48, 0.78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: #FFFFFF;
   border-radius: var(--radius-md);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.60), 0 0 20px rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 0 15px rgba(217, 119, 6, 0.08);
+  border: 1.5px solid rgba(217, 119, 6, 0.20);
   overflow: hidden;
   position: relative;
   transition: all 0.22s ease;
@@ -507,9 +499,9 @@ html, body {
 }
 .mira-glass-hover:hover, .brutal-card-hover:hover, .clay-card-hover:hover,
 .mira-glass:hover {
-  background: rgba(26, 34, 68, 0.88);
-  border-color: rgba(0, 240, 255, 0.40);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.75), 0 0 30px rgba(0, 240, 255, 0.25);
+  background: #FFFDF7;
+  border-color: #D97706;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14), 0 0 25px rgba(217, 119, 6, 0.20);
   transform: translateY(-3px);
 }
 
@@ -709,80 +701,81 @@ button *, .btn *, .mira-btn * {
   white-space: nowrap;
   transition: all 0.20s ease;
   letter-spacing: 0.01em;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(0, 240, 255, 0.20) 100%);
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
   color: #FFFFFF;
-  border: 1px solid rgba(0, 240, 255, 0.40);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 .btn:hover, .mira-btn:hover {
-  background: linear-gradient(135deg, #8B5CF6 0%, #00F0FF 100%);
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
   color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 22px rgba(217, 119, 6, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.50);
 }
 .btn:active, .mira-btn:active {
   transform: translateY(1px) scale(0.98);
 }
 
 .btn-primary, .mira-btn-primary {
-  background: linear-gradient(135deg, #8B5CF6 0%, #00F0FF 100%);
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
   color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.30);
-  box-shadow: 0 0 22px rgba(139, 92, 246, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.40);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 18px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 }
 .btn-primary:hover, .mira-btn-primary:hover {
-  background: linear-gradient(135deg, #9333EA 0%, #22D3EE 100%);
-  box-shadow: 0 0 32px rgba(0, 240, 255, 0.60), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  box-shadow: 0 8px 25px rgba(217, 119, 6, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.60);
 }
 .btn-primary:active, .mira-btn-primary:active {
   transform: translateY(1px) scale(0.98);
 }
 
 .mira-btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: #F8FAFC;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 1.5px solid rgba(217, 119, 6, 0.25);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
 }
 .mira-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.20);
+  background: #FEF3C7;
+  color: #B45309;
+  border-color: #D97706;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.20);
 }
 
 .btn-emerald, .mira-btn-emerald {
-  background: linear-gradient(135deg, #05FF91 0%, #059669 100%);
-  color: #000000;
-  font-weight: 900;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #FFFFFF;
+  font-weight: 800;
   border: 1px solid rgba(255, 255, 255, 0.30);
-  box-shadow: 0 0 18px rgba(5, 255, 145, 0.40);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.30);
 }
 .btn-emerald:hover, .mira-btn-emerald:hover {
-  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
-  box-shadow: 0 0 28px rgba(5, 255, 145, 0.55);
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.45);
 }
 
 .btn-danger, .mira-btn-danger {
-  background: linear-gradient(135deg, #FF2A6D 0%, #BE123C 100%);
+  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
   color: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.30);
-  box-shadow: 0 0 18px rgba(255, 42, 109, 0.40);
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.30);
 }
 .btn-danger:hover, .mira-btn-danger:hover {
-  background: linear-gradient(135deg, #FB7185 0%, #E11D48 100%);
-  box-shadow: 0 0 28px rgba(255, 42, 109, 0.55);
+  background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.45);
 }
 
 .mira-btn-cyan {
-  background: linear-gradient(135deg, #00F0FF 0%, #0284C7 100%);
-  color: #000000;
-  font-weight: 900;
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  color: #FFFFFF;
+  font-weight: 800;
   border: 1px solid rgba(255, 255, 255, 0.30);
-  box-shadow: 0 0 18px rgba(0, 240, 255, 0.40);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.30);
 }
 .mira-btn-cyan:hover {
-  background: linear-gradient(135deg, #38BDF8 0%, #00F0FF 100%);
-  box-shadow: 0 0 28px rgba(0, 240, 255, 0.60);
+  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
 }
 
 .btn-sm, .mira-btn-sm { padding: 7px 14px; font-size: 11.5px; }
