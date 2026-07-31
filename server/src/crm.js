@@ -30,7 +30,7 @@ async function syncCard(card, config, hostUrl = 'http://localhost:3000') {
       crm_sync_status: 'synced',
       crm_error: ''
     });
-    
+
     // Remove from queue if it was queued
     await db.removeFromCrmQueue(card.id);
 

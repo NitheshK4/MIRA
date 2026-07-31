@@ -13,15 +13,15 @@ let dbInstance = null;
 
 async function runMigrations(db) {
   console.log('Running SQLite workspace migrations...');
-  
+
   // 1. Add workspace_id columns to existing tables
   try {
     await db.exec('ALTER TABLE competitors ADD COLUMN workspace_id TEXT DEFAULT "default"');
-  } catch (e) {}
-  
+  } catch (e) { }
+
   try {
     await db.exec('ALTER TABLE intelligence_cards ADD COLUMN workspace_id TEXT DEFAULT "default"');
-  } catch (e) {}
+  } catch (e) { }
 
   // Remove UNIQUE constraint from competitors(url) if present
   try {
@@ -69,13 +69,13 @@ async function runMigrations(db) {
     }
   } catch (err) {
     console.warn('Competitors table migration failed:', err.message);
-    try { await db.exec('PRAGMA foreign_keys = ON'); } catch (_) {}
+    try { await db.exec('PRAGMA foreign_keys = ON'); } catch (_) { }
   }
 
   // Create composite unique index scoped to workspace_id and url
   try {
     await db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_competitors_workspace_url ON competitors(workspace_id, url)');
-  } catch (e) {}
+  } catch (e) { }
 
   // 2. Migrate profile table to support workspace_id PK
   const profileInfo = await db.all('PRAGMA table_info(profile)');
@@ -273,17 +273,17 @@ async function getDb() {
   // Try adding dynamic columns to existing tables
   try {
     await dbInstance.exec('ALTER TABLE competitors ADD COLUMN enrichment_data TEXT');
-  } catch (e) {}
+  } catch (e) { }
 
   try {
     await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN target_icp TEXT');
-  } catch (e) {}
+  } catch (e) { }
   try {
     await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN switching_triggers TEXT');
-  } catch (e) {}
+  } catch (e) { }
   try {
     await dbInstance.exec('ALTER TABLE battlecards ADD COLUMN elevator_pitch TEXT');
-  } catch (e) {}
+  } catch (e) { }
 
   // Run schema migrations for workspace isolation support
   await runMigrations(dbInstance);

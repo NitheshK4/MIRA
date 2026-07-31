@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Brain,
   Sparkles,
+  Plus,
   X
 } from 'lucide-react';
 
@@ -33,6 +34,12 @@ export default function Sidebar({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCreateNewWorkspace = () => {
+    const newWs = 'ws-' + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem('mira_workspace_id', newWs);
+    window.location.href = `${window.location.origin}${window.location.pathname}?w=${newWs}`;
+  };
+
   const navItems = [
     { 
       id: 'dashboard', 
@@ -52,6 +59,12 @@ export default function Sidebar({
       label: 'Battlecards', 
       icon: Swords,
       activeClass: 'active-battlecards',
+    },
+    { 
+      id: 'killcards', 
+      label: 'Live Kill Cards 🎯', 
+      icon: Swords,
+      activeClass: 'active-killcards',
     },
     { 
       id: 'warroom', 
@@ -194,27 +207,48 @@ export default function Sidebar({
             <div className="workspace-box-title">
               <Layers size={11} />
               Session Context
-              <button
-                onClick={handleCopyWorkspace}
-                style={{
-                  marginLeft:'auto',
-                  display:'flex', alignItems:'center', gap:'4px',
-                  background: 'rgba(255,209,102,0.15)',
-                  border: '1px solid rgba(255,209,102,0.35)',
-                  borderRadius: '4px',
-                  padding: '2px 8px',
-                  cursor: 'pointer',
-                  color: '#FFD166',
-                  fontSize: '9px',
-                  fontWeight: 800,
-                  textTransform:'uppercase',
-                  letterSpacing: '0.05em'
-                }}
-                title="Copy Workspace Session URL"
-              >
-                {copied ? <Check size={10} /> : <Copy size={10} />}
-                {copied ? 'Copied' : 'Copy'}
-              </button>
+              <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <button
+                  onClick={handleCreateNewWorkspace}
+                  style={{
+                    display:'flex', alignItems:'center', gap:'3px',
+                    background: 'rgba(56,189,248,0.15)',
+                    border: '1px solid rgba(56,189,248,0.35)',
+                    borderRadius: '4px',
+                    padding: '2px 6px',
+                    cursor: 'pointer',
+                    color: '#38bdf8',
+                    fontSize: '9px',
+                    fontWeight: 800,
+                    textTransform:'uppercase',
+                    letterSpacing: '0.05em'
+                  }}
+                  title="Create a new isolated workspace"
+                >
+                  <Plus size={10} />
+                  New
+                </button>
+                <button
+                  onClick={handleCopyWorkspace}
+                  style={{
+                    display:'flex', alignItems:'center', gap:'3px',
+                    background: 'rgba(255,209,102,0.15)',
+                    border: '1px solid rgba(255,209,102,0.35)',
+                    borderRadius: '4px',
+                    padding: '2px 6px',
+                    cursor: 'pointer',
+                    color: '#FFD166',
+                    fontSize: '9px',
+                    fontWeight: 800,
+                    textTransform:'uppercase',
+                    letterSpacing: '0.05em'
+                  }}
+                  title="Copy Workspace Session URL"
+                >
+                  {copied ? <Check size={10} /> : <Copy size={10} />}
+                  {copied ? 'Copied' : 'Copy'}
+                </button>
+              </div>
             </div>
             <div className="workspace-id">{workspaceId}</div>
           </div>

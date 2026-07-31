@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  LayoutDashboard, 
-  Activity, 
-  Settings as SettingsIcon, 
-  Plus, 
-  Globe, 
-  RefreshCw, 
-  Play, 
-  Pause, 
-  Trash2, 
-  ExternalLink, 
-  Clock, 
-  TrendingUp, 
-  Sparkles, 
-  Cpu, 
-  AlertTriangle, 
-  CheckCircle2, 
-  PauseCircle, 
-  Eye, 
-  EyeOff, 
-  Image, 
-  FileText, 
-  SlidersHorizontal, 
-  Layers, 
-  Copy, 
-  Check, 
-  Send, 
-  Key, 
-  Share2, 
-  Building2, 
-  Target, 
-  DollarSign, 
-  X, 
-  ChevronRight, 
-  Filter, 
-  ArrowUpRight, 
-  BarChart3, 
-  Database, 
-  Inbox, 
-  AlertOctagon, 
+import {
+  LayoutDashboard,
+  Activity,
+  Settings as SettingsIcon,
+  Plus,
+  Globe,
+  RefreshCw,
+  Play,
+  Pause,
+  Trash2,
+  ExternalLink,
+  Clock,
+  TrendingUp,
+  Sparkles,
+  Cpu,
+  AlertTriangle,
+  CheckCircle2,
+  PauseCircle,
+  Eye,
+  EyeOff,
+  Image,
+  FileText,
+  SlidersHorizontal,
+  Layers,
+  Copy,
+  Check,
+  Send,
+  Key,
+  Share2,
+  Building2,
+  Target,
+  DollarSign,
+  X,
+  ChevronRight,
+  Filter,
+  ArrowUpRight,
+  BarChart3,
+  Database,
+  Inbox,
+  AlertOctagon,
   Brain,
   ShieldCheck,
   Zap,
@@ -53,13 +53,37 @@ import CommandPalette from './components/CommandPalette.jsx';
 import VisualDiffModal from './components/VisualDiffModal.jsx';
 import BattlecardsView from './components/BattlecardsView.jsx';
 import WarRoomView from './components/WarRoomView.jsx';
+import KillCardCopilot from './components/KillCardCopilot.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
-// Extract Workspace ID from URL or default to 'default'
+// Extract Workspace ID from URL, LocalStorage, or auto-generate a persistent unique ID per user/browser
 const getWorkspaceId = () => {
   const params = new URLSearchParams(window.location.search);
-  return params.get('w') || params.get('workspace') || 'default';
+  const urlWs = params.get('w') || params.get('workspace');
+
+  // 1. Explicit URL workspace parameter takes priority & updates localStorage
+  if (urlWs) {
+    localStorage.setItem('mira_workspace_id', urlWs);
+    return urlWs;
+  }
+
+  // 2. Retrieve user's existing private workspace ID from localStorage
+  let savedWs = localStorage.getItem('mira_workspace_id');
+
+  // 3. If no workspace ID exists yet or if it was set to global 'default', generate a unique private ID
+  if (!savedWs || savedWs === 'default') {
+    savedWs = 'ws-' + Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6);
+    localStorage.setItem('mira_workspace_id', savedWs);
+  }
+
+  // 4. Update browser URL query parameter without page reload
+  if (!window.location.search.includes('w=')) {
+    const newUrl = `${window.location.pathname}?w=${savedWs}${window.location.hash}`;
+    window.history.replaceState({}, '', newUrl);
+  }
+
+  return savedWs;
 };
 
 const workspaceId = getWorkspaceId();
@@ -84,10 +108,11 @@ export default function App() {
   const [feedCards, setFeedCards] = useState([]);
   const [settings, setSettings] = useState(null);
   const [selectedCompId, setSelectedCompId] = useState(null);
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   // Modals & Drawers State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
@@ -96,7 +121,7 @@ export default function App() {
   const [activeDiffText, setActiveDiffText] = useState(null);
   const [activeScreenshotUrl, setActiveScreenshotUrl] = useState(null);
   const [activeVisualDiffCardId, setActiveVisualDiffCardId] = useState(null);
-  
+
   // Real-Time Claymorphism Toast State
   const [toasts, setToasts] = useState([]);
 
@@ -123,7 +148,7 @@ export default function App() {
       eventSource.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          
+
           if (data.type === 'intel-card-created' && data.card) {
             setFeedCards(prev => [data.card, ...prev]);
             addToast({
@@ -191,13 +216,12 @@ export default function App() {
         throw new Error('Failed to load profile from server');
       }
       const profileData = await profileRes.json();
-      
+
       if (profileData && profileData.error) {
         throw new Error(profileData.error);
       }
-      
+
       setProfile(profileData);
-      
       const urlParams = new URLSearchParams(window.location.search);
       const forceOnboarding = urlParams.get('onboarding') === 'true' || urlParams.get('register') === 'true';
 
@@ -250,6 +274,27 @@ export default function App() {
     }
   };
 
+  const handleFullRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        refreshCompetitors(),
+        refreshFeed(),
+        fetchInitialData()
+      ]);
+      addToast({
+        title: 'System Synchronized 🔄',
+        message: 'Live competitor radar, stream feeds, and battlecard telemetry updated.',
+        type: 'success'
+      });
+    } catch (err) {
+      console.error('Full refresh error:', err);
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 800);
+    }
+  };
+
   // Operations
   const handleOnboardingSubmit = async (profileForm) => {
     setLoading(true);
@@ -266,11 +311,11 @@ export default function App() {
       const data = await res.json();
       setProfile(data);
       setOnboarded(true);
-      
+
       const settingsRes = await fetch('/api/settings');
       const settingsData = await settingsRes.json();
       setSettings(settingsData);
-      
+
       setActiveTab('dashboard');
       refreshCompetitors();
     } catch (err) {
@@ -347,11 +392,11 @@ export default function App() {
     try {
       const res = await fetch(`/api/competitors/${id}/check`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to start scrape check');
-      
+
       alert('A scrape job has been added to the background queue. It will complete in 15-30 seconds.');
-      
+
       setCompetitors(prev => prev.map(c => c.id === id ? { ...c, status: 'active' } : c));
-      
+
       setTimeout(async () => {
         await refreshCompetitors();
         await refreshFeed();
@@ -432,7 +477,7 @@ export default function App() {
     <div className="app-shell">
       {/* Sidebar Navigation */}
       {onboarded && (
-        <Sidebar 
+        <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           workspaceId={workspaceId}
@@ -447,15 +492,13 @@ export default function App() {
       {/* Main Content Area */}
       <div className="app-main-content">
         {onboarded && (
-          <TopBar 
+          <TopBar
             onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
             onAddClick={() => setIsAddModalOpen(true)}
             onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             unreadCount={unreadCount}
-            onRefresh={() => {
-              refreshCompetitors();
-              refreshFeed();
-            }}
+            onRefresh={handleFullRefresh}
+            isRefreshing={isRefreshing}
             activeTab={activeTab}
           />
         )}
@@ -488,9 +531,9 @@ export default function App() {
               {activeTab === 'onboarding' && (
                 <OnboardingPage onSubmit={handleOnboardingSubmit} initialProfile={profile} />
               )}
-              
+
               {activeTab === 'dashboard' && (
-                <DashboardPage 
+                <DashboardPage
                   competitors={competitors}
                   feedCards={feedCards}
                   onAddClick={() => setIsAddModalOpen(true)}
@@ -503,9 +546,9 @@ export default function App() {
                   settings={settings}
                 />
               )}
-              
+
               {activeTab === 'feed' && (
-                <FeedPage 
+                <FeedPage
                   cards={feedCards}
                   competitors={competitors}
                   onRetryCrm={handleRetryCrm}
@@ -515,9 +558,9 @@ export default function App() {
                   onRefreshFeed={refreshFeed}
                 />
               )}
-              
+
               {activeTab === 'details' && (
-                <DetailsPage 
+                <DetailsPage
                   competitorId={selectedCompId}
                   competitors={competitors}
                   onBack={() => { setActiveTab('dashboard'); setSelectedCompId(null); }}
@@ -528,21 +571,30 @@ export default function App() {
               )}
 
               {activeTab === 'battlecards' && (
-                <BattlecardsView 
+                <BattlecardsView
                   workspaceId={workspaceId}
                   competitors={competitors}
                 />
               )}
 
+              {activeTab === 'killcards' && (
+                <KillCardCopilot
+                  competitors={competitors}
+                  onOpenOracle={(prompt) => {
+                    setIsOracleOpen(true);
+                  }}
+                />
+              )}
+
               {activeTab === 'warroom' && (
-                <WarRoomView 
+                <WarRoomView
                   competitors={competitors}
                   profile={profile}
                 />
               )}
-              
+
               {activeTab === 'settings' && (
-                <SettingsPage 
+                <SettingsPage
                   settings={settings}
                   profile={profile}
                   feedCards={feedCards}
@@ -561,21 +613,21 @@ export default function App() {
 
       {/* Add Competitor Modal */}
       {isAddModalOpen && (
-        <AddCompetitorModal 
+        <AddCompetitorModal
           onClose={() => setIsAddModalOpen(false)}
           onSubmit={handleAddCompetitor}
         />
       )}
 
       {/* MIRA Oracle Strategy Co-Pilot Modal */}
-      <StrategyCopilotModal 
+      <StrategyCopilotModal
         isOpen={isOracleOpen}
         onClose={() => setIsOracleOpen(false)}
         onLaunchWarRoom={() => setActiveTab('warroom')}
       />
 
       {/* Command Palette Modal */}
-      <CommandPalette 
+      <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
         competitors={competitors}
@@ -590,7 +642,7 @@ export default function App() {
 
       {/* Diff Text Modal */}
       {activeDiffText !== null && (
-        <DiffModal 
+        <DiffModal
           diffText={activeDiffText}
           onClose={() => setActiveDiffText(null)}
         />
@@ -598,7 +650,7 @@ export default function App() {
 
       {/* Visual Snapshot & DOM Diff Modal */}
       {activeVisualDiffCardId && (
-        <VisualDiffModal 
+        <VisualDiffModal
           cardId={activeVisualDiffCardId}
           onClose={() => setActiveVisualDiffCardId(null)}
         />
@@ -607,8 +659,8 @@ export default function App() {
       {/* Real-Time Claymorphism Toast Container */}
       <div className="clay-toast-container">
         {toasts.map(toast => (
-          <div 
-            key={toast.id} 
+          <div
+            key={toast.id}
             className={`clay-toast clay-toast-${toast.type || 'cyan'}`}
             onClick={() => removeToast(toast.id)}
             style={{ cursor: 'pointer' }}
@@ -667,9 +719,9 @@ function OnboardingPage({ onSubmit, initialProfile }) {
               <Building2 className="w-4 h-4 text-violet-400" />
               Your Business / Product Name
             </label>
-            <input 
-              type="text" 
-              className="mira-input" 
+            <input
+              type="text"
+              className="mira-input"
               value={form.business_name}
               onChange={e => setForm({ ...form, business_name: e.target.value })}
               placeholder="e.g. InboxFlow AI"
@@ -682,8 +734,8 @@ function OnboardingPage({ onSubmit, initialProfile }) {
               <Target className="w-4 h-4 text-sky-400" />
               What your product does & key features
             </label>
-            <textarea 
-              className="mira-textarea" 
+            <textarea
+              className="mira-textarea"
               rows="3"
               value={form.product_desc}
               onChange={e => setForm({ ...form, product_desc: e.target.value })}
@@ -697,9 +749,9 @@ function OnboardingPage({ onSubmit, initialProfile }) {
               <Globe className="w-4 h-4 text-emerald-400" />
               Target Customer Segments
             </label>
-            <input 
-              type="text" 
-              className="mira-input" 
+            <input
+              type="text"
+              className="mira-input"
               value={form.customers}
               onChange={e => setForm({ ...form, customers: e.target.value })}
               placeholder="e.g. Mid-market B2B SaaS sales teams, growth agencies, and outbound SDRs."
@@ -712,9 +764,9 @@ function OnboardingPage({ onSubmit, initialProfile }) {
               <DollarSign className="w-4 h-4 text-amber-400" />
               Your Pricing Structure & Price Point
             </label>
-            <input 
-              type="text" 
-              className="mira-input" 
+            <input
+              type="text"
+              className="mira-input"
               value={form.price_point}
               onChange={e => setForm({ ...form, price_point: e.target.value })}
               placeholder="e.g. Starter $49/mo, Pro $149/mo, Enterprise $499/mo"
@@ -735,39 +787,39 @@ function OnboardingPage({ onSubmit, initialProfile }) {
 // ----------------------------------------------------
 // PAGE COMPONENT: ASYMMETRIC OBSIDIAN DASHBOARD
 // ----------------------------------------------------
-function DashboardPage({ 
-  competitors, 
-  feedCards, 
-  onAddClick, 
-  onCheckNow, 
-  onPauseResume, 
-  onDelete, 
+function DashboardPage({
+  competitors,
+  feedCards,
+  onAddClick,
+  onCheckNow,
+  onPauseResume,
+  onDelete,
   onClearAll,
   onViewDetails,
   onViewFeed,
-  settings 
+  settings
 }) {
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'active': 
+      case 'active':
         return (
           <span className="mira-badge-emerald px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" /> Active
           </span>
         );
-      case 'paused': 
+      case 'paused':
         return (
           <span className="mira-badge-amber px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase flex items-center gap-1">
             <PauseCircle className="w-3 h-3" /> Paused
           </span>
         );
-      case 'error': 
+      case 'error':
         return (
           <span className="mira-badge-rose px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase flex items-center gap-1">
             <AlertTriangle className="w-3 h-3" /> Error
           </span>
         );
-      default: 
+      default:
         return <span className="mira-badge-violet px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase">{status}</span>;
     }
   };
@@ -925,7 +977,7 @@ function DashboardPage({
                   <p className="text-slate-300 line-clamp-1 font-medium">
                     {urgentAlerts[0].summary}
                   </p>
-                  <button 
+                  <button
                     onClick={onViewFeed}
                     className="text-sky-400 hover:text-sky-300 font-bold text-[11px] inline-flex items-center gap-1 pt-0.5"
                   >
@@ -971,7 +1023,7 @@ function DashboardPage({
               </div>
             </div>
 
-            <button 
+            <button
               onClick={onAddClick}
               className="mira-btn mira-btn-secondary w-full py-2.5 text-xs font-bold"
             >
@@ -994,8 +1046,8 @@ function DashboardPage({
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {competitors.map(comp => (
-                <div 
-                  key={comp.id} 
+                <div
+                  key={comp.id}
                   className="mira-glass mira-glass-hover p-5.5 flex flex-col justify-between space-y-4 relative overflow-hidden group border border-white/10"
                 >
                   {/* Subtle Top Violet Highlight Line */}
@@ -1007,10 +1059,10 @@ function DashboardPage({
                         <h4 className="text-base font-extrabold text-white truncate font-['Outfit'] group-hover:text-violet-300 transition-colors">
                           {comp.name}
                         </h4>
-                        <a 
-                          href={comp.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          href={comp.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="text-xs text-sky-400 hover:text-sky-300 font-mono truncate flex items-center gap-1 mt-0.5 font-semibold"
                         >
                           <span className="truncate">{comp.url}</span>
@@ -1050,34 +1102,34 @@ function DashboardPage({
                   </div>
 
                   {/* Card Actions */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-white/10" style={{ position:'relative', zIndex:5 }}>
-                    <button 
+                  <div className="flex items-center gap-2 pt-2 border-t border-white/10" style={{ position: 'relative', zIndex: 5 }}>
+                    <button
                       type="button"
-                      className="mira-btn mira-btn-secondary flex-1 py-1.5 text-xs font-bold" 
+                      className="mira-btn mira-btn-secondary flex-1 py-1.5 text-xs font-bold"
                       onClick={(e) => { e.stopPropagation(); onViewDetails(comp.id); }}
                     >
                       <Eye className="w-3.5 h-3.5 text-violet-400" />
                       History
                     </button>
-                    <button 
+                    <button
                       type="button"
-                      className="mira-btn mira-btn-emerald py-1.5 px-2.5 text-xs" 
+                      className="mira-btn mira-btn-emerald py-1.5 px-2.5 text-xs"
                       onClick={(e) => { e.stopPropagation(); onCheckNow(comp.id); }}
                       title="Trigger Immediate Scrape"
                     >
                       <RefreshCw className="w-3.5 h-3.5" />
                     </button>
-                    <button 
+                    <button
                       type="button"
-                      className="mira-btn mira-btn-secondary py-1.5 px-2.5 text-xs" 
+                      className="mira-btn mira-btn-secondary py-1.5 px-2.5 text-xs"
                       onClick={(e) => { e.stopPropagation(); onPauseResume(comp.id, comp.status); }}
                       title={comp.status === 'paused' ? 'Resume Monitor' : 'Pause Monitor'}
                     >
                       {comp.status === 'paused' ? <Play className="w-3.5 h-3.5 text-emerald-400" /> : <Pause className="w-3.5 h-3.5 text-amber-400" />}
                     </button>
-                    <button 
+                    <button
                       type="button"
-                      className="mira-btn mira-btn-danger py-1.5 px-2.5 text-xs" 
+                      className="mira-btn mira-btn-danger py-1.5 px-2.5 text-xs"
                       onClick={(e) => { e.stopPropagation(); onDelete(comp.id); }}
                       title="Delete Competitor"
                     >
@@ -1133,7 +1185,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
       });
       if (!res.ok) throw new Error('Failed');
       await onRefreshFeed();
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const filteredCards = cards.filter(card => {
@@ -1196,10 +1248,10 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
             </div>
 
             <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-200 pt-2 border-t border-white/10">
-              <input 
-                type="checkbox" 
-                checked={unreadOnly} 
-                onChange={e => setUnreadOnly(e.target.checked)} 
+              <input
+                type="checkbox"
+                checked={unreadOnly}
+                onChange={e => setUnreadOnly(e.target.checked)}
                 className="w-4 h-4 rounded border-white/20 text-violet-500 bg-black/60"
               />
               Unread Alerts Only
@@ -1219,8 +1271,8 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
             </div>
           ) : (
             filteredCards.map(card => (
-              <article 
-                key={card.id} 
+              <article
+                key={card.id}
                 className={`mira-glass p-6 space-y-5 border-l-2 ${getScoreColor(card.impact_score)} ${card.is_read ? 'opacity-70' : 'opacity-100'} shadow-2xl`}
               >
                 {/* Header Row */}
@@ -1241,7 +1293,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                       <span>{new Date(card.timestamp).toLocaleString()}</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <span className="mira-badge-cyan font-mono font-semibold text-[10.5px] px-2.5 py-0.5 rounded-full">
                       {card.category}
@@ -1310,7 +1362,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                     </button>
                   )}
 
-                  <button 
+                  <button
                     className="mira-btn mira-btn-cyan text-xs font-extrabold"
                     onClick={() => onViewVisualDiff && onViewVisualDiff(card.id)}
                   >
@@ -1318,7 +1370,7 @@ function FeedPage({ cards, competitors, onRetryCrm, onViewDiff, onViewScreenshot
                     Visual Snapshot Diff
                   </button>
 
-                  <button 
+                  <button
                     className="mira-btn mira-btn-primary text-xs font-extrabold"
                     onClick={() => {
                       onViewDiff(card.summary + "\n\nRECOMMENDED ACTION:\n" + card.recommendation);
@@ -1344,7 +1396,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [form, setForm] = useState({
     name: '',
     interval_hours: 6,
@@ -1372,7 +1424,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
         throw new Error('Invalid competitor data received from server');
       }
       setData(compData);
-      
+
       setForm({
         name: compData.competitor.name || '',
         interval_hours: compData.competitor.interval_hours || 6,
@@ -1487,7 +1539,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
             })}
 
             {points.length > 0 && (
-              <path 
+              <path
                 d={`${pathData} L ${points[points.length - 1].x} ${paddingTop + chartHeight} L ${points[0].x} ${paddingTop + chartHeight} Z`}
                 fill="url(#miraObsidianChartGradient)"
               />
@@ -1527,7 +1579,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
         </div>
 
         <div className="flex items-center gap-2">
-          <button 
+          <button
             className="mira-btn mira-btn-emerald text-xs font-bold"
             onClick={async () => {
               await onCheckNow(competitor.id);
@@ -1587,8 +1639,8 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
                 {latestScrape.screenshot_path && (
                   <div className="space-y-2">
                     <span className="text-xs font-bold text-slate-300 uppercase">Page Visual Archive</span>
-                    <img 
-                      src={latestScrape.screenshot_path} 
+                    <img
+                      src={latestScrape.screenshot_path}
                       className="rounded-xl border border-white/15 hover:border-violet-500/40 transition-all cursor-pointer max-w-sm shadow-xl"
                       alt="Capture Preview"
                       onClick={() => window.open(latestScrape.screenshot_path, '_blank')}
@@ -1612,8 +1664,8 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
             <form onSubmit={handleUpdate} className="space-y-3.5">
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Competitor Label Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="mira-input text-xs font-semibold"
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
@@ -1623,7 +1675,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Scrape Frequency (Hours)</label>
-                <select 
+                <select
                   className="mira-select text-xs font-semibold"
                   value={form.interval_hours}
                   onChange={e => setForm({ ...form, interval_hours: parseInt(e.target.value, 10) })}
@@ -1637,7 +1689,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Extraction Scope</label>
-                <select 
+                <select
                   className="mira-select text-xs font-semibold"
                   value={form.scope}
                   onChange={e => setForm({ ...form, scope: e.target.value })}
@@ -1649,7 +1701,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
               </div>
 
               <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-200">
-                <input 
+                <input
                   type="checkbox"
                   checked={form.js_enabled}
                   onChange={e => setForm({ ...form, js_enabled: e.target.checked })}
@@ -1670,7 +1722,7 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
             if (competitor.enrichment_data) {
               try {
                 enrichment = JSON.parse(competitor.enrichment_data);
-              } catch (e) {}
+              } catch (e) { }
             }
             if (!enrichment) return null;
             return (
@@ -1715,16 +1767,16 @@ function DetailsPage({ competitorId, competitors, onBack, onDelete, onCheckNow, 
 // ----------------------------------------------------
 // PAGE COMPONENT: SETTINGS & CONFIGURATIONS
 // ----------------------------------------------------
-function SettingsPage({ 
-  settings, 
-  profile, 
-  feedCards, 
-  onSaveSettings, 
-  onTestEmail, 
-  onRetryCrm, 
-  onRegenerateKey, 
+function SettingsPage({
+  settings,
+  profile,
+  feedCards,
+  onSaveSettings,
+  onTestEmail,
+  onRetryCrm,
+  onRegenerateKey,
   onUpdateProfile,
-  workspaceId 
+  workspaceId
 }) {
   const [profileForm, setProfileForm] = useState({
     business_name: profile?.business_name || '',
@@ -1841,7 +1893,7 @@ function SettingsPage({
             </p>
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#070912] border border-white/10 font-mono text-xs text-violet-300">
               <span className="truncate max-w-xs">{window.location.origin + window.location.pathname + "?w=" + workspaceId}</span>
-              <button 
+              <button
                 className="mira-btn mira-btn-secondary text-xs py-1 px-2.5 font-bold"
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?w=" + workspaceId);
@@ -1865,7 +1917,7 @@ function SettingsPage({
             </p>
             <div className="flex items-center justify-between p-3 rounded-xl bg-[#070912] border border-white/10 font-mono text-xs text-sky-300 font-bold">
               <span>{settings?.api_key || 'No Key Configured'}</span>
-              <button 
+              <button
                 className="mira-btn mira-btn-secondary text-xs py-1 px-2.5 font-bold"
                 onClick={() => {
                   navigator.clipboard.writeText(settings.api_key);
@@ -1890,8 +1942,8 @@ function SettingsPage({
             <form onSubmit={handleProfileSubmit} className="space-y-3.5">
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Business Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="mira-input text-xs font-semibold"
                   value={profileForm.business_name}
                   onChange={e => setProfileForm({ ...profileForm, business_name: e.target.value })}
@@ -1901,8 +1953,8 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Product Description</label>
-                <textarea 
-                  className="mira-textarea text-xs font-semibold" 
+                <textarea
+                  className="mira-textarea text-xs font-semibold"
                   rows="3"
                   value={profileForm.product_desc}
                   onChange={e => setProfileForm({ ...profileForm, product_desc: e.target.value })}
@@ -1912,8 +1964,8 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Target Customers</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="mira-input text-xs font-semibold"
                   value={profileForm.customers}
                   onChange={e => setProfileForm({ ...profileForm, customers: e.target.value })}
@@ -1923,8 +1975,8 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Pricing Structure</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="mira-input text-xs font-semibold"
                   value={profileForm.price_point}
                   onChange={e => setProfileForm({ ...profileForm, price_point: e.target.value })}
@@ -1950,11 +2002,11 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Semantic Change Threshold (0.0 – 1.0)</label>
-                <input 
-                  type="number" 
-                  step="0.01" 
-                  min="0" 
-                  max="1" 
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="1"
                   className="mira-input text-xs font-semibold"
                   value={threshold}
                   onChange={e => setThreshold(parseFloat(e.target.value))}
@@ -1967,7 +2019,7 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Digest Email Frequency</label>
-                <select 
+                <select
                   className="mira-select text-xs font-semibold"
                   value={schedule}
                   onChange={e => setSchedule(e.target.value)}
@@ -1979,8 +2031,8 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Slack / Discord Webhook URL</label>
-                <input 
-                  type="url" 
+                <input
+                  type="url"
                   className="mira-input text-xs font-semibold"
                   value={slackWebhookUrl}
                   onChange={e => setSlackWebhookUrl(e.target.value)}
@@ -1991,8 +2043,8 @@ function SettingsPage({
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Outbound Webhook URL</label>
                 <p className="text-slate-500 text-[10px] mb-1.5">Fires on every detected change · Compatible with Zapier, Make, n8n, Discord, and any HTTP endpoint</p>
-                <input 
-                  type="url" 
+                <input
+                  type="url"
                   className="mira-input text-xs font-semibold"
                   value={outboundWebhookUrl}
                   onChange={e => setOutboundWebhookUrl(e.target.value)}
@@ -2010,9 +2062,9 @@ function SettingsPage({
               <div className="grid grid-cols-2 gap-3">
                 <div className="mira-form-group">
                   <label className="mira-form-label text-xs">SMTP Host</label>
-                  <input 
-                    type="text" 
-                    className="mira-input text-xs font-semibold" 
+                  <input
+                    type="text"
+                    className="mira-input text-xs font-semibold"
                     value={emailForm.smtp_host}
                     onChange={e => setEmailForm({ ...emailForm, smtp_host: e.target.value })}
                     placeholder="smtp.gmail.com"
@@ -2020,9 +2072,9 @@ function SettingsPage({
                 </div>
                 <div className="mira-form-group">
                   <label className="mira-form-label text-xs">SMTP Port</label>
-                  <input 
-                    type="number" 
-                    className="mira-input text-xs font-semibold" 
+                  <input
+                    type="number"
+                    className="mira-input text-xs font-semibold"
                     value={emailForm.smtp_port}
                     onChange={e => setEmailForm({ ...emailForm, smtp_port: parseInt(e.target.value, 10) })}
                     placeholder="587"
@@ -2032,9 +2084,9 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Password / Resend Key</label>
-                <input 
-                  type="password" 
-                  className="mira-input text-xs font-semibold" 
+                <input
+                  type="password"
+                  className="mira-input text-xs font-semibold"
                   value={emailForm.smtp_pass}
                   onChange={e => setEmailForm({ ...emailForm, smtp_pass: e.target.value })}
                   placeholder="••••••••••••••••"
@@ -2043,17 +2095,17 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Digest Recipient Email</label>
-                <input 
-                  type="email" 
-                  className="mira-input text-xs font-semibold" 
+                <input
+                  type="email"
+                  className="mira-input text-xs font-semibold"
                   value={emailForm.recipient_email}
                   onChange={e => setEmailForm({ ...emailForm, recipient_email: e.target.value })}
                   placeholder="manager@mycompany.com"
                 />
               </div>
 
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="mira-btn mira-btn-secondary text-xs font-bold"
                 onClick={async () => {
                   setIsSendingEmail(true);
@@ -2078,7 +2130,7 @@ function SettingsPage({
 
               <div className="mira-form-group">
                 <label className="mira-form-label text-xs">Active CRM Target</label>
-                <select 
+                <select
                   className="mira-select text-xs font-semibold"
                   value={crmForm.active_crm}
                   onChange={e => setCrmForm({ ...crmForm, active_crm: e.target.value })}
@@ -2093,9 +2145,9 @@ function SettingsPage({
                 <div className="space-y-3 pt-1">
                   <div className="mira-form-group">
                     <label className="mira-form-label text-xs">Notion Token</label>
-                    <input 
-                      type="password" 
-                      className="mira-input text-xs font-semibold" 
+                    <input
+                      type="password"
+                      className="mira-input text-xs font-semibold"
                       value={crmForm.notion_token}
                       onChange={e => setCrmForm({ ...crmForm, notion_token: e.target.value })}
                       placeholder="secret_••••••••••••••••"
@@ -2103,9 +2155,9 @@ function SettingsPage({
                   </div>
                   <div className="mira-form-group">
                     <label className="mira-form-label text-xs">Notion Database ID</label>
-                    <input 
-                      type="text" 
-                      className="mira-input text-xs font-semibold" 
+                    <input
+                      type="text"
+                      className="mira-input text-xs font-semibold"
                       value={crmForm.notion_db_id}
                       onChange={e => setCrmForm({ ...crmForm, notion_db_id: e.target.value })}
                       placeholder="5d5a7d77b8b..."
@@ -2118,9 +2170,9 @@ function SettingsPage({
                 <div className="space-y-3 pt-1">
                   <div className="mira-form-group">
                     <label className="mira-form-label text-xs">Airtable PAT Token</label>
-                    <input 
-                      type="password" 
-                      className="mira-input text-xs font-semibold" 
+                    <input
+                      type="password"
+                      className="mira-input text-xs font-semibold"
                       value={crmForm.airtable_key}
                       onChange={e => setCrmForm({ ...crmForm, airtable_key: e.target.value })}
                       placeholder="pat.••••••••••••••••"
@@ -2129,9 +2181,9 @@ function SettingsPage({
                   <div className="grid grid-cols-2 gap-3">
                     <div className="mira-form-group">
                       <label className="mira-form-label text-xs">Base ID</label>
-                      <input 
-                        type="text" 
-                        className="mira-input text-xs font-semibold" 
+                      <input
+                        type="text"
+                        className="mira-input text-xs font-semibold"
                         value={crmForm.airtable_base_id}
                         onChange={e => setCrmForm({ ...crmForm, airtable_base_id: e.target.value })}
                         placeholder="app••••••••••••"
@@ -2139,9 +2191,9 @@ function SettingsPage({
                     </div>
                     <div className="mira-form-group">
                       <label className="mira-form-label text-xs">Table Name</label>
-                      <input 
-                        type="text" 
-                        className="mira-input text-xs font-semibold" 
+                      <input
+                        type="text"
+                        className="mira-input text-xs font-semibold"
                         value={crmForm.airtable_table_name}
                         onChange={e => setCrmForm({ ...crmForm, airtable_table_name: e.target.value })}
                         placeholder="Competitor Intel"
@@ -2195,9 +2247,9 @@ function AddCompetitorModal({ onClose, onSubmit }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="mira-form-group">
             <label className="mira-form-label text-sm font-extrabold text-slate-300">Competitor Label Name</label>
-            <input 
-              type="text" 
-              className="mira-input text-base font-semibold py-3 px-4" 
+            <input
+              type="text"
+              className="mira-input text-base font-semibold py-3 px-4"
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. Acme SaaS"
@@ -2207,9 +2259,9 @@ function AddCompetitorModal({ onClose, onSubmit }) {
 
           <div className="mira-form-group">
             <label className="mira-form-label text-sm font-extrabold text-slate-300">Target Page URL</label>
-            <input 
-              type="url" 
-              className="mira-input text-base font-semibold py-3 px-4" 
+            <input
+              type="url"
+              className="mira-input text-base font-semibold py-3 px-4"
               value={form.url}
               onChange={e => setForm({ ...form, url: e.target.value })}
               placeholder="https://acme.com/pricing"
@@ -2219,7 +2271,7 @@ function AddCompetitorModal({ onClose, onSubmit }) {
 
           <div className="mira-form-group">
             <label className="mira-form-label text-sm font-extrabold text-slate-300">Scrape Frequency (Interval)</label>
-            <select 
+            <select
               className="mira-select text-base font-semibold py-3 px-4"
               value={form.interval_hours}
               onChange={e => setForm({ ...form, interval_hours: parseInt(e.target.value, 10) })}
@@ -2233,7 +2285,7 @@ function AddCompetitorModal({ onClose, onSubmit }) {
 
           <div className="mira-form-group">
             <label className="mira-form-label text-sm font-extrabold text-slate-300">Extraction Scope</label>
-            <select 
+            <select
               className="mira-select text-base font-semibold py-3 px-4"
               value={form.scope}
               onChange={e => setForm({ ...form, scope: e.target.value })}
@@ -2245,8 +2297,8 @@ function AddCompetitorModal({ onClose, onSubmit }) {
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer text-sm font-semibold text-slate-200 py-1">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={form.js_enabled}
               onChange={e => setForm({ ...form, js_enabled: e.target.checked })}
               className="w-5 h-5 rounded border-white/20 text-violet-500 bg-black/60"
@@ -2316,14 +2368,14 @@ function ScreenshotModal({ url, onClose }) {
   return (
     <div className="mira-modal-backdrop" onClick={onClose}>
       <div className="relative flex flex-col items-center max-w-4xl" onClick={e => e.stopPropagation()}>
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="absolute -top-10 right-0 text-slate-300 hover:text-white text-3xl font-bold"
         >
           &times;
         </button>
-        <img 
-          src={url} 
+        <img
+          src={url}
           className="max-w-full max-h-[80vh] rounded-xl border border-white/20 shadow-2xl"
           alt="Visual Archive Capture"
         />
