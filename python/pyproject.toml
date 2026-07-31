@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mira-sdk"
+version = "1.0.0"
+authors = [
+  { name="MIRA Core Team", email="dev@mira.ai" },
+]
+description = "Python SDK & Client for MIRA Autonomous Competitor Intelligence Engine"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine"
