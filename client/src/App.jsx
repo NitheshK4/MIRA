@@ -56,17 +56,10 @@ import WarRoomView from './components/WarRoomView.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
-// Extract or generate Workspace ID per tab session
+// Extract Workspace ID from URL or default to 'default'
 const getWorkspaceId = () => {
   const params = new URLSearchParams(window.location.search);
-  let w = params.get('w');
-  if (!w) {
-    w = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
-    params.set('w', w);
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.pushState({ path: newUrl }, '', newUrl);
-  }
-  return w;
+  return params.get('w') || params.get('workspace') || 'default';
 };
 
 const workspaceId = getWorkspaceId();
@@ -205,7 +198,10 @@ export default function App() {
       
       setProfile(profileData);
       
-      if (!profileData) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const forceOnboarding = urlParams.get('onboarding') === 'true' || urlParams.get('register') === 'true';
+
+      if (!profileData || !profileData.business_name || forceOnboarding) {
         setOnboarded(false);
         setActiveTab('onboarding');
       } else {
@@ -326,6 +322,19 @@ export default function App() {
       if (selectedCompId === id) {
         setActiveTab('dashboard');
         setSelectedCompId(null);
+      }
+      await refreshCompetitors();
+      await refreshFeed();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleClearAllCompetitors = async () => {
+    if (!confirm('Are you sure you want to remove ALL competitor targets from this workspace?')) return;
+    try {
+      for (const comp of competitors) {
+        await fetch(`/api/competitors/${comp.id}`, { method: 'DELETE' });
       }
       await refreshCompetitors();
       await refreshFeed();
@@ -488,6 +497,7 @@ export default function App() {
                   onCheckNow={handleCheckNow}
                   onPauseResume={handlePauseResume}
                   onDelete={handleDeleteCompetitor}
+                  onClearAll={handleClearAllCompetitors}
                   onViewDetails={navigateToDetails}
                   onViewFeed={() => setActiveTab('feed')}
                   settings={settings}
@@ -732,6 +742,7 @@ function DashboardPage({
   onCheckNow, 
   onPauseResume, 
   onDelete, 
+  onClearAll,
   onViewDetails,
   onViewFeed,
   settings 
@@ -792,10 +803,18 @@ function DashboardPage({
           </p>
         </div>
 
-        <button className="mira-btn mira-btn-primary text-xs font-black shadow-lg" onClick={onAddClick}>
-          <Plus className="w-3.5 h-3.5 stroke-[3]" />
-          Add Competitor Target
-        </button>
+        <div className="flex items-center gap-2.5">
+          {competitors.length > 0 && onClearAll && (
+            <button className="mira-btn mira-btn-ghost text-xs font-bold text-rose-400 hover:bg-rose-500/15 border border-rose-500/30" onClick={onClearAll} title="Clear all targets from workspace">
+              <Trash2 className="w-3.5 h-3.5" />
+              Clear All Targets
+            </button>
+          )}
+          <button className="mira-btn mira-btn-primary text-xs font-black shadow-lg" onClick={onAddClick}>
+            <Plus className="w-3.5 h-3.5 stroke-[3]" />
+            Add Competitor Target
+          </button>
+        </div>
       </div>
 
       {/* ASYMMETRIC OBSIDIAN BENTO GRID */}
