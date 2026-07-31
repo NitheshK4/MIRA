@@ -10,7 +10,11 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "build:client": "npm run build --prefix client",
     "start": "NODE_ENV=production npm start --prefix server",
-    "test": "node server/src/verify-test.js"
+    "test": "node server/src/verify-test.js",
+    "php:server": "php -S 0.0.0.0:8000 -t php",
+    "php:test": "php php/tests/MiraClientTest.php",
+    "python:test": "python3 -m unittest discover -s python/tests",
+    "test:all": "node server/src/verify-test.js && php php/tests/MiraClientTest.php && python3 -m unittest discover -s python/tests"
   },
   "dependencies": {
     "concurrently": "^8.2.2"
