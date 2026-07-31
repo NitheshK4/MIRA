@@ -32,3 +32,9 @@ yarn-error.log*
 
 # Exported reports
 competitor_intel_report.*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
