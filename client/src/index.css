@@ -1306,14 +1306,23 @@ button *, .btn *, .mira-btn * {
 .oracle-modal-panel {
   position: relative !important;
   z-index: 1000000 !important;
-  width: 100% !important;
-  max-width: 520px !important;
+  width: 50vw !important;
+  min-width: 50vw !important;
+  max-width: 50vw !important;
   height: 100vh !important;
   background: #0B0E1B !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.85) !important;
+  border-left: 1.5px solid rgba(0, 240, 255, 0.30) !important;
+  box-shadow: -15px 0 50px rgba(0, 0, 0, 0.90), 0 0 35px rgba(0, 240, 255, 0.20) !important;
   display: flex !important;
   flex-direction: column !important;
+}
+
+@media (max-width: 900px) {
+  .oracle-modal-panel {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+  }
 }
 
 .oracle-chip {

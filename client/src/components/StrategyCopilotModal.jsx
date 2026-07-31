@@ -207,21 +207,21 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
       {/* Drawer Container */}
       <div className="oracle-modal-panel overflow-hidden">
         {/* Header */}
-        <div className="p-4 px-5 border-b border-slate-800/80 bg-[#0D101F] flex items-center justify-between flex-shrink-0">
+        <div className="p-4 px-5 border-b border-slate-800/80 bg-[#0D101F] flex items-center justify-between flex-shrink-0 flex-wrap gap-2">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-sky-400 p-[1.5px] shadow-lg shadow-violet-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-sky-400 p-[1.5px] shadow-lg shadow-violet-500/20 flex-shrink-0">
               <div className="w-full h-full bg-[#090A0F] rounded-[9px] flex items-center justify-center text-violet-400">
-                <Brain className="w-4 h-4" />
+                <Brain className="w-5 h-5" />
               </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-black text-white font-['Outfit']">MIRA Oracle</h2>
-                <span className="px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 text-[9px] uppercase font-black tracking-wider border border-violet-500/30">
+                <h2 className="text-base font-black text-white font-['Outfit']">MIRA Oracle</h2>
+                <span className="px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 text-[10px] uppercase font-black tracking-wider border border-violet-500/40">
                   AI CO-PILOT
                 </span>
               </div>
-              <p className="text-slate-400 text-[10px]">Real-time market context & competitive strategy co-pilot</p>
+              <p className="text-slate-400 text-xs">Real-time market context & competitive strategy co-pilot</p>
             </div>
           </div>
 
@@ -229,7 +229,7 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
             <button 
               type="button"
               onClick={handleCopyMemoSlack}
-              className="px-2.5 py-1.5 rounded-lg bg-violet-600/20 border border-violet-500/40 text-violet-300 hover:bg-violet-600/30 text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-sm"
+              className="px-3 py-1.5 rounded-lg bg-violet-600/20 border border-violet-500/40 text-violet-300 hover:bg-violet-600/30 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm whitespace-nowrap"
               title="Copy formatted 1-Page Executive Briefing for Slack or Email"
             >
               {memoCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -239,7 +239,7 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
             <button 
               type="button"
               onClick={handleExportMemo}
-              className="px-2.5 py-1.5 rounded-lg bg-sky-600/20 border border-sky-500/40 text-sky-300 hover:bg-sky-600/30 text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-sm"
+              className="px-3 py-1.5 rounded-lg bg-sky-600/20 border border-sky-500/40 text-sky-300 hover:bg-sky-600/30 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm whitespace-nowrap"
               title="Download Executive Strategy Brief as Markdown (.md)"
             >
               <Download className="w-3.5 h-3.5" />
@@ -249,7 +249,7 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
             <button 
               type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors ml-1"
+              className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors ml-1 flex-shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
@@ -273,7 +273,7 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
         </div>
 
         {/* Chat Stream Body */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#0B0D17]">
+        <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-[#0B0D17]">
           {messages.map((msg, index) => {
             const isUser = msg.role === 'user';
             return (
@@ -281,13 +281,13 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
                 key={index} 
                 className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
               >
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs ${
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs ${
                   isUser ? 'bg-violet-600 text-white font-bold' : 'bg-slate-800 text-sky-400 border border-slate-700'
                 }`}>
-                  {isUser ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
+                  {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                 </div>
 
-                <div className={`max-w-[88%] rounded-2xl p-3.5 text-xs relative group ${
+                <div className={`max-w-[88%] rounded-2xl p-4 text-xs relative group ${
                   isUser 
                     ? 'bg-violet-600/30 text-white border border-violet-500/40 rounded-tr-none' 
                     : 'bg-[#111628] text-slate-200 border border-slate-800/90 rounded-tl-none shadow-md'
@@ -338,11 +338,11 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
 
           {loading && (
             <div className="flex gap-3">
-              <div className="w-7 h-7 rounded-lg bg-slate-800 text-teal-400 border border-slate-700 flex items-center justify-center">
-                <Bot className="w-3.5 h-3.5" />
+              <div className="w-8 h-8 rounded-lg bg-slate-800 text-teal-400 border border-slate-700 flex items-center justify-center">
+                <Bot className="w-4 h-4" />
               </div>
-              <div className="bg-[#052A37] border border-slate-700/80 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-300 flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-[#FFD166] animate-spin" />
+              <div className="bg-[#111628] border border-slate-700/80 rounded-2xl rounded-tl-none p-4 text-xs text-slate-300 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#FFD166] animate-spin" />
                 <span>Analyzing market context & competitor moves...</span>
               </div>
             </div>
@@ -352,13 +352,13 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
         </div>
 
         {/* Input Bar */}
-        <div className="p-3.5 border-t border-slate-800/80 bg-[#052A37]">
+        <div className="p-4 border-t border-slate-800/80 bg-[#0A0E1A]">
           <form 
             onSubmit={(e) => {
               e.preventDefault();
               handleSendMessage();
             }}
-            className="flex items-center gap-2 bg-[#073B4C] border border-slate-700 rounded-xl p-1.5 px-3 focus-within:border-orange-400 transition-colors"
+            className="flex items-center gap-2 bg-[#12182B] border border-slate-700/80 rounded-xl p-2 px-4 focus-within:border-cyan-400 transition-colors"
           >
             <input 
               type="text" 
@@ -372,9 +372,9 @@ ${messages.map(m => `### [${m.role === 'user' ? 'Strategy Query' : 'MIRA Oracle 
             <button 
               type="submit"
               disabled={loading || !input.trim()}
-              className="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 text-white flex items-center justify-center hover:opacity-90 disabled:opacity-30 transition-all flex-shrink-0 shadow-md"
+              className="w-9 h-9 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-black flex items-center justify-center hover:opacity-90 disabled:opacity-30 transition-all flex-shrink-0 shadow-md"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Send className="w-4 h-4" />
             </button>
           </form>
         </div>
