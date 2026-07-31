@@ -22,6 +22,10 @@
 [![HuggingFace](https://img.shields.io/badge/🤗_ONNX-FFD21E?style=for-the-badge)](https://huggingface.co)
 [![Chrome MV3](https://img.shields.io/badge/Chrome_MV3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com)
 
+[![PHP](https://img.shields.io/badge/PHP_8.x-777BB4?style=for-the-badge&logo=php&logoColor=white)](./php)
+[![Python](https://img.shields.io/badge/Python_3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](./python)
+[![Go](https://img.shields.io/badge/Go_1.20+-00ADD8?style=for-the-badge&logo=go&logoColor=white)](./go)
+
 [![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://slack.com)
 [![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://notion.so)
 [![Gmail](https://img.shields.io/badge/SMTP-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:)
