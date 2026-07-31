@@ -57,10 +57,33 @@ import KillCardCopilot from './components/KillCardCopilot.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
-// Extract Workspace ID from URL or default to 'default'
+// Extract Workspace ID from URL, LocalStorage, or auto-generate a persistent unique ID per user/browser
 const getWorkspaceId = () => {
   const params = new URLSearchParams(window.location.search);
-  return params.get('w') || params.get('workspace') || 'default';
+  const urlWs = params.get('w') || params.get('workspace');
+
+  // 1. Explicit URL workspace parameter takes priority & updates localStorage
+  if (urlWs) {
+    localStorage.setItem('mira_workspace_id', urlWs);
+    return urlWs;
+  }
+
+  // 2. Retrieve user's existing private workspace ID from localStorage
+  let savedWs = localStorage.getItem('mira_workspace_id');
+
+  // 3. If no workspace ID exists yet or if it was set to global 'default', generate a unique private ID
+  if (!savedWs || savedWs === 'default') {
+    savedWs = 'ws-' + Math.random().toString(36).substring(2, 6) + Math.random().toString(36).substring(2, 6);
+    localStorage.setItem('mira_workspace_id', savedWs);
+  }
+
+  // 4. Update browser URL query parameter without page reload
+  if (!window.location.search.includes('w=')) {
+    const newUrl = `${window.location.pathname}?w=${savedWs}${window.location.hash}`;
+    window.history.replaceState({}, '', newUrl);
+  }
+
+  return savedWs;
 };
 
 const workspaceId = getWorkspaceId();
