@@ -580,6 +580,8 @@ export default function App() {
               {activeTab === 'killcards' && (
                 <KillCardCopilot
                   competitors={competitors}
+                  workspaceId={workspaceId}
+                  profile={profile}
                   onOpenOracle={(prompt) => {
                     setIsOracleOpen(true);
                   }}
