@@ -61,6 +61,7 @@
 - [AI Strategy Co-Pilot (MIRA Oracle)](#-ai-strategy-co-pilot--mira-oracle)
 - [Competitive War Room Simulator](#️-competitive-war-room-simulator)
 - [Auto-Generated Battlecards](#-auto-generated-battlecards)
+- [Live Sales Kill Cards 🎯](#-live-sales-kill-cards-)
 - [Model Configurations](#-model-configurations)
 - [Quick Start](#-quick-start)
 - [Environment Variables](#-environment-variables)
@@ -183,6 +184,12 @@ LLM-generated competitive battlecards with strengths, weaknesses, killer questio
   │      • Strengths / Weaknesses / Killer Questions / Landmines     │
   │      • One-click refresh from latest intelligence data           │
   │      • CRM sync status tracking (Notion / Airtable)              │
+  │                                                                  │
+  │  🎯  LIVE SALES OBJECTION "KILL CARDS"                            │
+  │      • Real-time 15-second verbatim counter-scripts for pitch calls │
+  │      • Live call HUD timer telemetry                             │
+  │      • Dynamic displacement triggers & ROI defense per competitor │
+  │      • 1-click script copy & AI co-pilot escalation              │
   │                                                                  │
   └──────────────────────────────────────────────────────────────────┘
 ```
@@ -623,6 +630,56 @@ Each battlecard includes:
 | **Refresh** | One-click regenerate from latest intel data |
 | **Sync** | Status tracked: `synced` / `pending` / `failed` |
 | **CRM Push** | Auto-syncs to Notion / Airtable alongside intel cards |
+
+</td>
+</tr>
+</table>
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+
+## 🎯 Live Sales Kill Cards
+
+<div align="center">
+
+[![Live Execution](https://img.shields.io/badge/Execution-Live_Sales_Call_HUD-00F0FF?style=for-the-badge)](.)
+[![Dynamic Conversion](https://img.shields.io/badge/Cards-Dynamic_Competitor_Engine-00FF94?style=for-the-badge)](.)
+[![Verbatim Scripts](https://img.shields.io/badge/Scripts-15--Second_Verbatim-FF2A6D?style=for-the-badge)](.)
+
+</div>
+
+<br/>
+
+> **Never get caught off guard on a sales call again.** The **Live Sales Kill Cards Co-Pilot** converts real-time competitor telemetry and AI battlecards into 15-second verbatim counter-scripts, customer migration triggers, pricing defenses, and landmine questions — strictly personalized per monitored competitor target.
+
+<br/>
+
+<table>
+<tr>
+<td width="50%">
+
+### ⚡ Key Capabilities
+
+- ⏱️ **Live Call HUD Timer** — Active call duration telemetry with start, pause, and reset controls
+- 🎯 **Target Competitor Filtering** — Instant dropdown filtering across all active workspace competitors
+- ⚡ **15-Second Verbatim Counter-Scripts** — Numbered, out-loud responses for reps during live calls
+- 💣 **Landmine Questions** — Trap questions reps ask prospects to expose competitor vulnerabilities
+- 🛡️ **Verified Evidence & Proof** — Scraped domain evidence and price point comparison benchmarks
+- 1️⃣ **One-Click Script Copy & Oracle Escalation** — Copy scripts instantly or push queries directly to MIRA Oracle AI
+
+</td>
+<td width="50%">
+
+### 🔄 Dynamic Competitor Engine
+
+Unlike legacy static cheat-sheets, MIRA Kill Cards are **100% dynamic**:
+
+| Element | Source Data |
+|:---|:---|
+| 🎯 **Objection Cards** | Synthesized from competitor `objection_handling` array |
+| ⚡ **Displacement Cards** | Generated from `switching_triggers` & `elevator_pitch` |
+| 💰 **Pricing ROI Defense** | Derived from `pricing_comparison` & `why_we_win` |
+| 🛡️ **Evidence Snippets** | Extracted from recent competitor web scrapes & intel signals |
+| 🔄 **Auto-Generation** | One-click AI synthesis for new competitor targets |
 
 </td>
 </tr>
