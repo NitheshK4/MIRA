@@ -175,7 +175,7 @@ async function processNextJob() {
     // Automatically generate / update Battlecard in the background
     try {
       console.log(`Synthesizing background AI Battlecard for ${competitor.name}...`);
-      const recentScrapes = await db.getScrapes(competitorId, 3);
+      const recentScrapes = await db.getScrapeHistory(competitorId, 3);
       const intelCards = await db.getIntelligenceCards(competitor.workspace_id, competitorId, 5);
       const businessProfile = await db.getProfile(competitor.workspace_id);
       const userGeminiKey = await db.getSetting(competitor.workspace_id, 'gemini_api_key');

@@ -656,17 +656,29 @@ Generate the tactical AI sales battlecard for ${compName} now. Format inside <js
  */
 async function generateStrategyCopilotResponse(userMessage, conversationHistory = [], workspaceContext = {}, geminiApiKey = null) {
   const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
-  const { profile, competitors = [], intelCards = [], battlecards = [] } = workspaceContext;
+  const { profile, competitors = [], intelCards = [], battlecards = [], memory = {} } = workspaceContext;
+
+  const goalsList = Array.isArray(memory.goals) 
+    ? memory.goals 
+    : (typeof memory.goals === 'string' && memory.goals.startsWith('[') ? JSON.parse(memory.goals) : [memory.goals || 'Scale market share & win key competitive accounts']);
+  
+  const kpisList = Array.isArray(memory.kpis) 
+    ? memory.kpis 
+    : (typeof memory.kpis === 'string' && memory.kpis.startsWith('[') ? JSON.parse(memory.kpis) : [memory.kpis || 'Win Rate > 45%, CAC Payback < 12 mos']);
 
   const profileSummary = profile ? `
-Our Business Name: ${profile.business_name || 'Our Company'}
-Our Product: ${profile.product_desc || 'SaaS / Digital Service'}
-Target Audience: ${profile.customers || 'General Businesses'}
+Business Name: ${profile.business_name || 'Our Company'}
+Product Description: ${profile.product_desc || 'SaaS / Digital Service'}
+Target Audience: ${profile.customers || memory.target_audience || 'General B2B Buyers'}
 Pricing Tier: ${profile.price_point || 'Standard Pricing'}
-` : 'Our business profile is not configured.';
+Active Business Goals: ${goalsList.join('; ') || 'None specified'}
+Target KPIs: ${kpisList.join('; ') || 'None specified'}
+Strategic Constraints: ${memory.constraints || 'None specified'}
+Strategic Focus: ${memory.strategic_focus || 'Market Expansion & Churn Reduction'}
+` : 'Our business profile is not fully configured.';
 
   const competitorsSummary = competitors.length > 0
-    ? competitors.map(c => `- ${c.name} (${c.url}) - Status: ${c.status}`).join('\n')
+    ? competitors.map(c => `- ${c.name} (${c.url}) - Scope: ${c.scope || 'full'} - Status: ${c.status}`).join('\n')
     : 'No competitors registered in radar yet.';
 
   const cardsSummary = intelCards.length > 0
@@ -675,59 +687,159 @@ Pricing Tier: ${profile.price_point || 'Standard Pricing'}
 
   if (activeGeminiKey) {
     try {
-      console.log('Generating AI Strategy Co-Pilot response using Gemini API...');
-      const systemInstruction = `You are "MIRA Oracle", a top-tier Chief Competitive Intelligence Strategist.
-You assist product leaders, sales teams, and executives in analyzing competitors, identifying market opportunities, and executing counter-strategies.
-Be direct, sharp, highly tactical, and professional. Use markdown formatting with bold headings, bullet points, and key takeaways.
+      console.log('Generating AI Strategy Co-Pilot decision-support response using Gemini API...');
+      const systemInstruction = `You are "MIRA Oracle", a proactive, elite Chief Competitive Intelligence Strategist.
+Your mandate is to deliver concise, executive-friendly, highly actionable decision support based on live market telemetry, competitor signals, and corporate goals.
 
-CONTEXT ON OUR BUSINESS & MARKET RADAR:
+YOU MUST RETURN A VALID JSON OBJECT ONLY matching the following schema structure (do not wrap in extra commentary outside the JSON):
+
+{
+  "reply": "Rich markdown formatted response for executive viewing with headings (###), bold takeaways, and strategic rationale.",
+  "action_plan": [
+    {
+      "title": "Action item title",
+      "priority": "High | Medium | Low",
+      "impact": 9,
+      "effort": "Low | Medium | High",
+      "timeline": "1-2 weeks | 30 days | Q3",
+      "rationale": "Brief strategic justification aligned with goals/KPIs"
+    }
+  ],
+  "scenario_matrix": [
+    {
+      "scenario": "Proposed action or competitor response scenario",
+      "risks": "Primary downside or vulnerability",
+      "opportunities": "Strategic upside or market capture",
+      "alternatives": "Alternative counter-move",
+      "risk_score": 4
+    }
+  ],
+  "missing_context_questions": [
+    "Short focused follow-up question if key business/market context is missing"
+  ],
+  "suggested_refinements": [
+    "Short 1-click refinement prompt (e.g., 'Draft 30-Day Sales Counter-Script', 'Run Risk & Scenario Audit')"
+  ]
+}
+
+CONTEXT ON OUR BUSINESS, GOALS & STRATEGIC CONSTRAINTS:
 ${profileSummary}
 
 REGISTERED COMPETITOR TARGETS:
 ${competitorsSummary}
 
-RECENT INTELLIGENCE SIGNALS:
+RECENT LIVE INTELLIGENCE SIGNALS:
 ${cardsSummary}`;
 
       const historyFormatted = conversationHistory.map(m => `${m.role === 'user' ? 'User' : 'MIRA Oracle'}: ${m.text}`).join('\n');
-      const fullPrompt = `${systemInstruction}\n\nCONVERSATION HISTORY:\n${historyFormatted}\n\nUser Question: ${userMessage}\n\nMIRA Oracle Response:`;
+      const fullPrompt = `${systemInstruction}\n\nCONVERSATION HISTORY:\n${historyFormatted}\n\nUser Strategic Inquiry: ${userMessage}\n\nJSON Response:`;
 
       const response = await axios.post(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${activeGeminiKey}`,
         {
           contents: [{ parts: [{ text: fullPrompt }] }],
-          generationConfig: { temperature: 0.4 }
+          generationConfig: { temperature: 0.3, responseMimeType: "application/json" }
         },
         { headers: { 'Content-Type': 'application/json' }, timeout: 30000 }
       );
 
       const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (text) {
-        return text;
+        try {
+          const parsed = JSON.parse(text);
+          if (parsed.reply) return parsed;
+        } catch (e) {
+          // If JSON parse fails, return formatted reply object
+          return {
+            reply: text,
+            action_plan: [],
+            scenario_matrix: [],
+            missing_context_questions: [],
+            suggested_refinements: ["Run Risk & Scenario Audit", "Draft Executive Brief", "Analyze Pricing Impact"]
+          };
+        }
       }
     } catch (err) {
       console.error('Gemini API error during Strategy Copilot response:', err.message);
     }
   }
 
-  // Fallback intelligent response builder
+  // Structured Fallback Intelligence Response Builder
   const compCount = competitors.length;
   const highImpactCards = intelCards.filter(c => c.impact_score >= 7);
+  const mainComp = competitors[0]?.name || 'Primary Competitor';
 
-  return `### 🔮 MIRA Strategic Intelligence Report
+  return {
+    reply: `### 🔮 MIRA Strategic Intelligence Report
 
 Based on live telemetry across your **${compCount} monitored competitors** and **${intelCards.length} market signals**:
 
-1. **Market Positioning Overview**
-   - Your profile (**${profile?.business_name || 'Our Company'}**) is currently competing against key targets: ${competitors.slice(0, 3).map(c => c.name).join(', ') || 'registered targets'}.
-   - Recent signals indicate ${highImpactCards.length > 0 ? `${highImpactCards.length} high-impact competitor moves detected this week.` : 'stable competitor activity over the current window.'}
+1. **Strategic Context & KPI Alignment**
+   - **Workspace Goals**: ${goalsList.join(', ')}
+   - **Target KPIs**: ${kpisList.join(', ')}
+   - **Active Market Signals**: ${highImpactCards.length > 0 ? `${highImpactCards.length} high-impact competitor moves detected this week.` : 'Stable competitor activity baseline.'}
 
-2. **Strategic Recommendation for "${userMessage.substring(0, 40)}..."**
-   - **Sales Enablement**: Ensure sales reps emphasize ROI and feature depth against ${competitors[0]?.name || 'competitors'}.
-   - **Product Differentiation**: Focus on rapid integration and direct customer support SLAs where larger rivals struggle with rigidity.
-   - **Pricing Agility**: Monitor pricing changes closely before initiating price reductions.
+2. **Executive Rationale for "${userMessage.substring(0, 45)}..."**
+   - **Market Threat**: ${mainComp} is actively testing pricing and product adjustments.
+   - **Strategic Counter-Position**: Emphasize ROI defense, customer support SLAs, and rapid onboarding where competitors display rigidity.
+   - **Execution Focus**: Prioritize quick-win sales enablement cards before considering aggressive price cuts.`,
 
-*Note: For deeper multi-agent scenario modelling, run a hypothesis in the **War Room** tab.*`;
+    action_plan: [
+      {
+        title: `Deploy ${mainComp} Sales Counter-Script`,
+        priority: "High",
+        impact: 9,
+        effort: "Low",
+        timeline: "1-2 weeks",
+        rationale: "Empowers sales reps to handle immediate prospect objections during active calls."
+      },
+      {
+        title: "Audit Competitor Feature & Pricing Gaps",
+        priority: "Medium",
+        impact: 8,
+        effort: "Medium",
+        timeline: "30 days",
+        rationale: "Provides baseline data to protect pricing power and avoid margin erosion."
+      },
+      {
+        title: "Review Q3 Enterprise Feature Roadmap",
+        priority: "Medium",
+        impact: 7,
+        effort: "High",
+        timeline: "Q3",
+        rationale: "Aligns engineering roadmap against high-impact market signals."
+      }
+    ],
+
+    scenario_matrix: [
+      {
+        scenario: "Match Competitor Price Cut by 15%",
+        risks: "Potential margin degradation and price war escalation",
+        opportunities: "Protects enterprise account retention rate",
+        alternatives: "Offer value-added bundle or SLA guarantee instead of price reduction",
+        risk_score: 6
+      },
+      {
+        scenario: "Launch Targeted Competitive Win-Back Campaign",
+        risks: "Requires outbound SDR focus and refreshed battlecard collateral",
+        opportunities: "Captures dissatisfied competitor churn accounts",
+        alternatives: "Focus exclusively on existing pipeline velocity",
+        risk_score: 3
+      }
+    ],
+
+    missing_context_questions: [
+      "What is your target win-rate threshold against this competitor?",
+      "Are you currently seeing deal friction in SMB or Enterprise accounts?"
+    ],
+
+    suggested_refinements: [
+      "Draft 30-Day Sales Counter-Script",
+      "Simulate 20% Price Cut in War Room",
+      "Refine for C-Suite Briefing",
+      "Generate ROI Defense Matrix"
+    ]
+  };
 }
 
 /**
