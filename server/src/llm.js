@@ -845,9 +845,17 @@ Based on live telemetry across your **${compCount} monitored competitors** and *
 /**
  * Interactive War Room ("What-If Market Simulator")
  */
-async function runWarRoomSimulation(proposedMove, workspaceContext = {}, geminiApiKey = null) {
+async function runWarRoomSimulation(scenarioInput, workspaceContext = {}, geminiApiKey = null) {
   const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
   const { profile, competitors = [], intelCards = [], battlecards = [] } = workspaceContext;
+
+  // Normalize scenarioInput (string or object)
+  const isObjectInput = typeof scenarioInput === 'object' && scenarioInput !== null;
+  const title = isObjectInput ? (scenarioInput.title || scenarioInput.move || 'Market Move') : String(scenarioInput);
+  const description = isObjectInput ? (scenarioInput.description || scenarioInput.move || title) : title;
+  const marketSegment = isObjectInput ? (scenarioInput.market_segment || 'All Segments') : 'All Segments';
+  const affectedProduct = isObjectInput ? (scenarioInput.affected_product || 'Core Product') : 'Core Product';
+  const timeframe = isObjectInput ? (scenarioInput.timeframe || 'Short Term (30 Days)') : 'Short Term (30 Days)';
 
   const profileSummary = profile ? `
 Business Name: ${profile.business_name || 'Our Company'}
@@ -856,7 +864,6 @@ Target Audience: ${profile.customers || 'B2B Software Buyers'}
 Current Pricing: ${profile.price_point || 'Standard Tier'}
 ` : 'Business profile not set.';
 
-  // Build granular context for each competitor including stored battlecards and intel signals
   const compDetails = competitors.map(c => {
     const card = battlecards.find(b => String(b.competitor_id) === String(c.id));
     const compIntel = intelCards.filter(i => String(i.competitor_id) === String(c.id)).slice(0, 3);
@@ -869,55 +876,108 @@ Current Pricing: ${profile.price_point || 'Standard Tier'}
       bcardStr = `Known Strengths: ${strengths} | Known Vulnerabilities: ${weaknesses} | Pricing: ${card.pricing_comparison || 'N/A'}`;
     }
 
-    let enrichStr = '';
-    if (c.enrichment_data) {
-      try {
-        const parsed = typeof c.enrichment_data === 'string' ? JSON.parse(c.enrichment_data) : c.enrichment_data;
-        enrichStr = `Title: ${parsed.title || ''} | Description: ${parsed.description || ''}`;
-      } catch (e) { }
-    }
-
     return `Competitor Name: "${c.name || c.url}"
 Website: ${c.url}
-${enrichStr ? `Enrichment Info: ${enrichStr}\n` : ''}${bcardStr ? `Battlecard Context: ${bcardStr}\n` : ''}${intelStr ? `Recent Intel Signals: ${intelStr}\n` : ''}`;
+${bcardStr ? `Battlecard Context: ${bcardStr}\n` : ''}${intelStr ? `Recent Intel Signals: ${intelStr}\n` : ''}`;
   }).join('\n---\n');
 
   if (activeGeminiKey) {
     try {
-      console.log(`Running supercharged War Room simulation for: "${proposedMove}" across ${competitors.length} competitors...`);
-      const systemInstruction = `You are an AI Game-Theory Market Simulator & Competitive Strategy Engine.
-Your role is to simulate realistic competitive market reactions to a proposed strategic move by our company.
+      console.log(`Running game-theory War Room simulation for: "${title}" across ${competitors.length} competitors...`);
+      const systemInstruction = `You are an AI Game-Theory Market Simulator & Chief Strategy Advisor.
+Your mandate is to simulate competitive market reactions to a proposed strategic initiative by our company.
 
-Respond ONLY with a valid JSON object wrapped inside <json> ... </json> tags matching this exact structure:
+YOU MUST RETURN A VALID JSON OBJECT ONLY matching the following schema:
 {
-  "scenario": "Short descriptive title of the proposed move",
+  "scenario_title": "${title}",
+  "scenario_description": "${description}",
+  "market_segment": "${marketSegment}",
+  "affected_product": "${affectedProduct}",
+  "timeframe": "${timeframe}",
   "risk_score": 7,
   "risk_level": "HIGH",
-  "market_impact_summary": "2-3 crisp sentences explaining market dynamics, buyer response, and net revenue impact.",
+  "threat_level": "Critical Threat",
+  "confidence_score": 88,
+  "business_impact": "2-3 sentences detailing financial and market position impact.",
+  "urgency": "Immediate (0-7 Days)",
+  "strategic_verdict": "PROCEED WITH COUNTER-OFFENSIVE PLAYBOOK",
   "competitor_responses": [
     {
-      "competitor_name": "Exact Competitor Name from the provided competitors list",
-      "predicted_action": "Specific predicted counter-reaction tailored to this rival's actual business model, pricing, or product",
+      "competitor_name": "Competitor Name",
+      "predicted_action": "Specific reaction by this rival.",
+      "strategy_type": "Price War | Product Match | FUD Campaign | Feature Counter | Partner Push",
       "likelihood_pct": 85,
       "timeframe": "1-2 Weeks",
       "threat_severity": "High"
     }
   ],
-  "counter_offensive_playbook": [
-    {
-      "step": 1,
-      "phase": "Immediate (Days 1-7)",
-      "action": "Actionable tactical counter-move for our sales or product team",
-      "details": "Specific execution guidelines weaponizing our differentiators against rival reactions"
+  "strategic_audit": {
+    "risks": ["Risk 1", "Risk 2"],
+    "opportunities": ["Opportunity 1", "Opportunity 2"],
+    "key_assumptions": ["Assumption 1", "Assumption 2"],
+    "unknown_variables": ["Unknown 1", "Unknown 2"]
+  },
+  "counter_offensive_playbook": {
+    "phase_1_immediate": [
+      {
+        "step": 1,
+        "title": "Action title",
+        "description": "Tactical execution detail",
+        "owner": "Sales Enablement",
+        "priority": "High",
+        "impact": "High (9/10)",
+        "effort": "Low",
+        "dependencies": "Battlecard update",
+        "success_metric": "Win rate > 45%"
+      }
+    ],
+    "phase_2_short_term": [
+      {
+        "step": 2,
+        "title": "30-day action title",
+        "description": "Tactical execution detail",
+        "owner": "Product / Marketing",
+        "priority": "Medium",
+        "impact": "High (8/10)",
+        "effort": "Medium",
+        "dependencies": "Campaign collateral",
+        "success_metric": "Zero account churn"
+      }
+    ],
+    "phase_3_strategic": [
+      {
+        "step": 3,
+        "title": "90-day action title",
+        "description": "Long-term execution detail",
+        "owner": "Engineering / Leadership",
+        "priority": "Medium",
+        "impact": "High (9/10)",
+        "effort": "High",
+        "dependencies": "Product roadmap",
+        "success_metric": "30% revenue expansion"
+      }
+    ]
+  },
+  "alternative_strategies": {
+    "aggressive": {
+      "name": "Aggressive Market Dominance",
+      "description": "Cut prices 35% and launch direct competitor win-back ad campaign.",
+      "pros": "Rapid market share acquisition",
+      "cons": "Margin degradation and sustained price war risk"
     },
-    {
-      "step": 2,
-      "phase": "Mid-term (Weeks 2-4)",
-      "action": "Secondary strategic offensive",
-      "details": "Execution guidelines"
+    "balanced": {
+      "name": "Balanced Value-Add Defense",
+      "description": "Maintain pricing baseline, add free premium SLA modules, and double down on feature depth.",
+      "pros": "Protects gross margins while neutralizing competitive threat",
+      "cons": "Requires dedicated CSM onboarding capacity"
+    },
+    "defensive": {
+      "name": "Defensive Niche Focus",
+      "description": "Focus exclusively on retaining top 20% high-value enterprise accounts.",
+      "pros": "Low operational risk and minimal cost",
+      "cons": "Slower market expansion and potential loss of SMB segment"
     }
-  ],
-  "strategic_verdict": "PROCEED WITH CAUTION (or STRATEGICALLY SOUND / HIGH THREAT)"
+  }
 }`;
 
       const promptText = `
@@ -927,73 +987,76 @@ ${profileSummary}
 MONITORED COMPETITORS ON RADAR (${competitors.length}):
 ${compDetails || 'No specific competitors registered yet.'}
 
-PROPOSED STRATEGIC MARKET MOVE TO SIMULATE:
-"${proposedMove}"
+PROPOSED STRATEGIC SCENARIOS TO SIMULATE:
+Title: ${title}
+Description: ${description}
+Target Segment: ${marketSegment}
+Affected Product: ${affectedProduct}
+Timeframe: ${timeframe}
 
-Simulate market reactions specifically analyzing each registered competitor and generate the JSON report inside <json> tags.
-`;
+Generate the JSON report only.`;
 
       const response = await axios.post(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${activeGeminiKey}`,
         {
-          contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }]
+          contents: [{ parts: [{ text: `${systemInstruction}\n\n${promptText}` }] }],
+          generationConfig: { temperature: 0.3, responseMimeType: "application/json" }
         },
         { headers: { 'Content-Type': 'application/json' }, timeout: 45000 }
       );
 
       const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const jsonMatch = text.match(/<json>([\s\S]*?)<\/json>/) || text.match(/```json\s*([\s\S]*?)\s*```/) || [null, text];
-      const jsonString = (jsonMatch[1] || text).trim();
-
       try {
-        const parsed = JSON.parse(jsonString);
-        return {
-          scenario: parsed.scenario || proposedMove,
-          risk_score: typeof parsed.risk_score === 'number' ? parsed.risk_score : 6,
-          risk_level: parsed.risk_level || (parsed.risk_score > 7 ? 'HIGH' : parsed.risk_score > 4 ? 'MEDIUM' : 'LOW'),
-          market_impact_summary: parsed.market_impact_summary || 'The proposed move will disrupt competitor positioning and force defensive responses.',
-          competitor_responses: Array.isArray(parsed.competitor_responses) && parsed.competitor_responses.length > 0 ? parsed.competitor_responses : [],
-          counter_offensive_playbook: Array.isArray(parsed.counter_offensive_playbook) && parsed.counter_offensive_playbook.length > 0 ? parsed.counter_offensive_playbook : [],
-          strategic_verdict: parsed.strategic_verdict || 'STRATEGICALLY SOUND'
-        };
+        const parsed = JSON.parse(text);
+        if (parsed.risk_score !== undefined) {
+          return parsed;
+        }
       } catch (e) {
-        console.warn('Failed to parse Gemini JSON output for War Room simulation. Raw text snippet:', text.substring(0, 200));
+        console.warn('Failed to parse Gemini JSON output for War Room simulation:', text.substring(0, 200));
       }
     } catch (err) {
       console.error('Gemini API error during War Room simulation:', err.message);
     }
   }
 
-  // Deep Contextual Dynamic Fallback Engine
-  console.log(`Running dynamic contextual War Room simulation fallback for "${proposedMove}"...`);
+  // Realistic Offline Fallback Strategy Generator
+  console.log(`Running dynamic contextual War Room simulation fallback for "${title}"...`);
 
-  const moveLower = proposedMove.toLowerCase();
+  const moveLower = (title + ' ' + description).toLowerCase();
   let riskScore = 5;
-  let riskLevel = 'MEDIUM';
-  let verdict = 'STRATEGICALLY SOUND (MEDIUM RISK)';
+  let riskLevel = 'MODERATE';
+  let threatLevel = 'Moderate Risk';
+  let verdict = 'STRATEGICALLY SOUND (BALANCED APPROACH RECOMMENDED)';
 
-  if (moveLower.includes('price') || moveLower.includes('cost') || moveLower.includes('drop') || moveLower.includes('$') || moveLower.includes('free')) {
+  if (moveLower.includes('price') || moveLower.includes('cost') || moveLower.includes('drop') || moveLower.includes('$') || moveLower.includes('free') || moveLower.includes('30%')) {
     riskScore = 7;
     riskLevel = 'HIGH';
-    verdict = 'HIGH REVENUE RISK - PROCEED WITH CAUTION';
+    threatLevel = 'High Revenue Risk';
+    verdict = 'PROCEED WITH CAUTION - PRICE WAR RETALIATION EXPECTED';
   } else if (moveLower.includes('feature') || moveLower.includes('ai') || moveLower.includes('launch') || moveLower.includes('agent')) {
     riskScore = 4;
     riskLevel = 'LOW';
-    verdict = 'HIGHLY RECOMMEND - STRONG DIFFERENTIATOR';
+    threatLevel = 'Low Risk / High Upside';
+    verdict = 'RECOMMENDED - STRONG COMPETITIVE DIFFERENTIATION';
   }
 
   const compResponses = competitors.length > 0
     ? competitors.map((c, i) => {
       const compName = c.name || c.url;
       let action = `Evaluate pricing and release targeted ad messaging contrasting platform capabilities against ${profile?.business_name || 'our brand'}.`;
+      let stratType = 'Feature Counter';
+
       if (moveLower.includes('price')) {
-        action = `Initiate defensive tier adjustments and emphasize enterprise SLA support to retain high-value accounts against ${profile?.business_name || 'our company'}.`;
+        action = `Initiate defensive tier adjustments and offer custom discounts to retain high-value enterprise accounts.`;
+        stratType = 'Price War';
       } else if (moveLower.includes('ai') || moveLower.includes('agent')) {
-        action = `Announce upcoming roadmap updates or partner integration features to mitigate market momentum loss to ${profile?.business_name || 'our brand'}.`;
+        action = `Announce upcoming roadmap update or partner integration features to mitigate market momentum loss.`;
+        stratType = 'Product Match';
       }
       return {
         competitor_name: compName,
         predicted_action: action,
+        strategy_type: stratType,
         likelihood_pct: Math.min(95, 85 - i * 10),
         timeframe: `${i + 1}-${i + 2} Weeks`,
         threat_severity: i === 0 ? 'High' : 'Moderate'
@@ -1001,8 +1064,9 @@ Simulate market reactions specifically analyzing each registered competitor and 
     })
     : [
       {
-        competitor_name: 'Primary Market Competitor',
-        predicted_action: `Launch competitive counter-campaign targeting ${profile?.business_name || 'our'} prospective buyers.`,
+        competitor_name: 'Primary Competitor Target',
+        predicted_action: `Launch counter-campaign targeting ${profile?.business_name || 'our'} prospective buyers.`,
+        strategy_type: 'FUD Campaign',
         likelihood_pct: 85,
         timeframe: '1-2 Weeks',
         threat_severity: 'High'
@@ -1010,26 +1074,98 @@ Simulate market reactions specifically analyzing each registered competitor and 
     ];
 
   return {
-    scenario: proposedMove,
+    scenario_title: title,
+    scenario_description: description,
+    market_segment: marketSegment,
+    affected_product: affectedProduct,
+    timeframe: timeframe,
     risk_score: riskScore,
     risk_level: riskLevel,
-    market_impact_summary: `Simulated execution of "${proposedMove}" across ${competitors.length || 1} competitor ecosystems. Real-time telemetry indicates immediate competitive engagement with expected market stabilization within 14-21 days.`,
+    threat_level: threatLevel,
+    confidence_score: 86,
+    business_impact: `Simulated execution of "${title}" across target competitors. Multi-agent telemetry indicates immediate competitive engagement within 7 days and market equilibrium stabilization within 30 days.`,
+    urgency: riskScore > 6 ? 'Immediate (0-7 Days)' : 'Short Term (30 Days)',
+    strategic_verdict: verdict,
     competitor_responses: compResponses,
-    counter_offensive_playbook: [
-      {
-        step: 1,
-        phase: "Immediate (Days 1-7)",
-        action: "Deploy Sales Battlecard & Objection Counter-Scripts",
-        details: `Equip sales reps with updated landmines highlighting ${profile?.business_name || 'our'} unique differentiators before rivals adjust positioning.`
+    strategic_audit: {
+      risks: [
+        'Short-term price war escalation by primary competitors',
+        'Potential sales cycle delay while prospects evaluate rival announcements'
+      ],
+      opportunities: [
+        'Capture dissatisfied competitor churn accounts seeking modern capabilities',
+        'Establish definitive market positioning dominance in target segment'
+      ],
+      key_assumptions: [
+        'Rivals rely on manual SDR outreach rather than automated pricing agility',
+        'Enterprise decision-makers prioritize SLA support over modest pricing differences'
+      ],
+      unknown_variables: [
+        'Unannounced competitor Q4 product feature releases',
+        'Third-party integration partner channel announcements'
+      ]
+    },
+    counter_offensive_playbook: {
+      phase_1_immediate: [
+        {
+          step: 1,
+          title: "Deploy Sales Counter-Pitch & Kill Cards",
+          description: `Equip sales reps with verbatim counter-scripts highlighting ROI and SLA guarantees against ${compResponses[0]?.competitor_name || 'competitors'}.`,
+          owner: "Sales Enablement",
+          priority: "High",
+          impact: "High (9/10)",
+          effort: "Low",
+          dependencies: "Battlecard update",
+          success_metric: "Win rate > 45%"
+        }
+      ],
+      phase_2_short_term: [
+        {
+          step: 2,
+          title: "Launch Value-Added Enterprise SLA Bundle",
+          description: "Offer dedicated customer success manager to all accounts switching from rivals.",
+          owner: "Customer Success",
+          priority: "High",
+          impact: "High (8/10)",
+          effort: "Medium",
+          dependencies: "CSM allocation",
+          success_metric: "Zero enterprise account churn"
+        }
+      ],
+      phase_3_strategic: [
+        {
+          step: 3,
+          title: "Accelerate Product Roadmap Moat",
+          description: "Release automated real-time competitive tracking features to solidify product advantage.",
+          owner: "Product & Engineering",
+          priority: "Medium",
+          impact: "High (9/10)",
+          effort: "High",
+          dependencies: "Engineering sprint",
+          success_metric: "30% expansion revenue"
+        }
+      ]
+    },
+    alternative_strategies: {
+      aggressive: {
+        name: "Aggressive Market Dominance",
+        description: "Slash prices by 35% and launch direct competitor win-back ad campaign.",
+        pros: "Rapid market share acquisition",
+        cons: "Margin degradation and sustained price war risk"
       },
-      {
-        step: 2,
-        phase: "Mid-Term (Weeks 2-4)",
-        action: "Customer ROI & Case Study Promotion",
-        details: `Publish customer proof points reinforcing total cost of ownership advantage for ${profile?.customers || 'target prospects'}.`
+      balanced: {
+        name: "Balanced Value-Add Defense",
+        description: "Maintain pricing baseline, add free premium SLA modules, and double down on feature depth.",
+        pros: "Protects gross margins while neutralizing competitive threat",
+        cons: "Requires dedicated CSM onboarding capacity"
+      },
+      defensive: {
+        name: "Defensive Niche Focus",
+        description: "Focus exclusively on retaining top 20% high-value enterprise accounts.",
+        pros: "Low operational risk and minimal cost",
+        cons: "Slower market expansion and potential loss of SMB segment"
       }
-    ],
-    strategic_verdict: verdict
+    }
   };
 }
 

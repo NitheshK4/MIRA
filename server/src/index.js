@@ -629,9 +629,11 @@ app.post('/api/oracle/feedback', checkWorkspace, async (req, res) => {
 
 app.post(['/api/warroom/simulate', '/api/war-room/simulate'], checkWorkspace, async (req, res) => {
   try {
-    const move = req.body.move || req.body.scenario;
-    if (!move) {
-      return res.status(400).json({ error: 'Strategic move description is required.' });
+    const scenarioInput = req.body.scenario || req.body.move || req.body;
+    const moveText = typeof scenarioInput === 'string' ? scenarioInput : (scenarioInput.title || scenarioInput.description || scenarioInput.move);
+
+    if (!moveText || !moveText.trim()) {
+      return res.status(400).json({ error: 'Strategic scenario title or description is required.' });
     }
 
     const profile = await db.getProfile(req.workspaceId);
@@ -642,12 +644,43 @@ app.post(['/api/warroom/simulate', '/api/war-room/simulate'], checkWorkspace, as
     const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
 
     const simulation = await llm.runWarRoomSimulation(
-      move, 
+      scenarioInput, 
       { profile, competitors, intelCards, battlecards }, 
       geminiKeySetting
     );
 
-    res.json(simulation);
+    // Save simulation to database history
+    const simulationId = await db.saveWarRoomSimulation(
+      req.workspaceId,
+      simulation.scenario_title || moveText,
+      scenarioInput,
+      simulation
+    );
+
+    res.json({
+      id: simulationId,
+      ...simulation
+    });
+  } catch (err) {
+    console.error('War Room simulation endpoint error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// War Room Simulation History Routes
+app.get(['/api/warroom/history', '/api/war-room/history'], checkWorkspace, async (req, res) => {
+  try {
+    const history = await db.getWarRoomSimulations(req.workspaceId);
+    res.json(history);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete(['/api/warroom/history/:id', '/api/war-room/history/:id'], checkWorkspace, async (req, res) => {
+  try {
+    const result = await db.deleteWarRoomSimulation(req.workspaceId, req.params.id);
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
