@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mira-node-server
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    container_name: mira-php-portal
+    ports:
+      - "8000:8000"
+    environment:
+      - MIRA_API_URL=http://node:3000
+    depends_on:
+      - node
+    restart: unless-stopped

@@ -150,9 +150,23 @@ func (c *Client) GetHealth(ctx context.Context) (*HealthResponse, error) {
 
 // GetCompetitors retrieves list of monitored competitors.
 func (c *Client) GetCompetitors(ctx context.Context) (*CompetitorsResponse, error) {
-	var resp CompetitorsResponse
-	if err := c.do(ctx, http.MethodGet, "/api/competitors", nil, nil, &resp); err != nil {
+	var raw json.RawMessage
+	if err := c.do(ctx, http.MethodGet, "/api/competitors", nil, nil, &raw); err != nil {
 		return nil, err
+	}
+
+	var resp CompetitorsResponse
+	resp.Success = true
+
+	var list []Competitor
+	if err := json.Unmarshal(raw, &list); err == nil {
+		resp.Competitors = list
+		resp.Count = len(list)
+		return &resp, nil
+	}
+
+	if err := json.Unmarshal(raw, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse competitors response: %w", err)
 	}
 	return &resp, nil
 }
@@ -189,18 +203,45 @@ func (c *Client) GetChanges(ctx context.Context, limit int, competitorID interfa
 	if competitorID != nil {
 		q.Set("competitor_id", fmt.Sprintf("%v", competitorID))
 	}
-	var resp ChangesResponse
-	if err := c.do(ctx, http.MethodGet, "/api/changes", q, nil, &resp); err != nil {
+	var raw json.RawMessage
+	if err := c.do(ctx, http.MethodGet, "/api/changes", q, nil, &raw); err != nil {
 		return nil, err
+	}
+
+	var resp ChangesResponse
+	resp.Success = true
+
+	var list []Change
+	if err := json.Unmarshal(raw, &list); err == nil {
+		resp.Changes = list
+		resp.Count = len(list)
+		return &resp, nil
+	}
+
+	if err := json.Unmarshal(raw, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse changes response: %w", err)
 	}
 	return &resp, nil
 }
 
 // GetBattlecards retrieves generated battlecards.
 func (c *Client) GetBattlecards(ctx context.Context) (*BattlecardsResponse, error) {
-	var resp BattlecardsResponse
-	if err := c.do(ctx, http.MethodGet, "/api/battlecards", nil, nil, &resp); err != nil {
+	var raw json.RawMessage
+	if err := c.do(ctx, http.MethodGet, "/api/battlecards", nil, nil, &raw); err != nil {
 		return nil, err
+	}
+
+	var resp BattlecardsResponse
+	resp.Success = true
+
+	var list []Battlecard
+	if err := json.Unmarshal(raw, &list); err == nil {
+		resp.Battlecards = list
+		return &resp, nil
+	}
+
+	if err := json.Unmarshal(raw, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse battlecards response: %w", err)
 	}
 	return &resp, nil
 }

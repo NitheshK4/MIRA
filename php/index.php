@@ -7,7 +7,7 @@
 require_once __DIR__ . '/MiraClient.php';
 
 $apiUrl = $_ENV['MIRA_API_URL'] ?? 'http://localhost:3000';
-$workspaceId = $_GET['workspace'] ?? 'default';
+$workspaceId = $_GET['workspace'] ?? $_GET['w'] ?? 'default';
 
 $client = new MiraClient($apiUrl, $workspaceId);
 $health = $client->getHealth();

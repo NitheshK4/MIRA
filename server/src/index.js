@@ -288,7 +288,7 @@ app.delete('/api/competitors/:id', checkWorkspace, async (req, res) => {
   }
 });
 
-app.post('/api/competitors/:id/check', checkWorkspace, async (req, res) => {
+app.post(['/api/competitors/:id/check', '/api/competitors/:id/scrape'], checkWorkspace, async (req, res) => {
   try {
     const comp = await db.getCompetitorById(req.params.id);
     if (!comp || comp.workspace_id !== req.workspaceId) {
@@ -311,7 +311,7 @@ app.post('/api/competitors/:id/check', checkWorkspace, async (req, res) => {
 });
 
 // Intelligence Feed
-app.get('/api/intelligence', checkWorkspace, async (req, res) => {
+app.get(['/api/intelligence', '/api/changes'], checkWorkspace, async (req, res) => {
   try {
     const { competitor_id, category, unreadOnly } = req.query;
     const list = await db.getIntelligenceCards(req.workspaceId, {
@@ -570,9 +570,9 @@ app.post('/api/oracle/chat', checkWorkspace, async (req, res) => {
   }
 });
 
-app.post('/api/warroom/simulate', checkWorkspace, async (req, res) => {
+app.post(['/api/warroom/simulate', '/api/war-room/simulate'], checkWorkspace, async (req, res) => {
   try {
-    const { move } = req.body;
+    const move = req.body.move || req.body.scenario;
     if (!move) {
       return res.status(400).json({ error: 'Strategic move description is required.' });
     }
