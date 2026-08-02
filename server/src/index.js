@@ -545,26 +545,83 @@ app.delete('/api/battlecards/:competitorId', checkWorkspace, async (req, res) =>
 // ----------------------------------------------------
 app.post('/api/oracle/chat', checkWorkspace, async (req, res) => {
   try {
-    const { message, history } = req.body;
-    if (!message) {
-      return res.status(400).json({ error: 'Message is required.' });
+    const userMessage = req.body.message || req.body.query;
+    const history = req.body.history || [];
+    const sessionId = req.body.sessionId || `session_${Date.now()}`;
+
+    if (!userMessage || !userMessage.trim()) {
+      return res.status(400).json({ error: 'Message or query is required.' });
     }
 
     const profile = await db.getProfile(req.workspaceId);
     const competitors = await db.getCompetitors(req.workspaceId);
     const intelCards = await db.getIntelligenceCards(req.workspaceId);
     const battlecards = await db.getBattlecards(req.workspaceId);
+    const memory = await db.getOracleMemory(req.workspaceId);
 
     const geminiKeySetting = await db.getSetting(req.workspaceId, 'gemini_api_key') || await db.getSetting('global', 'gemini_api_key');
 
-    const reply = await llm.generateStrategyCopilotResponse(
-      message, 
-      history || [], 
-      { profile, competitors, intelCards, battlecards }, 
+    // Save user message to database session history
+    await db.saveOracleMessage(sessionId, req.workspaceId, 'user', userMessage);
+
+    const copilotResult = await llm.generateStrategyCopilotResponse(
+      userMessage, 
+      history, 
+      { profile, competitors, intelCards, battlecards, memory }, 
       geminiKeySetting
     );
 
-    res.json({ reply });
+    const replyText = typeof copilotResult === 'string' ? copilotResult : copilotResult.reply;
+    const structuredData = typeof copilotResult === 'object' ? copilotResult : null;
+
+    // Save assistant message to session history
+    const messageId = await db.saveOracleMessage(sessionId, req.workspaceId, 'assistant', replyText, structuredData);
+
+    res.json({
+      reply: replyText,
+      response: replyText,
+      messageId,
+      sessionId,
+      structured: structuredData,
+      action_plan: structuredData?.action_plan || [],
+      scenario_matrix: structuredData?.scenario_matrix || [],
+      missing_context_questions: structuredData?.missing_context_questions || [],
+      suggested_refinements: structuredData?.suggested_refinements || []
+    });
+  } catch (err) {
+    console.error('Oracle Chat Endpoint Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Strategic Context / Goals / KPIs Management
+app.get('/api/oracle/context', checkWorkspace, async (req, res) => {
+  try {
+    const memory = await db.getOracleMemory(req.workspaceId);
+    res.json(memory);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/oracle/context', checkWorkspace, async (req, res) => {
+  try {
+    const updated = await db.updateOracleMemory(req.workspaceId, req.body);
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Oracle Recommendation Feedback Endpoint
+app.post('/api/oracle/feedback', checkWorkspace, async (req, res) => {
+  try {
+    const { messageId, rating, comment } = req.body;
+    if (!messageId || !rating) {
+      return res.status(400).json({ error: 'messageId and rating (+1 or -1) are required.' });
+    }
+    const result = await db.recordOracleFeedback(req.workspaceId, messageId, rating, comment || '');
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
