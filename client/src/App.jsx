@@ -697,20 +697,15 @@ function OnboardingPage({ onSubmit, initialProfile }) {
 
   return (
     <div className="max-w-2xl mx-auto my-12">
-      <div className="mira-glass p-8 sm:p-10 space-y-8 relative overflow-hidden">
-        {/* Soft Ambient Glow */}
-        <div className="absolute -top-24 -left-24 w-56 h-56 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
+      <div className="mira-glass p-8 sm:p-10 space-y-8 bg-white rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
         <div className="text-center space-y-3">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-sky-400 p-[1.5px] mx-auto shadow-xl shadow-violet-500/20">
-            <div className="w-full h-full bg-[#090A0F] rounded-[14px] flex items-center justify-center">
-              <Brain className="w-7 h-7 text-violet-400" />
-            </div>
+          <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mx-auto shadow-sm">
+            <Brain className="w-6 h-6" />
           </div>
-          <h1 className="text-2.5xl font-black text-white font-['Outfit'] tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 font-['Outfit'] tracking-tight">
             Configure Business Intelligence Context
           </h1>
-          <p className="text-slate-300 text-xs max-w-md mx-auto leading-relaxed">
+          <p className="text-slate-500 text-xs max-w-md mx-auto leading-relaxed">
             To compute high-precision <strong>Business Impact Scores (1–10)</strong> on competitor shifts, Mira requires your core business parameters.
           </p>
         </div>
@@ -848,23 +843,23 @@ function DashboardPage({
       {/* Dashboard Title Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2.5xl font-black text-white tracking-tight font-['Outfit'] flex items-center gap-2.5">
+          <h1 className="text-3xl font-black text-black uppercase tracking-tight font-['Space_Grotesk'] flex items-center gap-3">
             Autonomous Competitor Radar
-            <span className="w-2.5 h-2.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgba(168,85,247,0.9)] animate-ping"></span>
+            <span className="w-3 h-3 rounded-none bg-[#FFE600] border-2 border-black shadow-[2px_2px_0px_#000]"></span>
           </h1>
-          <p className="text-slate-400 text-xs mt-1 font-medium">
+          <p className="text-slate-700 text-xs mt-1 font-mono font-bold">
             Real-time page diff tracking, local LLM impact scoring, and automated CRM sync
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           {competitors.length > 0 && onClearAll && (
-            <button className="mira-btn mira-btn-ghost text-xs font-bold text-rose-400 hover:bg-rose-500/15 border border-rose-500/30" onClick={onClearAll} title="Clear all targets from workspace">
+            <button className="mira-btn mira-btn-danger text-xs font-black uppercase rounded-none" onClick={onClearAll} title="Clear all targets from workspace">
               <Trash2 className="w-3.5 h-3.5" />
               Clear All Targets
             </button>
           )}
-          <button className="mira-btn mira-btn-primary text-xs font-black shadow-lg" onClick={onAddClick}>
+          <button className="mira-btn mira-btn-primary text-xs font-black uppercase rounded-none" onClick={onAddClick}>
             <Plus className="w-3.5 h-3.5 stroke-[3]" />
             Add Competitor Target
           </button>
@@ -873,18 +868,18 @@ function DashboardPage({
 
       {/* ASYMMETRIC OBSIDIAN BENTO GRID */}
       {competitors.length === 0 ? (
-        <div className="mira-glass p-12 text-center space-y-4 max-w-xl mx-auto my-8 border-violet-500/20">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-sky-400 p-[1.5px] mx-auto shadow-xl shadow-violet-500/20">
-            <div className="w-full h-full bg-[#090A0F] rounded-[14px] flex items-center justify-center text-violet-400">
-              <Globe className="w-7 h-7" />
-            </div>
+        <div className="mira-glass p-10 text-center space-y-5 max-w-lg mx-auto my-10 bg-white border-3 border-black shadow-[6px_6px_0px_#000] rounded-none">
+          <div className="w-14 h-14 rounded-none bg-[#FFE600] border-3 border-black shadow-[4px_4px_0px_#000] flex items-center justify-center text-black mx-auto">
+            <Globe className="w-7 h-7 stroke-[2.5]" />
           </div>
-          <h3 className="text-lg font-black text-white font-['Outfit']">No Monitored Targets Yet</h3>
-          <p className="text-slate-400 text-xs leading-relaxed max-w-md mx-auto">
-            Register competitor pricing, product feature, or career pages to begin continuous scrape tracking and AI change analysis.
-          </p>
-          <button className="mira-btn mira-btn-primary text-xs font-bold" onClick={onAddClick}>
-            <Plus className="w-3.5 h-3.5 stroke-[3]" />
+          <div className="space-y-2">
+            <h3 className="text-xl font-black text-black uppercase font-['Space_Grotesk']">No Monitored Targets Yet</h3>
+            <p className="text-slate-800 text-xs font-mono font-semibold leading-relaxed max-w-sm mx-auto">
+              Register competitor pricing, product feature, or career pages to begin continuous scrape tracking and AI change analysis.
+            </p>
+          </div>
+          <button className="mira-btn mira-btn-primary text-xs font-black uppercase px-6 py-3 rounded-none" onClick={onAddClick}>
+            <Plus className="w-4 h-4 stroke-[3]" />
             Register First Competitor Target
           </button>
         </div>
