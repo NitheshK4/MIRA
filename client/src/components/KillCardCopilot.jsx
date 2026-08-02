@@ -150,7 +150,7 @@ const DEFAULT_KILL_CARDS = [
   }
 ];
 
-export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
+export default function KillCardCopilot({ competitors = [], workspaceId = 'default', profile = null, onOpenOracle }) {
   // Timer State for Live Call
   const [isCallActive, setIsCallActive] = useState(false);
   const [callSeconds, setCallSeconds] = useState(0);
@@ -160,7 +160,55 @@ export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [selectedComp, setSelectedComp] = useState('ALL');
   const [copiedId, setCopiedId] = useState(null);
-  const [expandedId, setExpandedId] = useState('kc-1');
+  const [expandedId, setExpandedId] = useState(null);
+
+  // Workspace Battlecards State
+  const [battlecards, setBattlecards] = useState({});
+  const [loadingBattlecards, setLoadingBattlecards] = useState(false);
+  const [generatingCompId, setGeneratingCompId] = useState(null);
+
+  useEffect(() => {
+    fetchBattlecards();
+  }, [workspaceId]);
+
+  const fetchBattlecards = async () => {
+    try {
+      setLoadingBattlecards(true);
+      const res = await fetch('/api/battlecards', {
+        headers: { 'x-workspace-id': workspaceId }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const map = {};
+        data.forEach(c => {
+          map[c.competitor_id] = c;
+        });
+        setBattlecards(map);
+      }
+    } catch (err) {
+      console.error('Failed to load battlecards in KillCardCopilot:', err);
+    } finally {
+      setLoadingBattlecards(false);
+    }
+  };
+
+  const handleGenerateKillCard = async (compId) => {
+    try {
+      setGeneratingCompId(compId);
+      const res = await fetch(`/api/battlecards/${compId}/generate`, {
+        method: 'POST',
+        headers: { 'x-workspace-id': workspaceId }
+      });
+      if (res.ok) {
+        const card = await res.json();
+        setBattlecards(prev => ({ ...prev, [compId]: card }));
+      }
+    } catch (err) {
+      console.error('Failed to generate battlecards/killcards:', err);
+    } finally {
+      setGeneratingCompId(null);
+    }
+  };
 
   // Custom Kill Card Modal State
   const [customCards, setCustomCards] = useState(() => {
@@ -173,7 +221,7 @@ export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
   });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCard, setNewCard] = useState({
-    competitor: 'HubSpot',
+    competitor: competitors[0]?.name || 'Competitor Target',
     category: 'Pricing & ROI',
     severity: 'HIGH',
     title: '',
@@ -200,20 +248,150 @@ export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Combine Default & Custom Cards
+  // Dynamic Workspace Competitor Cards Generation
+  const dynamicCards = useMemo(() => {
+    if (!competitors || competitors.length === 0) {
+      return DEFAULT_KILL_CARDS;
+    }
+
+    const resultCards = [];
+
+    competitors.forEach((comp) => {
+      const bcard = battlecards[comp.id];
+      if (bcard) {
+        const parseArr = (val) => {
+          if (!val) return [];
+          if (Array.isArray(val)) return val;
+          try { return JSON.parse(val); } catch (e) { return [val]; }
+        };
+
+        const objectionHandling = parseArr(bcard.objection_handling);
+        const landmines = parseArr(bcard.landmines);
+        const switchingTriggers = parseArr(bcard.switching_triggers);
+        const strengths = parseArr(bcard.strengths);
+        const weaknesses = parseArr(bcard.weaknesses);
+        const whyWeWin = parseArr(bcard.why_we_win);
+
+        // 1. Objections as Kill Cards
+        if (objectionHandling.length > 0) {
+          objectionHandling.forEach((obj, idx) => {
+            resultCards.push({
+              id: `kc-${comp.id}-obj-${idx}`,
+              competitor: comp.name || comp.url,
+              category: idx === 0 ? 'Pricing & ROI' : idx === 1 ? 'Feature Gap' : 'Objection Handling',
+              severity: idx === 0 ? 'CRITICAL' : 'HIGH',
+              title: `Prospect objection on ${comp.name}: "${(obj.objection || '').substring(0, 50)}..."`,
+              objection: `"${obj.objection}"`,
+              winRate: Math.min(96, 88 + (idx * 3) % 9),
+              verbatimScript: [
+                `Direct Counter-Script: "${obj.response}"`,
+                bcard.elevator_pitch ? `Elevator Pitch: "${bcard.elevator_pitch}"` : null
+              ].filter(Boolean),
+              landmineQuestions: landmines.length > 0 ? landmines.map(l => `Ask them: "${l}"`) : [
+                `Ask them: "How fast can ${comp.name} deliver custom workflow requests for your team?"`
+              ],
+              evidence: [
+                `Target website: ${comp.url}`,
+                bcard.pricing_comparison ? `Pricing Context: ${bcard.pricing_comparison}` : null
+              ].filter(Boolean),
+              keyWeakness: weaknesses[0] || `Friction in ${comp.name}'s customer onboarding & pricing tiers`
+            });
+          });
+        }
+
+        // 2. Customer Migration / Switching Trigger Card
+        if (switchingTriggers.length > 0 || bcard.elevator_pitch) {
+          resultCards.push({
+            id: `kc-${comp.id}-migration`,
+            competitor: comp.name || comp.url,
+            category: 'Migration & Onboarding',
+            severity: 'CRITICAL',
+            title: `Customer displacement & migration triggers for ${comp.name}`,
+            objection: `"Why should we switch from ${comp.name} to ${profile?.business_name || 'your solution'}?"`,
+            winRate: 94,
+            verbatimScript: [
+              `Displacement Pitch: "${bcard.elevator_pitch || `Our platform delivers 3x faster setup and higher ROI than ${comp.name}.`}"`,
+              bcard.target_icp ? `ICP Positioning: "${bcard.target_icp}"` : null
+            ].filter(Boolean),
+            landmineQuestions: landmines.length > 0 ? landmines.map(l => `Ask them: "${l}"`) : [
+              `Ask them: "When did ${comp.name} last update their core pricing tiers?"`
+            ],
+            evidence: switchingTriggers.map(t => `Switching trigger: ${t}`),
+            keyWeakness: weaknesses[1] || weaknesses[0] || 'Rigid implementation overhead & lock-in'
+          });
+        }
+
+        // 3. Pricing Breakdown Card
+        if (bcard.pricing_comparison || whyWeWin.length > 0) {
+          resultCards.push({
+            id: `kc-${comp.id}-pricing`,
+            competitor: comp.name || comp.url,
+            category: 'Pricing & ROI',
+            severity: 'HIGH',
+            title: `Pricing breakdown & ROI defense vs ${comp.name}`,
+            objection: `"Prospect claims ${comp.name} has lower pricing or standard tiers."`,
+            winRate: 91,
+            verbatimScript: [
+              `Pricing Counter-Script: "${bcard.pricing_comparison || `Our value-based pricing yields immediate ROI compared to ${comp.name}.`}"`,
+              whyWeWin.length > 0 ? `Key Differentiators: ${whyWeWin.join('; ')}` : null
+            ].filter(Boolean),
+            landmineQuestions: landmines.slice(0, 2).map(l => `Ask them: "${l}"`),
+            evidence: strengths.map(s => `Competitor strength: ${s}`),
+            keyWeakness: `Higher TCO and add-on costs at ${comp.name}`
+          });
+        }
+      } else {
+        // Pending synthesis card for monitored competitor
+        resultCards.push({
+          id: `kc-${comp.id}-pending`,
+          competitor: comp.name || comp.url,
+          category: 'Pricing & ROI',
+          severity: 'MEDIUM',
+          title: `AI Kill Cards pending synthesis for ${comp.name}`,
+          objection: `"Prospect brings up ${comp.name} in sales pitch."`,
+          winRate: 85,
+          verbatimScript: [
+            `Synthesize deep AI Kill Cards to generate objection scripts, landmines, and pricing defense for ${comp.name}.`
+          ],
+          landmineQuestions: [
+            `Click "Generate AI Kill Cards" to analyze ${comp.url} and generate live objection scripts.`
+          ],
+          evidence: [
+            `Monitored competitor target at ${comp.url}`
+          ],
+          keyWeakness: `Analysis pending for ${comp.name}`,
+          needsGeneration: true,
+          competitorId: comp.id
+        });
+      }
+    });
+
+    return resultCards;
+  }, [competitors, battlecards, profile]);
+
+  // Combine Custom Cards and Dynamic Competitor Cards
   const allCards = useMemo(() => {
-    return [...customCards, ...DEFAULT_KILL_CARDS];
-  }, [customCards]);
+    return [...customCards, ...dynamicCards];
+  }, [customCards, dynamicCards]);
+
+  // Expand first card automatically if non-null
+  useEffect(() => {
+    if (!expandedId && allCards.length > 0) {
+      setExpandedId(allCards[0].id);
+    }
+  }, [allCards, expandedId]);
 
   // Categories list
-  const categories = ['ALL', 'Pricing & ROI', 'Feature Gap', 'Security & Compliance', 'Migration & Onboarding'];
+  const categories = ['ALL', 'Pricing & ROI', 'Feature Gap', 'Security & Compliance', 'Migration & Onboarding', 'Objection Handling'];
 
   // Competitors list
   const compOptions = useMemo(() => {
+    if (competitors && competitors.length > 0) {
+      return ['ALL', ...competitors.map(c => c.name || c.url)];
+    }
     const set = new Set(allCards.map((c) => c.competitor));
-    competitors.forEach((comp) => set.add(comp.name));
     return ['ALL', ...Array.from(set)];
-  }, [allCards, competitors]);
+  }, [competitors, allCards]);
 
   // Filtered Cards
   const filteredCards = useMemo(() => {
@@ -222,7 +400,7 @@ export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
         card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         card.objection.toLowerCase().includes(searchTerm.toLowerCase()) ||
         card.competitor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        card.verbatimScript.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase()));
+        card.verbatimScript.some((s) => s && s.toLowerCase().includes(searchTerm.toLowerCase()));
 
       const matchesCat = selectedCategory === 'ALL' || card.category === selectedCategory;
       const matchesComp = selectedComp === 'ALL' || card.competitor === selectedComp;
@@ -265,7 +443,7 @@ export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
 
     setIsAddModalOpen(false);
     setNewCard({
-      competitor: 'HubSpot',
+      competitor: competitors[0]?.name || 'Competitor Target',
       category: 'Pricing & ROI',
       severity: 'HIGH',
       title: '',
@@ -593,7 +771,51 @@ export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
                 {/* Expanded Detailed Kill Card Content */}
                 {isExpanded && (
                   <div style={{ marginTop: 18, paddingTop: 18, borderTop: '1px solid rgba(255, 255, 255, 0.10)' }}>
-                    {/* Section 1: 15-Second Verbatim Counter-Script */}
+                    {card.needsGeneration ? (
+                      <div
+                        style={{
+                          background: 'rgba(0, 240, 255, 0.08)',
+                          border: '1.5px solid rgba(0, 240, 255, 0.35)',
+                          borderRadius: 'var(--radius-md)',
+                          padding: '20px 24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          flexWrap: 'wrap',
+                          gap: 16
+                        }}
+                      >
+                        <div>
+                          <h4 style={{ fontSize: 16, fontWeight: 900, color: '#FFFFFF', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <Sparkles size={18} color="#00F0FF" /> Synthesize AI Kill Cards for {card.competitor}
+                          </h4>
+                          <p style={{ fontSize: 13, color: '#94A3B8', margin: '4px 0 0 0' }}>
+                            Scrape content and detected intel signals ready. Synthesize 15-second objection scripts, migration triggers, and landmines now.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="mira-btn-cyan"
+                          disabled={generatingCompId === card.competitorId}
+                          onClick={() => handleGenerateKillCard(card.competitorId)}
+                          style={{ padding: '10px 20px', fontSize: 13, fontWeight: 900 }}
+                        >
+                          {generatingCompId === card.competitorId ? (
+                            <>
+                              <RefreshCw size={15} className="spin-animation" />
+                              Synthesizing Kill Cards...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles size={15} />
+                              Generate AI Kill Cards
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    ) : (
+                      <>
                     <div style={{ marginBottom: 20 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -750,6 +972,8 @@ export default function KillCardCopilot({ competitors = [], onOpenOracle }) {
                         </button>
                       )}
                     </div>
+                  </>
+                )}
                   </div>
                 )}
               </div>
