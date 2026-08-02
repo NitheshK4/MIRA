@@ -305,6 +305,15 @@ async function getDb() {
       comment TEXT,
       created_at TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS warroom_simulations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      workspace_id TEXT DEFAULT 'default',
+      title TEXT,
+      scenario_input TEXT,
+      simulation_data TEXT,
+      created_at TEXT
+    );
   `);
 
   // Try adding dynamic columns to existing tables
@@ -900,11 +909,49 @@ async function getOracleMessages(sessionId, workspaceId = 'default') {
 
 async function recordOracleFeedback(workspaceId = 'default', messageId, rating, comment = '') {
   const db = await getDb();
-  const now = new Date().toISOString();
   await db.run(`
     INSERT INTO oracle_feedback (workspace_id, message_id, rating, comment, created_at)
     VALUES (?, ?, ?, ?, ?)
-  `, [workspaceId, messageId, rating, comment, now]);
+  `, [workspaceId, messageId, rating, comment, new Date().toISOString()]);
+  return { success: true };
+}
+
+// ----------------------------------------------------
+// WAR ROOM SIMULATION HISTORY HELPERS
+// ----------------------------------------------------
+async function saveWarRoomSimulation(workspaceId = 'default', title, scenarioInput, simulationData) {
+  const db = await getDb();
+  const now = new Date().toISOString();
+  const inputStr = typeof scenarioInput === 'string' ? scenarioInput : JSON.stringify(scenarioInput);
+  const dataStr = typeof simulationData === 'string' ? simulationData : JSON.stringify(simulationData);
+
+  const result = await db.run(`
+    INSERT INTO warroom_simulations (workspace_id, title, scenario_input, simulation_data, created_at)
+    VALUES (?, ?, ?, ?, ?)
+  `, [workspaceId, title || 'Market Simulation', inputStr, dataStr, now]);
+
+  return result.lastID;
+}
+
+async function getWarRoomSimulations(workspaceId = 'default') {
+  const db = await getDb();
+  const rows = await db.all(`
+    SELECT * FROM warroom_simulations
+    WHERE workspace_id = ?
+    ORDER BY created_at DESC
+    LIMIT 25
+  `, [workspaceId]);
+
+  return rows.map(r => ({
+    ...r,
+    scenario_input: r.scenario_input ? JSON.parse(r.scenario_input) : null,
+    simulation_data: r.simulation_data ? JSON.parse(r.simulation_data) : null
+  }));
+}
+
+async function deleteWarRoomSimulation(workspaceId = 'default', id) {
+  const db = await getDb();
+  await db.run('DELETE FROM warroom_simulations WHERE workspace_id = ? AND id = ?', [workspaceId, id]);
   return { success: true };
 }
 
@@ -939,6 +986,9 @@ module.exports = {
   updateOracleMemory,
   saveOracleMessage,
   getOracleMessages,
-  recordOracleFeedback
+  recordOracleFeedback,
+  saveWarRoomSimulation,
+  getWarRoomSimulations,
+  deleteWarRoomSimulation
 };
 
