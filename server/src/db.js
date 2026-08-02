@@ -268,6 +268,52 @@ async function getDb() {
       UNIQUE(workspace_id, competitor_id),
       FOREIGN KEY(competitor_id) REFERENCES competitors(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS oracle_memory (
+      workspace_id TEXT PRIMARY KEY,
+      goals TEXT,
+      kpis TEXT,
+      constraints TEXT,
+      target_audience TEXT,
+      strategic_focus TEXT,
+      updated_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS oracle_sessions (
+      session_id TEXT PRIMARY KEY,
+      workspace_id TEXT DEFAULT 'default',
+      title TEXT,
+      created_at TEXT,
+      updated_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS oracle_messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id TEXT,
+      workspace_id TEXT DEFAULT 'default',
+      role TEXT,
+      text TEXT,
+      structured_data TEXT,
+      created_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS oracle_feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      workspace_id TEXT DEFAULT 'default',
+      message_id INTEGER,
+      rating INTEGER, -- 1 for thumbs up, -1 for thumbs down
+      comment TEXT,
+      created_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS warroom_simulations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      workspace_id TEXT DEFAULT 'default',
+      title TEXT,
+      scenario_input TEXT,
+      simulation_data TEXT,
+      created_at TEXT
+    );
   `);
 
   // Try adding dynamic columns to existing tables
@@ -779,6 +825,136 @@ async function deleteBattlecard(workspaceId = 'default', competitorId) {
   return { success: true };
 }
 
+// ----------------------------------------------------
+// ORACLE MEMORY, CONVERSATION & FEEDBACK HELPERS
+// ----------------------------------------------------
+async function getOracleMemory(workspaceId = 'default') {
+  const db = await getDb();
+  const row = await db.get('SELECT * FROM oracle_memory WHERE workspace_id = ?', [workspaceId]);
+  if (!row) {
+    return {
+      workspace_id: workspaceId,
+      goals: '[]',
+      kpis: '[]',
+      constraints: '',
+      target_audience: '',
+      strategic_focus: '',
+      updated_at: new Date().toISOString()
+    };
+  }
+  return row;
+}
+
+async function updateOracleMemory(workspaceId = 'default', data = {}) {
+  const db = await getDb();
+  const now = new Date().toISOString();
+  const goalsStr = typeof data.goals === 'string' ? data.goals : JSON.stringify(data.goals || []);
+  const kpisStr = typeof data.kpis === 'string' ? data.kpis : JSON.stringify(data.kpis || []);
+
+  await db.run(`
+    INSERT INTO oracle_memory (workspace_id, goals, kpis, constraints, target_audience, strategic_focus, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(workspace_id) DO UPDATE SET
+      goals = excluded.goals,
+      kpis = excluded.kpis,
+      constraints = excluded.constraints,
+      target_audience = excluded.target_audience,
+      strategic_focus = excluded.strategic_focus,
+      updated_at = excluded.updated_at
+  `, [
+    workspaceId,
+    goalsStr,
+    kpisStr,
+    data.constraints || '',
+    data.target_audience || '',
+    data.strategic_focus || '',
+    now
+  ]);
+
+  return await getOracleMemory(workspaceId);
+}
+
+async function saveOracleMessage(sessionId, workspaceId = 'default', role, text, structuredData = null) {
+  const db = await getDb();
+  const now = new Date().toISOString();
+  const structStr = structuredData ? JSON.stringify(structuredData) : null;
+
+  const result = await db.run(`
+    INSERT INTO oracle_messages (session_id, workspace_id, role, text, structured_data, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `, [sessionId, workspaceId, role, text, structStr, now]);
+
+  // Update session updated_at
+  await db.run(`
+    INSERT INTO oracle_sessions (session_id, workspace_id, title, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT(session_id) DO UPDATE SET updated_at = excluded.updated_at
+  `, [sessionId, workspaceId, text.substring(0, 40), now, now]);
+
+  return result.lastID;
+}
+
+async function getOracleMessages(sessionId, workspaceId = 'default') {
+  const db = await getDb();
+  const rows = await db.all(`
+    SELECT * FROM oracle_messages 
+    WHERE session_id = ? AND workspace_id = ?
+    ORDER BY created_at ASC
+  `, [sessionId, workspaceId]);
+  return rows.map(r => ({
+    ...r,
+    structured_data: r.structured_data ? JSON.parse(r.structured_data) : null
+  }));
+}
+
+async function recordOracleFeedback(workspaceId = 'default', messageId, rating, comment = '') {
+  const db = await getDb();
+  await db.run(`
+    INSERT INTO oracle_feedback (workspace_id, message_id, rating, comment, created_at)
+    VALUES (?, ?, ?, ?, ?)
+  `, [workspaceId, messageId, rating, comment, new Date().toISOString()]);
+  return { success: true };
+}
+
+// ----------------------------------------------------
+// WAR ROOM SIMULATION HISTORY HELPERS
+// ----------------------------------------------------
+async function saveWarRoomSimulation(workspaceId = 'default', title, scenarioInput, simulationData) {
+  const db = await getDb();
+  const now = new Date().toISOString();
+  const inputStr = typeof scenarioInput === 'string' ? scenarioInput : JSON.stringify(scenarioInput);
+  const dataStr = typeof simulationData === 'string' ? simulationData : JSON.stringify(simulationData);
+
+  const result = await db.run(`
+    INSERT INTO warroom_simulations (workspace_id, title, scenario_input, simulation_data, created_at)
+    VALUES (?, ?, ?, ?, ?)
+  `, [workspaceId, title || 'Market Simulation', inputStr, dataStr, now]);
+
+  return result.lastID;
+}
+
+async function getWarRoomSimulations(workspaceId = 'default') {
+  const db = await getDb();
+  const rows = await db.all(`
+    SELECT * FROM warroom_simulations
+    WHERE workspace_id = ?
+    ORDER BY created_at DESC
+    LIMIT 25
+  `, [workspaceId]);
+
+  return rows.map(r => ({
+    ...r,
+    scenario_input: r.scenario_input ? JSON.parse(r.scenario_input) : null,
+    simulation_data: r.simulation_data ? JSON.parse(r.simulation_data) : null
+  }));
+}
+
+async function deleteWarRoomSimulation(workspaceId = 'default', id) {
+  const db = await getDb();
+  await db.run('DELETE FROM warroom_simulations WHERE workspace_id = ? AND id = ?', [workspaceId, id]);
+  return { success: true };
+}
+
 module.exports = {
   getDb,
   getProfile,
@@ -805,6 +981,14 @@ module.exports = {
   getBattlecards,
   getBattlecardByCompetitor,
   saveBattlecard,
-  deleteBattlecard
+  deleteBattlecard,
+  getOracleMemory,
+  updateOracleMemory,
+  saveOracleMessage,
+  getOracleMessages,
+  recordOracleFeedback,
+  saveWarRoomSimulation,
+  getWarRoomSimulations,
+  deleteWarRoomSimulation
 };
 

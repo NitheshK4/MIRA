@@ -1354,3 +1354,291 @@ button *, .btn *, .mira-btn * {
 
 /* Stroke */
 .stroke-\[3\] { stroke-width: 3; }
+
+/* ============================================================
+   REFINED EDITORIAL NEO-BRUTALISM DESIGN SYSTEM
+   Warm Off-White Canvas (#F6F4EE) · Crisp White Cards · Bold 3px Black Borders
+   Hard Offset 4px/5px Shadows · Disciplined Palette (Near-Black, Off-White, Electric Yellow, Cobalt Blue, Crimson)
+   Expressive Square Typography · Purposeful Grid Background
+   ============================================================ */
+
+html, body, #root {
+  background-color: #F6F4EE !important;
+  background-image: 
+    linear-gradient(to right, #E5E1D5 1px, transparent 1px),
+    linear-gradient(to bottom, #E5E1D5 1px, transparent 1px) !important;
+  background-size: 30px 30px !important;
+  color: #0F0F12 !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: uppercase !important;
+  color: #0F0F12 !important;
+}
+
+/* Cards & Containers (Sharp Square Corners, Bold 3px Borders) */
+.mira-glass, .brutal-card, .clay-card, .modal-panel, .mira-modal-card {
+  background: #FFFFFF !important;
+  border: 3px solid #000000 !important;
+  box-shadow: 5px 5px 0px #000000 !important;
+  border-radius: 0px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+}
+
+.mira-glass:hover, .brutal-card-hover:hover, .clay-card-hover:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 7px 7px 0px #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* Form Controls: Inputs, Textareas & Selects */
+.mira-input, .mira-select, .mira-textarea, .form-input, .form-select, .form-textarea {
+  background: #FFFFFF !important;
+  border: 3px solid #000000 !important;
+  box-shadow: 3.5px 3.5px 0px #000000 !important;
+  border-radius: 0px !important;
+  color: #0F0F12 !important;
+  font-weight: 700 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 14.5px !important;
+  transition: all 0.1s ease !important;
+}
+
+.mira-input::placeholder, .form-input::placeholder, .mira-textarea::placeholder {
+  color: #64748B !important;
+  font-weight: 500 !important;
+}
+
+.mira-input:focus, .mira-select:focus, .mira-textarea:focus,
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border: 3px solid #1D4ED8 !important;
+  box-shadow: 5px 5px 0px #1D4ED8 !important;
+  background: #FFFFFF !important;
+  color: #000000 !important;
+  outline: none !important;
+}
+
+.mira-form-label, .form-label {
+  color: #0F0F12 !important;
+  font-weight: 800 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 13px !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+
+/* Buttons (Sharp Square Corners, Bold 3px Black Borders, Hard Shadows) */
+button, .btn, .mira-btn, .btn-primary, .btn-secondary, .mira-btn-primary, .mira-btn-secondary, .mira-btn-cyan, .mira-btn-emerald, .mira-btn-danger, input[type="submit"], input[type="button"] {
+  border: 3px solid #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  border-radius: 0px !important;
+  font-weight: 800 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+  cursor: pointer !important;
+}
+
+.btn:hover, .mira-btn:hover, .btn-primary:hover, .mira-btn-primary:hover, .btn-emerald:hover, .mira-btn-emerald:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0px #000000 !important;
+}
+
+.btn:active, .mira-btn:active, .btn-primary:active, .mira-btn-primary:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+}
+
+/* Disciplined Fills */
+.btn-primary, .mira-btn-primary {
+  background: #FFE600 !important;
+  color: #000000 !important;
+}
+
+.btn-emerald, .mira-btn-emerald, .mira-btn-cyan {
+  background: #1D4ED8 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-danger, .mira-btn-danger {
+  background: #E11D48 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-secondary, .mira-btn-secondary {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+/* Sidebar & Navigation */
+.sidebar-drawer {
+  background: #0F1015 !important;
+  border-right: 3.5px solid #000000 !important;
+  box-shadow: 5px 0px 0px #000000 !important;
+}
+
+.sidebar-brand-icon {
+  border: 2.5px solid #000000 !important;
+  box-shadow: 2.5px 2.5px 0px #000000 !important;
+  border-radius: 0px !important;
+  background: #FFE600 !important;
+  color: #000000 !important;
+}
+
+.sidebar-brand-name {
+  color: #FFFFFF !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+
+.sidebar-brand-sub {
+  color: #FFE600 !important;
+}
+
+.nav-item {
+  border-radius: 0px !important;
+  border: 2.5px solid transparent !important;
+  font-weight: 700 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  text-transform: uppercase !important;
+  color: #CBD5E1 !important;
+  transition: all 0.1s ease !important;
+}
+
+.nav-item:hover {
+  background: #1E202B !important;
+  border: 2.5px solid #000000 !important;
+  box-shadow: 3px 3px 0px #000000 !important;
+  color: #FFFFFF !important;
+  transform: translate(-1px, -1px) !important;
+}
+
+.nav-item.active-dashboard,
+.nav-item.active-feed,
+.nav-item.active-battlecards,
+.nav-item.active-killcards,
+.nav-item.active-warroom,
+.nav-item.active-settings {
+  background: #FFE600 !important;
+  color: #000000 !important;
+  border: 3px solid #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  font-weight: 800 !important;
+}
+
+.nav-item.active-dashboard *,
+.nav-item.active-feed *,
+.nav-item.active-battlecards *,
+.nav-item.active-killcards *,
+.nav-item.active-warroom *,
+.nav-item.active-settings * {
+  color: #000000 !important;
+}
+
+/* Topbar */
+.topbar {
+  background: #FFFFFF !important;
+  border-bottom: 3.5px solid #000000 !important;
+  box-shadow: 0px 4px 0px #000000 !important;
+}
+
+.topbar input, .topbar .search-input {
+  background: #FAF8F5 !important;
+  border: 2.5px solid #000000 !important;
+  color: #000000 !important;
+  box-shadow: 3px 3px 0px #000000 !important;
+  border-radius: 0px !important;
+}
+
+.topbar input::placeholder {
+  color: #64748B !important;
+}
+
+/* Metric Stat Boxes */
+.metric-stat-box {
+  background: #FFFFFF !important;
+  border: 3px solid #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  border-radius: 0px !important;
+}
+
+.metric-stat-box:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0px #000000 !important;
+}
+
+.stat-box-label {
+  color: #0F0F12 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
+.stat-box-value {
+  color: #0F0F12 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 800 !important;
+}
+
+/* Badges & Tags */
+.badge, .mira-badge-violet, .mira-badge-emerald, .mira-badge-amber,
+.mira-badge-rose, .mira-badge-cyan, .mira-badge-sky {
+  border: 2px solid #000000 !important;
+  box-shadow: 2.5px 2.5px 0px #000000 !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  border-radius: 0px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 11px !important;
+  padding: 3px 9px !important;
+}
+
+.mira-badge-violet, .badge-violet { background: #1D4ED8 !important; color: #FFFFFF !important; }
+.mira-badge-emerald, .badge-emerald { background: #10B981 !important; color: #000000 !important; }
+.mira-badge-amber, .badge-amber { background: #FFE600 !important; color: #000000 !important; }
+.mira-badge-rose, .badge-rose { background: #E11D48 !important; color: #FFFFFF !important; }
+.mira-badge-cyan, .badge-cyan { background: #0284C7 !important; color: #FFFFFF !important; }
+.mira-badge-sky, .badge-blue { background: #1D4ED8 !important; color: #FFFFFF !important; }
+
+/* Workspace Box & Profile Card */
+.workspace-box, .profile-card {
+  background: #191B26 !important;
+  border: 2.5px solid #000000 !important;
+  box-shadow: 3.5px 3.5px 0px #000000 !important;
+  border-radius: 0px !important;
+  color: #FFFFFF !important;
+}
+
+.profile-avatar {
+  border: 2px solid #000000 !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+  background: #FFE600 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+  border-radius: 0px !important;
+}
+
+/* Modals */
+.modal-backdrop, .mira-modal-backdrop {
+  background: rgba(15, 16, 21, 0.75) !important;
+}
+
+.modal-panel, .mira-modal-card {
+  background: #FFFFFF !important;
+  border: 3.5px solid #000000 !important;
+  box-shadow: 8px 8px 0px #000000 !important;
+  border-radius: 0px !important;
+  color: #0F0F12 !important;
+}
+
+
+
+
