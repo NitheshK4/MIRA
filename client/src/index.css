@@ -1639,6 +1639,52 @@ button, .btn, .mira-btn, .btn-primary, .btn-secondary, .mira-btn-primary, .mira-
   color: #0F0F12 !important;
 }
 
+/* ============================================================
+   UNIVERSAL RED CLOSE / CROSSMARK BUTTON HOVER & CLICK STYLING
+   Makes every crossmark (X icon button) turn vibrant red on hover & click
+   ============================================================ */
+.crossmark-btn,
+.modal-close-btn,
+.close-btn,
+button.close,
+button:has(svg.lucide-x) {
+  transition: all 0.20s ease !important;
+}
+
+.crossmark-btn:hover,
+.crossmark-btn:active,
+.crossmark-btn:focus,
+.modal-close-btn:hover,
+.modal-close-btn:active,
+.modal-close-btn:focus,
+.close-btn:hover,
+.close-btn:active,
+.close-btn:focus,
+button.close:hover,
+button.close:active,
+button.close:focus,
+button:has(svg.lucide-x):hover,
+button:has(svg.lucide-x):active,
+button:has(svg.lucide-x):focus {
+  background: #FF2A6D !important;
+  color: #FFFFFF !important;
+  border-color: #000000 !important;
+  box-shadow: 0 0 18px rgba(255, 42, 109, 0.60) !important;
+  transform: scale(1.1) !important;
+}
+
+.crossmark-btn:hover svg,
+.crossmark-btn:active svg,
+.modal-close-btn:hover svg,
+.modal-close-btn:active svg,
+.close-btn:hover svg,
+.close-btn:active svg,
+button:has(svg.lucide-x):hover svg,
+button:has(svg.lucide-x):active svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
 
 
 

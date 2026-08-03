@@ -124,7 +124,8 @@ export default function CommandPalette({
           />
           <button 
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+            className="crossmark-btn p-2 text-slate-400 hover:text-white rounded-xl transition-all"
+            aria-label="Close"
           >
             <X className="w-6 h-6" />
           </button>

@@ -350,7 +350,8 @@ export default function StrategyCopilotModal({ isOpen, onClose, onLaunchWarRoom 
             <button 
               type="button"
               onClick={onClose}
-              className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:border-slate-700 transition-colors ml-1 flex-shrink-0"
+              className="crossmark-btn w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 transition-all ml-1 flex-shrink-0"
+              aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>

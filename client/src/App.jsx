@@ -501,6 +501,7 @@ export default function App() {
             onRefresh={handleFullRefresh}
             isRefreshing={isRefreshing}
             activeTab={activeTab}
+            onOpenAlerts={() => setActiveTab('feed')}
           />
         )}
 
@@ -2321,7 +2322,7 @@ function AddCompetitorModal({ onClose, onSubmit }) {
             <Plus className="w-6 h-6 text-violet-400" />
             Register Competitor Target URL
           </h2>
-          <button className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10" onClick={onClose}>
+          <button className="crossmark-btn text-slate-400 hover:text-white p-1.5 rounded-lg transition-all" onClick={onClose} aria-label="Close">
             <X className="w-6 h-6" />
           </button>
         </div>

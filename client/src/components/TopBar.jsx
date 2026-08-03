@@ -15,7 +15,8 @@ export default function TopBar({
   unreadCount,
   onRefresh,
   isRefreshing,
-  activeTab 
+  activeTab,
+  onOpenAlerts
 }) {
   const pageLabels = {
     dashboard: '⚡ Competitor Radar',
@@ -89,9 +90,12 @@ export default function TopBar({
         {/* Alerts */}
         <button
           type="button"
-          onClick={onOpenCommandPalette}
+          onClick={() => {
+            if (onOpenAlerts) onOpenAlerts();
+            else if (onOpenCommandPalette) onOpenCommandPalette();
+          }}
           className="top-bar-icon-btn"
-          title="Alerts"
+          title="Intel Stream Alerts"
           style={{ position:'relative' }}
         >
           <Bell size={14} />
