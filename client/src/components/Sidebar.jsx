@@ -12,7 +12,8 @@ import {
   Brain,
   Sparkles,
   Plus,
-  X
+  X,
+  Terminal
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -71,6 +72,12 @@ export default function Sidebar({
       label: 'War Room ⚔️', 
       icon: Swords,
       activeClass: 'active-warroom',
+    },
+    { 
+      id: 'integrations', 
+      label: 'SDK & Integrations', 
+      icon: Terminal,
+      activeClass: 'active-integrations',
     },
     { 
       id: 'settings', 

@@ -9,7 +9,9 @@ import {
   Globe, 
   X, 
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Terminal,
+  Code2
 } from 'lucide-react';
 
 export default function CommandPalette({ 
@@ -79,6 +81,13 @@ export default function CommandPalette({
       subtitle: 'Simulate market moves and predicted competitor reactions',
       icon: LayoutDashboard,
       action: () => { onClose(); onNavigateTab('warroom'); }
+    },
+    {
+      id: 'nav-integrations',
+      title: 'Open Developer SDKs & Integrations 💻',
+      subtitle: 'Access Node.js, Python, Go, and PHP code examples & API keys',
+      icon: Terminal,
+      action: () => { onClose(); onNavigateTab('integrations'); }
     },
     {
       id: 'nav-[#07090E]',
