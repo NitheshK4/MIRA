@@ -191,6 +191,17 @@ LLM-generated competitive battlecards with strengths, weaknesses, killer questio
   │      • Dynamic displacement triggers & ROI defense per competitor │
   │      • 1-click script copy & AI co-pilot escalation              │
   │                                                                  │
+  │  💻  DEVELOPER SDKs & INTEGRATIONS                               │
+  │      • Multi-language SDKs for Node.js, Python, Go, and PHP      │
+  │      • Scrape triggers, ONNX similarity, War Room & Webhook APIs │
+  │      • 1-click Workspace API Key & ID credential copying         │
+  │                                                                  │
+  │  🔍  ENHANCED CONTENT CHANGE INSPECTOR & ANALYTICS               │
+  │      • 3 Review Modes: Split Slider, Side-by-Side & Inline Diff  │
+  │      • Color-coded text additions (+ green) & removals (- red)   │
+  │      • Metadata bar: HTTP Status, Latency, Payload Delta         │
+  │      • 7-Day Change Frequency Timeline & Severity Distribution  │
+  │                                                                  │
   └──────────────────────────────────────────────────────────────────┘
 ```
 
