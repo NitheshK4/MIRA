@@ -94,3 +94,51 @@ func TestAddCompetitor(t *testing.T) {
 		t.Errorf("Expected success true")
 	}
 }
+
+func TestTriggerScrape(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/competitors/1/scrape" {
+			t.Errorf("Expected path /api/competitors/1/scrape, got %s", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success": true,
+			"message": "Check enqueued successfully.",
+		})
+	}))
+	defer ts.Close()
+
+	client := mira.NewClient(ts.URL)
+	res, err := client.TriggerScrape(context.Background(), 1)
+	if err != nil {
+		t.Fatalf("TriggerScrape failed: %v", err)
+	}
+	if res["success"] != true {
+		t.Errorf("Expected success true")
+	}
+}
+
+func TestSimulateWarRoom(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/war-room/simulate" {
+			t.Errorf("Expected path /api/war-room/simulate, got %s", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(mira.WarRoomResponse{
+			Success:  true,
+			Scenario: "Price Cut 30%",
+		})
+	}))
+	defer ts.Close()
+
+	client := mira.NewClient(ts.URL)
+	res, err := client.SimulateWarRoom(context.Background(), mira.WarRoomRequest{
+		Scenario: "Price Cut 30%",
+	})
+	if err != nil {
+		t.Fatalf("SimulateWarRoom failed: %v", err)
+	}
+	if !res.Success || res.Scenario != "Price Cut 30%" {
+		t.Errorf("Unexpected simulation response: %+v", res)
+	}
+}

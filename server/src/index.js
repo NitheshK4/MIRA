@@ -32,30 +32,56 @@ async function initHostUrl() {
 }
 
 // ----------------------------------------------------
-// WORKSPACE EXTRACTION MIDDLEWARE
+// WORKSPACE & API AUTH MIDDLEWARE
 // ----------------------------------------------------
-function checkWorkspace(req, res, next) {
+function getRequestApiKey(req) {
+  const authHeader = req.headers['authorization'];
+  if (authHeader) {
+    if (authHeader.startsWith('Bearer ')) {
+      return authHeader.substring(7).trim();
+    }
+    return authHeader.trim();
+  }
+  return req.headers['x-api-key'] || req.query?.api_key || null;
+}
+
+async function checkWorkspace(req, res, next) {
+  const apiKey = getRequestApiKey(req);
+  if (apiKey) {
+    try {
+      const dbInst = await db.getDb();
+      const row = await dbInst.get(
+        'SELECT workspace_id FROM settings WHERE key = "api_key" AND value = ?',
+        [apiKey]
+      );
+      if (row) {
+        req.workspaceId = row.workspace_id;
+        return next();
+      } else {
+        return res.status(401).json({ error: 'Unauthorized: Invalid API Key.' });
+      }
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
   const workspaceId = req.headers['x-workspace-id'] || 'default';
   req.workspaceId = workspaceId;
   next();
 }
 
-// ----------------------------------------------------
-// EXTENSION AUTH MIDDLEWARE
-// ----------------------------------------------------
 async function checkExtensionAuth(req, res, next) {
-  const requestKey = req.headers['authorization']?.replace('Bearer ', '') || req.query.api_key;
+  const apiKey = getRequestApiKey(req);
 
-  if (!requestKey) {
+  if (!apiKey) {
     return res.status(401).json({ error: 'Unauthorized: Missing API Key.' });
   }
 
   try {
     const dbInst = await db.getDb();
-    // Query setting to find workspace owner of this API key
     const row = await dbInst.get(
       'SELECT workspace_id FROM settings WHERE key = "api_key" AND value = ?',
-      [requestKey]
+      [apiKey]
     );
 
     if (!row) {

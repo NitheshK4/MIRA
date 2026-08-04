@@ -620,22 +620,23 @@ async function removeFromCrmQueue(cardId) {
 }
 
 // Settings operations
-async function getSetting(workspaceId = 'global', key) {
+async function getSetting(workspaceId = 'default', key) {
   let finalWorkspaceId = workspaceId;
   let finalKey = key;
   if (key === undefined) {
     finalKey = workspaceId;
-    finalWorkspaceId = 'global';
+    finalWorkspaceId = 'default';
   }
 
-  const isGlobalKey = finalKey !== 'api_key';
-  const queryWorkspaceId = isGlobalKey ? 'global' : finalWorkspaceId;
-
   const db = await getDb();
-  let row = await db.get('SELECT value FROM settings WHERE workspace_id = ? AND key = ?', [queryWorkspaceId, finalKey]);
+  let row = await db.get('SELECT value FROM settings WHERE workspace_id = ? AND key = ?', [finalWorkspaceId, finalKey]);
+
+  if (!row && finalWorkspaceId !== 'global') {
+    row = await db.get('SELECT value FROM settings WHERE workspace_id = "global" AND key = ?', [finalKey]);
+  }
 
   if (!row) {
-    // Dynamically seed default values for the global or workspace-specific configurations
+    // Dynamically seed default values for workspace-specific configurations
     const defaults = {
       api_key: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
       digest_schedule: 'daily',
@@ -647,8 +648,8 @@ async function getSetting(workspaceId = 'global', key) {
         smtp_host: process.env.SMTP_HOST || 'smtp.gmail.com',
         smtp_port: parseInt(process.env.SMTP_PORT, 10) || 465,
         smtp_user: process.env.SMTP_USER || '',
-        smtp_pass: process.env.SMTP_PASS || process.env.RESEND_API_KEY || process.env.RESEND_KEY || 're_TmsR5PR4_3dXLXczyYi4w1pvaYyDJ2jaZ',
-        recipient_email: process.env.SMTP_RECIPIENT || process.env.RECIPIENT_EMAIL || 'nitheshk236@gmail.com'
+        smtp_pass: process.env.SMTP_PASS || process.env.RESEND_API_KEY || process.env.RESEND_KEY || '',
+        recipient_email: process.env.SMTP_RECIPIENT || process.env.RECIPIENT_EMAIL || ''
       }),
       crm_config: JSON.stringify({
         active_crm: process.env.NOTION_TOKEN ? 'notion' : 'none',
@@ -663,7 +664,7 @@ async function getSetting(workspaceId = 'global', key) {
     if (finalKey in defaults) {
       await db.run(
         'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES (?, ?, ?)',
-        [queryWorkspaceId, finalKey, defaults[finalKey]]
+        [finalWorkspaceId, finalKey, defaults[finalKey]]
       );
       row = { value: defaults[finalKey] };
     }
@@ -735,23 +736,20 @@ async function getSetting(workspaceId = 'global', key) {
   return val;
 }
 
-async function setSetting(workspaceId = 'global', key, value) {
+async function setSetting(workspaceId = 'default', key, value) {
   let finalWorkspaceId = workspaceId;
   let finalKey = key;
   let finalValue = value;
   if (value === undefined) {
     finalValue = key;
     finalKey = workspaceId;
-    finalWorkspaceId = 'global';
+    finalWorkspaceId = 'default';
   }
-
-  const isGlobalKey = finalKey !== 'api_key';
-  const saveWorkspaceId = isGlobalKey ? 'global' : finalWorkspaceId;
 
   const db = await getDb();
   await db.run(
     'INSERT OR REPLACE INTO settings (workspace_id, key, value) VALUES (?, ?, ?)',
-    [saveWorkspaceId, finalKey, finalValue]
+    [finalWorkspaceId, finalKey, finalValue]
   );
   return finalValue;
 }
