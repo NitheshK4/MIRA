@@ -56,6 +56,7 @@ import WarRoomView from './components/WarRoomView.jsx';
 import KillCardCopilot from './components/KillCardCopilot.jsx';
 import StrategyCopilotModal from './components/StrategyCopilotModal.jsx';
 import IntegrationsView from './components/IntegrationsView.jsx';
+import PredictorView from './components/PredictorView.jsx';
 import { CardSkeleton, FeedSkeleton } from './components/SkeletonLoader.jsx';
 
 // Extract Workspace ID from URL, LocalStorage, or auto-generate a persistent unique ID per user/browser
@@ -594,6 +595,12 @@ export default function App() {
                 <WarRoomView
                   competitors={competitors}
                   profile={profile}
+                />
+              )}
+
+              {activeTab === 'predictor' && (
+                <PredictorView
+                  onLaunchOracle={() => setIsOracleOpen(true)}
                 />
               )}
 

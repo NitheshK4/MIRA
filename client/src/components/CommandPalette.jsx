@@ -11,7 +11,8 @@ import {
   ArrowRight,
   Sparkles,
   Terminal,
-  Code2
+  Code2,
+  TrendingUp
 } from 'lucide-react';
 
 export default function CommandPalette({ 
@@ -81,6 +82,13 @@ export default function CommandPalette({
       subtitle: 'Simulate market moves and predicted competitor reactions',
       icon: LayoutDashboard,
       action: () => { onClose(); onNavigateTab('warroom'); }
+    },
+    {
+      id: 'nav-predictor',
+      title: 'Open Competitor Price Hike & Roadmap Predictor 🔮',
+      subtitle: 'Predict upcoming competitor price hikes, tier inflation, and roadmap leaks',
+      icon: TrendingUp,
+      action: () => { onClose(); onNavigateTab('predictor'); }
     },
     {
       id: 'nav-integrations',

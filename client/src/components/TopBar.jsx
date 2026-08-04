@@ -24,6 +24,8 @@ export default function TopBar({
     settings:  '⚙️  System Config',
     details:   '🔍 Competitor Detail',
     onboarding:'🚀 Setup Context',
+    predictor: '🔮 Roadmap Predictor',
+    integrations: '🔌 SDK & Integrations',
   };
 
   return (

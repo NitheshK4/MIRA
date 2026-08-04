@@ -13,7 +13,8 @@ import {
   Sparkles,
   Plus,
   X,
-  Terminal
+  Terminal,
+  TrendingUp
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -72,6 +73,12 @@ export default function Sidebar({
       label: 'War Room ⚔️', 
       icon: Swords,
       activeClass: 'active-warroom',
+    },
+    { 
+      id: 'predictor', 
+      label: 'Roadmap Predictor 🔮', 
+      icon: TrendingUp,
+      activeClass: 'active-predictor',
     },
     { 
       id: 'integrations', 
