@@ -84,6 +84,43 @@ class TestMiraClient(unittest.TestCase):
         res = self.client.get_changes(limit=5, competitor_id=1)
         self.assertTrue(res["success"])
         self.assertEqual(len(res["changes"]), 1)
+    @patch("urllib.request.urlopen")
+    def test_trigger_scrape(self, mock_urlopen):
+        mock_resp = MagicMock()
+        mock_resp.status = 200
+        mock_resp.read.return_value = json.dumps({
+            "success": True,
+            "message": "Check enqueued successfully."
+        }).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        res = self.client.trigger_scrape(1)
+        self.assertTrue(res["success"])
+
+    @patch("urllib.request.urlopen")
+    def test_get_battlecards(self, mock_urlopen):
+        mock_resp = MagicMock()
+        mock_resp.status = 200
+        mock_resp.read.return_value = json.dumps([
+            {"competitor_id": 1, "name": "Acme Corp", "overview": "Test overview"}
+        ]).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        res = self.client.get_battlecards()
+        self.assertEqual(len(res), 1)
+
+    @patch("urllib.request.urlopen")
+    def test_simulate_war_room(self, mock_urlopen):
+        mock_resp = MagicMock()
+        mock_resp.status = 200
+        mock_resp.read.return_value = json.dumps({
+            "success": True,
+            "scenario": "Price cut 30%"
+        }).encode("utf-8")
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        res = self.client.simulate_war_room("Price cut 30%")
+        self.assertTrue(res["success"])
 
 
 if __name__ == "__main__":
