@@ -426,93 +426,95 @@ export default function PredictorView({ onLaunchOracle }) {
       {isAddModalOpen && (
         <div className="mira-modal-backdrop animate-fade-in" onClick={() => setIsAddModalOpen(false)}>
           <div 
-            className="mira-glass p-8 rounded-3xl border-2 border-cyan-500/50 shadow-2xl max-w-xl w-full space-y-6 bg-[#0B0F1D]"
+            className="mira-glass mira-modal-card border-2 border-violet-500/50 shadow-2xl p-8 max-w-xl w-full"
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <h3 className="text-xl font-black text-white font-['Outfit'] flex items-center gap-2">
-                <Plus className="w-5 h-5 text-cyan-400" /> Add Custom Price Hike Prediction
-              </h3>
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/15">
+              <h2 className="text-2xl font-black text-white font-['Outfit'] flex items-center gap-3">
+                <Plus className="w-6 h-6 text-cyan-400" />
+                ADD CUSTOM PRICE HIKE PREDICTION
+              </h2>
               <button 
                 onClick={() => setIsAddModalOpen(false)}
-                className="crossmark-btn p-1.5 rounded-lg text-slate-400 hover:text-white"
+                className="crossmark-btn text-slate-400 hover:text-white p-1.5 rounded-lg transition-all"
+                aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
 
-            <form onSubmit={handleAddPrediction} className="space-y-4">
-              <div>
-                <label className="text-xs font-bold text-slate-300 uppercase">Competitor Name</label>
+            <form onSubmit={handleAddPrediction} className="space-y-5">
+              <div className="mira-form-group">
+                <label className="mira-form-label text-sm font-extrabold text-slate-300">COMPETITOR NAME</label>
                 <input 
                   type="text"
                   required
                   placeholder="e.g. Highspot or Salesforce"
                   value={newPred.competitor}
                   onChange={e => setNewPred({ ...newPred, competitor: e.target.value })}
-                  className="w-full bg-[#12182B] border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 mt-1 focus:border-cyan-400 focus:outline-none"
+                  className="mira-input text-base font-semibold py-3 px-4"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-slate-300 uppercase">Risk Level (% Risk)</label>
+                <div className="mira-form-group">
+                  <label className="mira-form-label text-sm font-extrabold text-slate-300">RISK LEVEL (% RISK)</label>
                   <input 
                     type="number"
                     min="10"
                     max="99"
                     value={newPred.priceHikeRisk}
                     onChange={e => setNewPred({ ...newPred, priceHikeRisk: parseInt(e.target.value, 10) })}
-                    className="w-full bg-[#12182B] border border-slate-700 rounded-xl p-3 text-xs text-white mt-1 focus:border-cyan-400 focus:outline-none"
+                    className="mira-input text-base font-semibold py-3 px-4"
                   />
                 </div>
 
-                <div>
-                  <label className="text-xs font-bold text-slate-300 uppercase">Expected Hike</label>
+                <div className="mira-form-group">
+                  <label className="mira-form-label text-sm font-extrabold text-slate-300">EXPECTED HIKE</label>
                   <input 
                     type="text"
                     value={newPred.expectedIncrease}
                     onChange={e => setNewPred({ ...newPred, expectedIncrease: e.target.value })}
-                    className="w-full bg-[#12182B] border border-slate-700 rounded-xl p-3 text-xs text-white mt-1 focus:border-cyan-400 focus:outline-none"
+                    className="mira-input text-base font-semibold py-3 px-4"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-300 uppercase">Pre-Emptive Closing Script</label>
+              <div className="mira-form-group">
+                <label className="mira-form-label text-sm font-extrabold text-slate-300">PRE-EMPTIVE CLOSING SCRIPT</label>
                 <textarea 
                   rows={3}
                   placeholder="Type the exact script sales reps should read..."
                   value={newPred.salesPlaybook}
                   onChange={e => setNewPred({ ...newPred, salesPlaybook: e.target.value })}
-                  className="w-full bg-[#12182B] border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 mt-1 focus:border-cyan-400 focus:outline-none"
+                  className="mira-input text-base font-semibold py-3 px-4"
                 />
               </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-300 uppercase">Landmine Question</label>
+              <div className="mira-form-group">
+                <label className="mira-form-label text-sm font-extrabold text-slate-300">LANDMINE QUESTION</label>
                 <input 
                   type="text"
                   placeholder="Question reps should ask the buyer..."
                   value={newPred.landmineQuestion}
                   onChange={e => setNewPred({ ...newPred, landmineQuestion: e.target.value })}
-                  className="w-full bg-[#12182B] border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 mt-1 focus:border-cyan-400 focus:outline-none"
+                  className="mira-input text-base font-semibold py-3 px-4"
                 />
               </div>
 
-              <div className="pt-3 flex items-center justify-end gap-3">
+              <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-bold text-slate-300 hover:text-white"
+                  className="mira-btn mira-btn-secondary px-6 py-3 text-xs font-black uppercase"
                 >
-                  Cancel
+                  CANCEL
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-cyan-500 text-black text-xs font-black uppercase tracking-wider hover:bg-cyan-400 transition-all shadow-md"
+                  className="mira-btn mira-btn-primary px-6 py-3 text-xs font-black uppercase shadow-lg"
                 >
-                  Save Forecast
+                  SAVE FORECAST
                 </button>
               </div>
             </form>
