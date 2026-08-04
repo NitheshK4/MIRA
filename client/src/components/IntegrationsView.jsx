@@ -1,272 +1,318 @@
 import React, { useState } from 'react';
 import { 
-  Code2, 
   Terminal, 
   Copy, 
   Check, 
   Key, 
-  ExternalLink, 
   Sparkles, 
   ShieldCheck, 
   Zap, 
   Globe, 
-  Activity, 
-  Layers, 
-  BookOpen, 
   Server, 
   Webhook, 
   Cpu, 
   FileCode,
-  ArrowRight
+  BookOpen
 } from 'lucide-react';
 
 export default function IntegrationsView({ workspaceId, settings }) {
-  const [activeLang, setActiveLang] = useState('nodejs'); // 'nodejs', 'python', 'go', 'php'
-  const [activeTab, setActiveTab] = useState('scrape'); // 'scrape', 'embeddings', 'warroom', 'webhooks'
+  const [activeLang, setActiveLang] = useState('php'); // 'php', 'python', 'go'
+  const [activeTab, setActiveTab] = useState('competitors'); // 'competitors', 'changes', 'battlecards', 'warroom', 'webhooks'
   const [copiedSnippet, setCopiedSnippet] = useState(false);
   const [copiedApiKey, setCopiedApiKey] = useState(false);
   const [copiedWsId, setCopiedWsId] = useState(false);
 
-  const apiKey = settings?.extensionApiKey || 'mira_live_sk_9f82a104b6c3e218';
+  const apiKey = settings?.api_key || 'NOT_CONFIGURED';
   const serverUrl = window.location.origin;
 
   const languages = [
-    { id: 'nodejs', name: 'Node.js', icon: '🟢', pkg: 'npm install @mira/sdk' },
-    { id: 'python', name: 'Python', icon: '🐍', pkg: 'pip install mira-intel' },
-    { id: 'go', name: 'Go', icon: '🐹', pkg: 'go get github.com/mira/sdk-go' },
-    { id: 'php', name: 'PHP', icon: '🐘', pkg: 'composer require mira/sdk-php' }
+    { id: 'php', name: 'PHP', icon: '🐘', pkg: "require_once 'php/MiraClient.php';" },
+    { id: 'python', name: 'Python', icon: '🐍', pkg: 'from python.mira_sdk import MiraClient' },
+    { id: 'go', name: 'Go', icon: '🐹', pkg: 'import "mira"' }
   ];
 
   const useCases = [
-    { id: 'scrape', name: '1. Scrape & Detect Changes', icon: Globe },
-    { id: 'embeddings', name: '2. Semantic Similarity', icon: Cpu },
-    { id: 'warroom', name: '3. War Room Simulation', icon: Zap },
-    { id: 'webhooks', name: '4. Webhook Event Handler', icon: Webhook }
+    { id: 'competitors', name: '1. Competitors & Scan', icon: Globe },
+    { id: 'changes', name: '2. Intelligence Feed', icon: Cpu },
+    { id: 'battlecards', name: '3. Battlecards', icon: ShieldCheck },
+    { id: 'warroom', name: '4. War Room Simulation', icon: Zap },
+    { id: 'webhooks', name: '5. Outbound Webhook', icon: Webhook }
   ];
 
   const snippets = {
-    nodejs: {
-      scrape: `import { MiraClient } from '@mira/sdk';
+    php: {
+      competitors: `<?php
+require_once 'php/MiraClient.php';
 
-// Initialize MIRA Client with Workspace Credentials
-const mira = new MiraClient({
-  apiKey: process.env.MIRA_API_KEY || '${apiKey}',
-  baseUrl: '${serverUrl}',
-  workspaceId: '${workspaceId}'
-});
+$mira = new MiraClient(
+    '${serverUrl}',
+    '${workspaceId}',
+    '${apiKey}'
+);
 
-// Trigger an Autonomous Scrape & Semantic Change Analysis
-async function monitorCompetitor() {
-  const result = await mira.competitors.scrapeAndAnalyze({
-    url: 'https://competitor.com/pricing',
-    name: 'Competitor X',
-    engine: 'puppeteer', // 'axios' (static HTML) or 'puppeteer' (JS SPA)
-    similarityThreshold: 0.85 // ONNX semantic distance cutoff
-  });
+// 1. List existing competitors
+$competitors = $mira->getCompetitors();
+print_r($competitors);
 
-  if (result.hasSemanticChange) {
-    console.log(\`🚨 High Impact Change (Score: \${result.impactScore}/10):\`);
-    console.log(\`Summary: \${result.summary}\`);
-    console.log(\`Recommendation: \${result.recommendation}\`);
-  } else {
-    console.log('✅ Baseline unchanged (semantic score >= 0.85)');
-  }
-}
+// 2. Add a new competitor target
+$comp = $mira->addCompetitor('Competitor X', 'https://competitor.com/pricing');
+print_r($comp);
 
-monitorCompetitor().catch(console.error);`,
+// 3. Trigger immediate scraper job (POST /api/competitors/:id/scrape)
+if (isset($comp['id'])) {
+    $scrape = $mira->triggerScrape($comp['id']);
+    print_r($scrape);
+}`,
 
-      embeddings: `import { MiraEmbeddings } from '@mira/sdk/ml';
+      changes: `<?php
+require_once 'php/MiraClient.php';
 
-// Local ONNX Sentence Embedding Comparison (Zero Cloud Latency)
-const embedder = new MiraEmbeddings({ model: 'Xenova/all-MiniLM-L6-v2' });
+$mira = new MiraClient(
+    '${serverUrl}',
+    '${workspaceId}',
+    '${apiKey}'
+);
 
-async function checkSemanticDifference() {
-  const v1 = await embedder.embed("Enterprise Tier: $99/mo including unlimited seats");
-  const v2 = await embedder.embed("Enterprise Plan: $99 monthly with unlimited team members");
+// Fetch recent intelligence alerts (GET /api/changes)
+$feed = $mira->getChanges(50);
+$cards = is_array($feed) && isset($feed['changes']) ? $feed['changes'] : $feed;
 
-  const similarity = embedder.cosineSimilarity(v1, v2);
-  console.log(\`Cosine Similarity Score: \${similarity.toFixed(4)}\`); // e.g. 0.9421
-}
+foreach ((array)$cards as $card) {
+    $category = $card['category'] ?? 'Intel';
+    $name = $card['competitor_name'] ?? 'Competitor';
+    $score = $card['impact_score'] ?? 0;
+    $summary = $card['summary'] ?? '';
 
-checkSemanticDifference();`,
+    echo "🚨 [{$category}] {$name} (Impact Score: {$score}/10)\n";
+    echo "Summary: {$summary}\n\n";
+}`,
 
-      warroom: `import { MiraWarRoom } from '@mira/sdk';
+      battlecards: `<?php
+require_once 'php/MiraClient.php';
 
-const warRoom = new MiraWarRoom({ apiKey: '${apiKey}' });
+$mira = new MiraClient(
+    '${serverUrl}',
+    '${workspaceId}',
+    '${apiKey}'
+);
 
-// Run a Game-Theoretic Market Scenario Simulation
-async function simulatePriceMove() {
-  const simulation = await warRoom.simulateScenario({
-    hypothesis: 'Drop pricing by 30% across all mid-market tiers',
-    competitors: ['Rival Corp', 'Acme SaaS'],
-    aggressiveness: 'high'
-  });
+// Retrieve auto-generated sales battlecards (GET /api/battlecards)
+$battlecards = $mira->getBattlecards();
+print_r($battlecards);`,
 
-  console.log(\`Risk Score: \${simulation.riskScore}/10 (\${simulation.threatLevel})\`);
-  console.log('Predicted Competitor Responses:');
-  simulation.responses.forEach(res => {
-    console.log(\`- \${res.competitor}: \${res.action} (\${res.probability}% prob, timeframe: \${res.timeframe})\`);
-  });
-}
+      warroom: `<?php
+require_once 'php/MiraClient.php';
 
-simulatePriceMove();`,
+$mira = new MiraClient(
+    '${serverUrl}',
+    '${workspaceId}',
+    '${apiKey}'
+);
 
-      webhooks: `import express from 'express';
-import { verifyMiraWebhook } from '@mira/sdk/webhooks';
+// Trigger game-theory market scenario simulation (POST /api/war-room/simulate)
+$simulation = $mira->simulateWarRoom('Drop pricing by 30% across all mid-market tiers');
+print_r($simulation);`,
 
-const app = express();
-app.use(express.json());
+      webhooks: `<?php
+// PHP Receiver for MIRA Outbound Webhooks
+$payload = file_get_contents('php://input');
+$event = json_decode($payload, true);
 
-// Express Endpoint for MIRA Real-Time Intel Webhooks
-app.post('/api/webhooks/mira', (req, res) => {
-  const isSignatureValid = verifyMiraWebhook({
-    payload: req.body,
-    signature: req.headers['x-mira-signature'],
-    secret: process.env.MIRA_WEBHOOK_SECRET
-  });
+if ($event && isset($event['intel'])) {
+    $compName = $event['competitor']['name'] ?? 'Unknown';
+    $score = $event['intel']['impact_score'] ?? 0;
+    $summary = $event['intel']['summary'] ?? '';
 
-  if (!isSignatureValid) {
-    return res.status(401).send('Invalid Webhook Signature');
-  }
-
-  const { event, competitor, impactScore, summary } = req.body;
-  if (event === 'intel.high_impact_change') {
-    console.log(\`📢 [\${competitor.name}] New Intel (Impact \${impactScore}): \${summary}\`);
-  }
-
-  res.status(200).send({ received: true });
-});
-
-app.listen(4000, () => console.log('Webhook receiver running on port 4000'));`
+    error_log("📢 [MIRA Webhook] {$compName} - Impact {$score}/10: {$summary}");
+    http_response_code(200);
+    echo json_encode(['received' => true]);
+} else {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid payload']);
+}`
     },
 
     python: {
-      scrape: `from mira import MiraClient
-import os
+      competitors: `from python.mira_sdk import MiraClient
 
-# Initialize MIRA Client
 client = MiraClient(
-    api_key=os.getenv("MIRA_API_KEY", "${apiKey}"),
     base_url="${serverUrl}",
-    workspace_id="${workspaceId}"
+    workspace_id="${workspaceId}",
+    api_key="${apiKey}"
 )
 
-def monitor_competitor():
-    # Trigger Autonomous Scrape & Semantic Change Analysis
-    report = client.competitors.scrape_and_analyze(
-        url="https://competitor.com/pricing",
-        name="Competitor X",
-        engine="puppeteer",
-        similarity_threshold=0.85
-    )
+# 1. Get monitored competitors (GET /api/competitors)
+competitors = client.get_competitors()
+print("Competitors:", competitors)
 
-    if report.has_semantic_change:
-        print(f"🚨 High Impact Change Detected! Score: {report.impact_score}/10")
-        print(f"Summary: {report.summary}")
-        print(f"Action item: {report.recommendation}")
-    else:
-        print("✅ Baseline unchanged")
+# 2. Add a new competitor (POST /api/competitors)
+comp = client.add_competitor(name="Competitor X", url="https://competitor.com/pricing")
+print("Added Competitor:", comp)
 
-if __name__ == "__main__":
-    monitor_competitor()`,
+# 3. Trigger immediate scrape (POST /api/competitors/:id/scrape)
+if "id" in comp:
+    scan = client.trigger_scrape(comp["id"])
+    print("Scrape Status:", scan)`,
 
-      embeddings: `from mira.ml import SentenceEmbedder
+      changes: `from python.mira_sdk import MiraClient
 
-# Local ONNX Embedding Model (MiniLM-L6-v2)
-embedder = SentenceEmbedder(model_name="all-MiniLM-L6-v2")
-
-vec1 = embedder.encode("Enterprise Tier: $99/mo including unlimited seats")
-vec2 = embedder.encode("Enterprise Plan: $99 monthly with unlimited team members")
-
-similarity = embedder.cosine_similarity(vec1, vec2)
-print(f"Cosine Similarity Score: {similarity:.4f}")  # e.g., 0.9421`,
-
-      warroom: `from mira import WarRoomSimulator
-
-war_room = WarRoomSimulator(api_key="${apiKey}")
-
-# Run Game-Theory Market Reaction Simulation
-sim = war_room.simulate(
-    hypothesis="Drop pricing by 30% across all mid-market tiers",
-    aggressiveness="high"
+client = MiraClient(
+    base_url="${serverUrl}",
+    workspace_id="${workspaceId}",
+    api_key="${apiKey}"
 )
 
-print(f"Scenario Risk Score: {sim.risk_score}/10 ({sim.threat_level})")
-print("Counter-Offensive Playbook Steps:")
-for step in sim.playbook:
-    print(f" - [{step['phase']}]: {step['action']}")`,
+# Fetch intelligence change feed (GET /api/changes)
+feed = client.get_changes(limit=50)
+cards = feed.get("changes", feed) if isinstance(feed, dict) else feed
+
+for card in cards:
+    category = card.get("category", "Intel")
+    name = card.get("competitor_name", "Competitor")
+    score = card.get("impact_score", 0)
+    summary = card.get("summary", "")
+    print(f"🚨 [{category}] {name} (Impact: {score}/10)")
+    print(f"Summary: {summary}\n")`,
+
+      battlecards: `from python.mira_sdk import MiraClient
+
+client = MiraClient(
+    base_url="${serverUrl}",
+    workspace_id="${workspaceId}",
+    api_key="${apiKey}"
+)
+
+# Retrieve competitive battlecards (GET /api/battlecards)
+cards = client.get_battlecards()
+print("Battlecards:", cards)`,
+
+      warroom: `from python.mira_sdk import MiraClient
+
+client = MiraClient(
+    base_url="${serverUrl}",
+    workspace_id="${workspaceId}",
+    api_key="${apiKey}"
+)
+
+# Execute War Room game-theory simulation (POST /api/war-room/simulate)
+sim = client.simulate_war_room(scenario="Drop pricing by 30% across all mid-market tiers")
+print("War Room Outcome:", sim)`,
 
       webhooks: `from flask import Flask, request, jsonify
-from mira.webhooks import verify_signature
 
 app = Flask(__name__)
 
 @app.route("/webhooks/mira", methods=["POST"])
-def mira_webhook_handler():
-    signature = request.headers.get("X-Mira-Signature")
-    if not verify_signature(request.data, signature, secret="whsec_mira_123"):
-        return jsonify({"error": "Unauthorized"}), 401
+def handle_mira_webhook():
+    event = request.json
+    if not event or "intel" not in event:
+        return jsonify({"error": "Invalid payload"}), 400
 
-    payload = request.json
-    print(f"Received MIRA event: {payload['event']}")
-    return jsonify({"status": "success"}), 200
+    comp = event.get("competitor", {}).get("name", "Unknown")
+    score = event.get("intel", {}).get("impact_score", 0)
+    summary = event.get("intel", {}).get("summary", "")
+
+    print(f"📢 [MIRA Webhook] {comp} - Impact {score}/10: {summary}")
+    return jsonify({"status": "received"}), 200
 
 if __name__ == "__main__":
     app.run(port=5000)`
     },
 
     go: {
-      scrape: `package main
+      competitors: `package main
 
 import (
 	"context"
 	"fmt"
 	"log"
 
-	"github.com/mira/sdk-go/mira"
+	mira "github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/go"
 )
 
 func main() {
-	client := mira.NewClient(&mira.Config{
-		APIKey:      "${apiKey}",
-		BaseURL:     "${serverUrl}",
-		WorkspaceID: "${workspaceId}",
-	})
+	client := mira.NewClient(
+		"${serverUrl}",
+		mira.WithWorkspaceID("${workspaceId}"),
+		mira.WithAPIKey("${apiKey}"),
+	)
 
 	ctx := context.Background()
-	report, err := client.Competitors.ScrapeAndAnalyze(ctx, mira.ScrapeRequest{
-		URL:                  "https://competitor.com/pricing",
-		Name:                 "Competitor X",
-		Engine:               "puppeteer",
-		SimilarityThreshold: 0.85,
-	})
+
+	// 1. Get competitors (GET /api/competitors)
+	comps, err := client.GetCompetitors(ctx)
 	if err != nil {
-		log.Fatalf("Scrape error: %v", err)
+		log.Fatalf("GetCompetitors error: %v", err)
+	}
+	fmt.Printf("Competitors count: %d\\n", comps.Count)
+
+	// 2. Add competitor (POST /api/competitors)
+	comp, err := client.AddCompetitor(ctx, "Competitor X", "https://competitor.com/pricing")
+	if err != nil {
+		log.Fatalf("AddCompetitor error: %v", err)
+	}
+	fmt.Printf("Added: %+v\\n", comp)
+
+	// 3. Trigger immediate scrape (POST /api/competitors/:id/scrape)
+	scan, err := client.TriggerScrape(ctx, 1)
+	if err != nil {
+		log.Fatalf("TriggerScrape error: %v", err)
+	}
+	fmt.Printf("Scan result: %+v\\n", scan)
+}`,
+
+      changes: `package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	mira "github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/go"
+)
+
+func main() {
+	client := mira.NewClient(
+		"${serverUrl}",
+		mira.WithWorkspaceID("${workspaceId}"),
+		mira.WithAPIKey("${apiKey}"),
+	)
+
+	// Fetch changes feed (GET /api/changes)
+	feed, err := client.GetChanges(context.Background(), 50, nil)
+	if err != nil {
+		log.Fatalf("GetChanges error: %v", err)
 	}
 
-	if report.HasSemanticChange {
-		fmt.Printf("🚨 Change Detected! Impact: %d/10\\n", report.ImpactScore)
-		fmt.Printf("Summary: %s\\n", report.Summary)
-	} else {
-		fmt.Println("✅ No semantic content change detected")
+	for _, card := range feed.Changes {
+		fmt.Printf("🚨 [%s] %s (Impact: %d/10)\\nSummary: %s\\n\\n",
+			card.Category, card.CompetitorName, card.ImpactScore, card.Summary)
 	}
 }`,
 
-      embeddings: `package main
+      battlecards: `package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/mira/sdk-go/embeddings"
+	"log"
+
+	mira "github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/go"
 )
 
 func main() {
-	emb := embeddings.NewEmbedder("all-MiniLM-L6-v2")
+	client := mira.NewClient(
+		"${serverUrl}",
+		mira.WithWorkspaceID("${workspaceId}"),
+		mira.WithAPIKey("${apiKey}"),
+	)
 
-	vecA, _ := emb.Embed("Enterprise Tier: $99/mo including unlimited seats")
-	vecB, _ := emb.Embed("Enterprise Plan: $99 monthly with unlimited team members")
-
-	sim := embeddings.CosineSimilarity(vecA, vecB)
-	fmt.Printf("Cosine Similarity: %.4f\\n", sim)
+	// Get battlecards (GET /api/battlecards)
+	cards, err := client.GetBattlecards(context.Background())
+	if err != nil {
+		log.Fatalf("GetBattlecards error: %v", err)
+	}
+	fmt.Printf("Battlecards count: %d\\n", len(cards.Battlecards))
 }`,
 
       warroom: `package main
@@ -274,35 +320,56 @@ func main() {
 import (
 	"context"
 	"fmt"
-	"github.com/mira/sdk-go/mira"
+	"log"
+
+	mira "github.com/NitheshK4/Autonomous-Competitor-Intelligence-Engine/go"
 )
 
 func main() {
-	client := mira.NewClient(&mira.Config{APIKey: "${apiKey}"})
+	client := mira.NewClient(
+		"${serverUrl}",
+		mira.WithWorkspaceID("${workspaceId}"),
+		mira.WithAPIKey("${apiKey}"),
+	)
 
-	sim, _ := client.WarRoom.Simulate(context.Background(), mira.WarRoomOptions{
-		Hypothesis: "Drop pricing by 30% across all mid-market tiers",
+	// Run War Room simulation (POST /api/war-room/simulate)
+	sim, err := client.SimulateWarRoom(context.Background(), mira.WarRoomRequest{
+		Scenario: "Drop pricing by 30% across all mid-market tiers",
 	})
-
-	fmt.Printf("Risk Score: %d/10 (%s)\\n", sim.RiskScore, sim.ThreatLevel)
+	if err != nil {
+		log.Fatalf("SimulateWarRoom error: %v", err)
+	}
+	fmt.Printf("Simulation result: %+v\\n", sim)
 }`,
 
       webhooks: `package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"github.com/mira/sdk-go/webhooks"
 )
 
+type MiraWebhookPayload struct {
+	Event      string \`json:"event"\`
+	Competitor struct {
+		Name string \`json:"name"\`
+	} \`json:"competitor"\`
+	Intel struct {
+		ImpactScore int    \`json:"impact_score"\`
+		Summary     string \`json:"summary"\`
+	} \`json:"intel"\`
+}
+
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
-	event, err := webhooks.ParseEvent(r, "whsec_mira_123")
-	if err != nil {
-		http.Error(w, "Bad signature", http.StatusUnauthorized)
+	var payload MiraWebhookPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
-	fmt.Printf("Processed event: %s for %s\\n", event.Type, event.CompetitorName)
+	fmt.Printf("📢 [MIRA Webhook] %s - Impact %d/10: %s\\n",
+		payload.Competitor.Name, payload.Intel.ImpactScore, payload.Intel.Summary)
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -310,73 +377,6 @@ func main() {
 	http.HandleFunc("/webhooks/mira", webhookHandler)
 	http.ListenAndServe(":8080", nil)
 }`
-    },
-
-    php: {
-      scrape: `<?php
-
-require 'vendor/autoload.php';
-
-use Mira\\Client\\MiraClient;
-
-$mira = new MiraClient([
-    'api_key'      => '${apiKey}',
-    'base_url'     => '${serverUrl}',
-    'workspace_id' => '${workspaceId}'
-]);
-
-$report = $mira->competitors->scrapeAndAnalyze([
-    'url'                  => 'https://competitor.com/pricing',
-    'name'                 => 'Competitor X',
-    'engine'               => 'puppeteer',
-    'similarityThreshold' => 0.85
-]);
-
-if ($report->hasSemanticChange) {
-    echo "🚨 High Impact Change Score: " . $report->impactScore . "/10\\n";
-    echo "Summary: " . $report->summary . "\\n";
-} else {
-    echo "✅ Baseline unchanged\\n";
-}`,
-
-      embeddings: `<?php
-
-use Mira\\ML\\SentenceEmbedder;
-
-$embedder = new SentenceEmbedder('all-MiniLM-L6-v2');
-
-$v1 = $embedder->embed("Enterprise Tier: $99/mo including unlimited seats");
-$v2 = $embedder->embed("Enterprise Plan: $99 monthly with unlimited team members");
-
-$score = $embedder->cosineSimilarity($v1, $v2);
-echo "Cosine Similarity: " . round($score, 4) . "\\n";`,
-
-      warroom: `<?php
-
-use Mira\\Client\\MiraClient;
-
-$mira = new MiraClient(['api_key' => '${apiKey}']);
-
-$sim = $mira->warRoom->simulateScenario([
-    'hypothesis' => 'Drop pricing by 30% across all mid-market tiers'
-]);
-
-echo "Risk Score: " . $sim->riskScore . "/10 (" . $sim->threatLevel . ")\\n";`,
-
-      webhooks: `<?php
-
-use Mira\\Webhooks\\WebhookValidator;
-
-$payload = file_get_contents('php://input');
-$sig = $_SERVER['HTTP_X_MIRA_SIGNATURE'] ?? '';
-
-if (!WebhookValidator::verify($payload, $sig, 'whsec_mira_123')) {
-    http_response_code(401);
-    exit('Invalid signature');
-}
-
-$data = json_decode($payload, true);
-echo "Handled event: " . $data['event'];`
     }
   };
 
@@ -394,8 +394,8 @@ echo "Handled event: " . $data['event'];`
     }
   };
 
-  const currentSnippet = snippets[activeLang][activeTab];
-  const currentLangObj = languages.find(l => l.id === activeLang);
+  const currentSnippet = snippets[activeLang]?.[activeTab] || '';
+  const currentLangObj = languages.find(l => l.id === activeLang) || languages[0];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -411,14 +411,14 @@ echo "Handled event: " . $data['event'];`
             </h1>
           </div>
           <p className="text-sm text-slate-400 max-w-2xl">
-            Integrate MIRA's autonomous web scraping, ONNX semantic change detection, War Room simulations, and automated battlecards directly into your applications.
+            Integrate MIRA's autonomous web scraping, semantic change feeds, sales battlecards, and War Room strategy simulations directly using supported PHP, Python, and Go SDKs.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <a 
             href="#/docs"
-            onClick={(e) => { e.preventDefault(); alert('Full API Documentation: Refer to README.md and OpenAPI endpoints on server'); }}
+            onClick={(e) => { e.preventDefault(); alert('Refer to README.md for full endpoint specifications.'); }}
             className="mira-btn mira-btn-secondary mira-btn-sm"
           >
             <BookOpen size={14} />
@@ -426,7 +426,7 @@ echo "Handled event: " . $data['event'];`
           </a>
           <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold flex items-center gap-2">
             <ShieldCheck size={14} />
-            <span>v2.0 API Active</span>
+            <span>v2.0 REST API Active</span>
           </div>
         </div>
       </div>
@@ -440,7 +440,7 @@ echo "Handled event: " . $data['event'];`
               <Key size={13} className="text-amber-400" />
               Workspace API Key
             </span>
-            <span className="text-[11px] font-mono text-slate-500">Header: x-api-key / Bearer</span>
+            <span className="text-[11px] font-mono text-slate-500">Header: Authorization Bearer / X-Api-Key</span>
           </div>
           <div className="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono text-xs text-amber-300">
             <span className="truncate max-w-[280px]">{apiKey}</span>
@@ -461,7 +461,7 @@ echo "Handled event: " . $data['event'];`
               <Server size={13} className="text-cyan-400" />
               Active Workspace ID
             </span>
-            <span className="text-[11px] font-mono text-slate-500">Header: x-workspace-id</span>
+            <span className="text-[11px] font-mono text-slate-500">Header: X-Workspace-Id</span>
           </div>
           <div className="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border border-white/5 font-mono text-xs text-cyan-300">
             <span className="truncate">{workspaceId}</span>
@@ -497,13 +497,13 @@ echo "Handled event: " . $data['event'];`
           </div>
 
           <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-slate-400 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5">
-            <span>Package:</span>
+            <span>Import / Include:</span>
             <code className="text-emerald-400 font-bold">{currentLangObj.pkg}</code>
           </div>
         </div>
 
         {/* USE CASE SUB-TABS */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {useCases.map(uc => {
             const Icon = uc.icon;
             return (
@@ -529,9 +529,9 @@ echo "Handled event: " . $data['event'];`
           <div className="flex items-center justify-between px-5 py-3 bg-[#121826] border-b border-white/10 text-xs font-mono text-slate-400">
             <div className="flex items-center gap-2">
               <FileCode size={14} className="text-violet-400" />
-              <span className="text-white font-bold">{currentLangObj.name} SDK Example</span>
+              <span className="text-white font-bold">{currentLangObj.name} SDK Integration Example</span>
               <span>•</span>
-              <span className="text-cyan-400">{activeTab}.{activeLang === 'nodejs' ? 'js' : activeLang === 'python' ? 'py' : activeLang === 'go' ? 'go' : 'php'}</span>
+              <span className="text-cyan-400">{activeTab}.{activeLang === 'python' ? 'py' : activeLang === 'go' ? 'go' : 'php'}</span>
             </div>
 
             <button
@@ -550,8 +550,8 @@ echo "Handled event: " . $data['event'];`
 
           {/* Code Footer info */}
           <div className="px-5 py-2.5 bg-[#090C14] border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Authentication: Bearer Token / x-workspace-id</span>
-            <span>Response: JSON (Structured Output)</span>
+            <span>Auth Header: Authorization: Bearer / X-Workspace-Id</span>
+            <span>Response: Application/JSON</span>
           </div>
         </div>
       </div>
@@ -560,7 +560,7 @@ echo "Handled event: " . $data['event'];`
       <div className="space-y-4">
         <h2 className="text-lg font-bold text-white flex items-center gap-2">
           <Sparkles size={18} className="text-amber-400" />
-          <span>Core SDK Capability Matrix</span>
+          <span>Supported Native SDK Implementations</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -568,9 +568,9 @@ echo "Handled event: " . $data['event'];`
             <div className="w-9 h-9 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 mb-2">
               <Globe size={18} />
             </div>
-            <h3 className="text-sm font-bold text-white">Double-Engine Scraper API</h3>
+            <h3 className="text-sm font-bold text-white">PHP Subsystem (`php/MiraClient.php`)</h3>
             <p className="text-xs text-slate-400">
-              Trigger Axios (static HTML) or Puppeteer (dynamic JavaScript SPA) scraping on demand with auto-cleaning of navigation, headers, and banners.
+              Object-oriented PHP client supporting competitor monitoring, instant scrape triggers, change feeds, battlecard querying, and War Room simulations.
             </p>
           </div>
 
@@ -578,9 +578,9 @@ echo "Handled event: " . $data['event'];`
             <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-2">
               <Cpu size={18} />
             </div>
-            <h3 className="text-sm font-bold text-white">ONNX Embeddings Engine</h3>
+            <h3 className="text-sm font-bold text-white">Python SDK (`python/mira_sdk`)</h3>
             <p className="text-xs text-slate-400">
-              Run client-side or server-side cosine similarity evaluations using lightweight ONNX MiniLM models to filter string noise.
+              Native Python wrapper using standard library `urllib` for zero-dependency integration across data science, automation, and analytics pipelines.
             </p>
           </div>
 
@@ -588,9 +588,9 @@ echo "Handled event: " . $data['event'];`
             <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-2">
               <Zap size={18} />
             </div>
-            <h3 className="text-sm font-bold text-white">War Room & Battlecards</h3>
+            <h3 className="text-sm font-bold text-white">Go Client (`go/mira.go`)</h3>
             <p className="text-xs text-slate-400">
-              Programmatically query LLM battlecards, competitor SWOT analyses, and game-theory counter-offensive simulation playbooks.
+              Fully typed Go package with context cancellation, custom option functions (`WithWorkspaceID`, `WithAPIKey`), and JSON struct unmarshaling.
             </p>
           </div>
         </div>

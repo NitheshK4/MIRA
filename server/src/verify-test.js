@@ -145,9 +145,28 @@ async function runTests() {
 
     // Restore original CRM config
     if (originalCrmConfig) {
-      await db.setSetting('crm_config', originalCrmConfig);
+      await db.setSetting('default', 'crm_config', originalCrmConfig);
     }
     console.log('✅ Test 4 Passed: CRM failure queue, idempotency tracking, and retries work.\n');
+
+    // ----------------------------------------------------
+    // TEST 5: WORKSPACE ISOLATION & SETTINGS SCOPING TESTS
+    // ----------------------------------------------------
+    console.log('Running Test 5: Workspace Isolation & Settings Scoping...');
+    const ws1 = 'workspace_alpha_' + Date.now();
+    const ws2 = 'workspace_beta_' + Date.now();
+
+    await db.setSetting(ws1, 'slack_webhook_url', 'https://hooks.slack.com/services/alpha');
+    await db.setSetting(ws2, 'slack_webhook_url', 'https://hooks.slack.com/services/beta');
+
+    const slack1 = await db.getSetting(ws1, 'slack_webhook_url');
+    const slack2 = await db.getSetting(ws2, 'slack_webhook_url');
+
+    assert.strictEqual(slack1, 'https://hooks.slack.com/services/alpha', 'Workspace Alpha setting must match');
+    assert.strictEqual(slack2, 'https://hooks.slack.com/services/beta', 'Workspace Beta setting must match');
+    assert.notStrictEqual(slack1, slack2, 'Workspace settings must be isolated');
+
+    console.log('✅ Test 5 Passed: Workspace settings scoping and isolation verified.\n');
 
     console.log('==================================================');
     console.log('ALL VERIFICATION TESTS COMPLETED SUCCESSFULLY! 🎉');

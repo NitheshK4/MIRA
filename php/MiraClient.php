@@ -120,6 +120,21 @@ class MiraClient {
     }
 
     /**
+     * Trigger game-theory War Room simulation for a given strategic move/scenario.
+     *
+     * @param string|array $scenario Scenario text description or payload array
+     * @param array|null $competitorIds Optional competitor IDs filter
+     * @return array
+     */
+    public function simulateWarRoom($scenario, ?array $competitorIds = null): array {
+        $payload = is_array($scenario) ? $scenario : ['scenario' => (string)$scenario];
+        if ($competitorIds !== null && !isset($payload['competitor_ids'])) {
+            $payload['competitor_ids'] = $competitorIds;
+        }
+        return $this->request('POST', '/api/war-room/simulate', $payload);
+    }
+
+    /**
      * Helper method to execute cURL HTTP requests against MIRA REST API.
      *
      * @param string $method HTTP method (GET, POST, PUT, DELETE)

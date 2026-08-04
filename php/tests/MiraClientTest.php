@@ -17,10 +17,30 @@ class MiraClientTest {
         echo "===========================================\n\n";
 
         $this->testMiraClientInstantiation();
+        $this->testMiraClientMethods();
         $this->testWarRoomSimulator();
         $this->testBattlecardService();
 
         echo "\n🎉 ALL MIRA PHP TESTS PASSED SUCCESSFULLY!\n";
+    }
+
+    private function testMiraClientMethods(): void {
+        echo "Testing MiraClient Method Interfaces... ";
+        $client = new MiraClient('http://localhost:3000', 'test_workspace', 'test_key');
+        if (
+            method_exists($client, 'getHealth') &&
+            method_exists($client, 'getCompetitors') &&
+            method_exists($client, 'addCompetitor') &&
+            method_exists($client, 'triggerScrape') &&
+            method_exists($client, 'getChanges') &&
+            method_exists($client, 'getBattlecards') &&
+            method_exists($client, 'simulateWarRoom')
+        ) {
+            echo "✅ Passed!\n";
+        } else {
+            echo "❌ Failed!\n";
+            exit(1);
+        }
     }
 
     private function testMiraClientInstantiation(): void {
