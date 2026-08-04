@@ -19,7 +19,9 @@ import {
   Search,
   CheckCircle2,
   Calendar,
-  Layers
+  Layers,
+  Mail,
+  Send
 } from 'lucide-react';
 
 const INITIAL_PREDICTIONS = [
@@ -109,6 +111,42 @@ export default function PredictorView({ onLaunchOracle }) {
   const [copiedId, setCopiedId] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [seatCount, setSeatCount] = useState(20);
+
+  // Email Generator State
+  const [selectedPredForEmail, setSelectedPredForEmail] = useState(null);
+  const [emailProspectName, setEmailProspectName] = useState('Alex Rivers');
+  const [emailCompanyName, setEmailCompanyName] = useState('Acme Corp');
+  const [emailTone, setEmailTone] = useState('Urgent Executive');
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  const getGeneratedEmail = () => {
+    if (!selectedPredForEmail) return { subject: '', body: '' };
+
+    const comp = selectedPredForEmail.competitor;
+    const hike = selectedPredForEmail.expectedIncrease;
+    const windowText = selectedPredForEmail.predictedWindow;
+
+    const subject = `[Urgent Rate Lock] Avoiding ${comp}'s Upcoming ${hike} Price Adjustment for ${emailCompanyName}`;
+    
+    let body = `Hi ${emailProspectName},\n\n`;
+    
+    if (emailTone === 'Urgent Executive') {
+      body += `Our market intelligence telemetry indicates that ${comp} is rolling out a ${hike} price adjustment on their core tiers within ${windowText}.\n\n`;
+      body += `If your team at ${emailCompanyName} is currently evaluating ${comp} or reviewing contract renewals, I want to offer an executive pre-emptive rate lock. By securing your agreement with us this month, we will guarantee fixed flat-rate pricing for 24 months with zero mandatory onboarding fees.\n\n`;
+      body += `Would you be open to a brief 10-minute call this Thursday to lock in your rates before their price hike takes effect?\n\nBest regards,\nSales Strategy Team`;
+    } else if (emailTone === 'CFO Financial Security') {
+      body += `As you finalize budget allocations for ${emailCompanyName}, I wanted to bring an important pricing update to your attention regarding ${comp}.\n\n`;
+      body += `According to historical tier telemetry, ${comp} is projected to bump tier rates by ${hike}. For a growing team, this represents a significant unbudgeted expense bump.\n\n`;
+      body += `We are currently offering executive price protection—allowing ${emailCompanyName} to lock in a 2-year fixed pricing contract with 0 contact overage fees. Attached is a breakdown of your projected 3-year savings.\n\n`;
+      body += `Let me know if you have 10 minutes for a financial briefing this week.\n\nBest regards,\nFinance & Strategy Team`;
+    } else {
+      body += `Hope you're having a great week! I noticed ${emailCompanyName} is currently reviewing sales and intelligence platforms.\n\n`;
+      body += `Quick heads up: market data indicates ${comp} is planning a ${hike} rate increase in ${windowText}.\n\n`;
+      body += `We'd love to help you lock in a locked-in rate today so your team avoids their upcoming price inflation.\n\nLet me know if you'd like a quick demo!\n\nBest,\nGrowth Team`;
+    }
+
+    return { subject, body };
+  };
 
   // New Custom Prediction Form State
   const [newPred, setNewPred] = useState({
@@ -397,13 +435,23 @@ export default function PredictorView({ onLaunchOracle }) {
                   <FileText className="w-4 h-4 text-cyan-400" /> Pre-Emptive Deal Closing Script
                 </h4>
 
-                <button
-                  onClick={() => handleCopyPlaybook(pred.salesPlaybook, pred.id)}
-                  className="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30 text-xs font-extrabold flex items-center gap-2 transition-all shadow-sm"
-                >
-                  {copiedId === pred.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedId === pred.id ? 'Copied Script!' : 'Copy Script'}</span>
-                </button>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={() => setSelectedPredForEmail(pred)}
+                    className="px-3.5 py-1.5 rounded-xl bg-violet-600/25 border border-violet-500/50 text-violet-200 hover:bg-violet-600/40 text-xs font-extrabold flex items-center gap-2 transition-all shadow-sm"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-violet-400" />
+                    <span>Generate Pre-Emptive Email ✉️</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleCopyPlaybook(pred.salesPlaybook, pred.id)}
+                    className="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30 text-xs font-extrabold flex items-center gap-2 transition-all shadow-sm"
+                  >
+                    {copiedId === pred.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedId === pred.id ? 'Copied Script!' : 'Copy Script'}</span>
+                  </button>
+                </div>
               </div>
 
               <pre className="text-xs text-slate-200 whitespace-pre-wrap font-sans leading-relaxed bg-[#060914] p-4 rounded-xl border border-slate-800/80">
@@ -518,6 +566,119 @@ export default function PredictorView({ onLaunchOracle }) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Pre-Emptive Email Generator Modal */}
+      {selectedPredForEmail && (
+        <div className="mira-modal-backdrop animate-fade-in" onClick={() => setSelectedPredForEmail(null)}>
+          <div 
+            className="mira-glass mira-modal-card border-2 border-violet-500/50 shadow-2xl p-8 max-w-2xl w-full"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/15">
+              <h2 className="text-2xl font-black text-white font-['Outfit'] flex items-center gap-3">
+                <Mail className="w-6 h-6 text-violet-400" />
+                PRE-EMPTIVE PROSPECT EMAIL GENERATOR
+              </h2>
+              <button 
+                onClick={() => setSelectedPredForEmail(null)}
+                className="crossmark-btn text-slate-400 hover:text-white p-1.5 rounded-lg transition-all"
+                aria-label="Close"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="mira-form-group">
+                  <label className="mira-form-label text-sm font-extrabold text-slate-300">PROSPECT / BUYER NAME</label>
+                  <input 
+                    type="text"
+                    value={emailProspectName}
+                    onChange={e => setEmailProspectName(e.target.value)}
+                    className="mira-input text-base font-semibold py-3 px-4"
+                    placeholder="e.g. Alex Rivers"
+                  />
+                </div>
+
+                <div className="mira-form-group">
+                  <label className="mira-form-label text-sm font-extrabold text-slate-300">PROSPECT COMPANY</label>
+                  <input 
+                    type="text"
+                    value={emailCompanyName}
+                    onChange={e => setEmailCompanyName(e.target.value)}
+                    className="mira-input text-base font-semibold py-3 px-4"
+                    placeholder="e.g. Acme Corp"
+                  />
+                </div>
+              </div>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-sm font-extrabold text-slate-300">EMAIL STRATEGY TONE</label>
+                <div className="flex gap-2 flex-wrap">
+                  {['Urgent Executive', 'CFO Financial Security', 'Consultative ROI'].map(tone => (
+                    <button
+                      key={tone}
+                      type="button"
+                      onClick={() => setEmailTone(tone)}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all ${
+                        emailTone === tone 
+                          ? 'bg-violet-600 text-white border border-violet-400 shadow-md' 
+                          : 'bg-[#12182B] text-slate-300 border border-slate-700 hover:border-slate-500'
+                      }`}
+                    >
+                      {tone}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-sm font-extrabold text-slate-300">GENERATED EMAIL SUBJECT</label>
+                <input 
+                  type="text"
+                  readOnly
+                  value={getGeneratedEmail().subject}
+                  className="mira-input text-sm font-bold py-2.5 px-4 text-cyan-300 bg-[#090D1A]"
+                />
+              </div>
+
+              <div className="mira-form-group">
+                <label className="mira-form-label text-sm font-extrabold text-slate-300">GENERATED EMAIL BODY</label>
+                <textarea 
+                  rows={8}
+                  readOnly
+                  value={getGeneratedEmail().body}
+                  className="mira-input text-xs font-mono py-3 px-4 leading-relaxed text-slate-200 bg-[#090D1A]"
+                />
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/10 flex-wrap">
+                <a
+                  href={`mailto:?subject=${encodeURIComponent(getGeneratedEmail().subject)}&body=${encodeURIComponent(getGeneratedEmail().body)}`}
+                  className="mira-btn mira-btn-secondary px-6 py-3 text-xs font-black uppercase flex items-center gap-2"
+                >
+                  <Send className="w-4 h-4" /> OPEN IN EMAIL CLIENT
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const fullText = `Subject: ${getGeneratedEmail().subject}\n\n${getGeneratedEmail().body}`;
+                    navigator.clipboard.writeText(fullText);
+                    setEmailCopied(true);
+                    setTimeout(() => setEmailCopied(false), 2000);
+                  }}
+                  className="mira-btn mira-btn-primary px-6 py-3 text-xs font-black uppercase shadow-lg flex items-center gap-2"
+                >
+                  {emailCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  <span>{emailCopied ? 'COPIED TO CLIPBOARD!' : 'COPY EMAIL TEXT'}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
