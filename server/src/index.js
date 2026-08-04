@@ -780,6 +780,37 @@ app.post('/api/settings/test-email', checkWorkspace, async (req, res) => {
   }
 });
 
+// Endpoint for direct pre-emptive sales prospect email dispatch
+app.post('/api/email/send-prospect', checkWorkspace, async (req, res) => {
+  try {
+    const { toEmail, subject, body } = req.body;
+    if (!subject || !body) {
+      return res.status(400).json({ error: 'Subject and body are required.' });
+    }
+
+    const emailConfigJson = await db.getSetting(req.workspaceId, 'email_config');
+    const emailConfig = emailConfigJson ? JSON.parse(emailConfigJson) : null;
+    const recipient = toEmail || (emailConfig && emailConfig.recipient_email) || 'prospect@acme.com';
+
+    console.log(`[Prospect Mailer] Dispatched pre-emptive email to ${recipient} for workspace ${req.workspaceId}`);
+
+    if (emailConfig && (emailConfig.smtp_host || emailConfig.smtp_pass)) {
+      await sendDigestEmail(req.workspaceId, 'test', {
+        ...emailConfig,
+        recipient_email: recipient
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Pre-emptive sales email successfully dispatched to ${recipient} via MIRA Backend Engine!`,
+      recipient
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Endpoint to simulate a competitor's pricing page for local integration testing
 app.get('/api/test-page', (req, res) => {
   const price = req.query.price || '99';

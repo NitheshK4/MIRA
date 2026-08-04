@@ -116,8 +116,11 @@ export default function PredictorView({ onLaunchOracle }) {
   const [selectedPredForEmail, setSelectedPredForEmail] = useState(null);
   const [emailProspectName, setEmailProspectName] = useState('Alex Rivers');
   const [emailCompanyName, setEmailCompanyName] = useState('Acme Corp');
+  const [prospectEmail, setProspectEmail] = useState('alex@acme.com');
   const [emailTone, setEmailTone] = useState('Urgent Executive');
   const [emailCopied, setEmailCopied] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailSentMessage, setEmailSentMessage] = useState(null);
 
   const getGeneratedEmail = () => {
     if (!selectedPredForEmail) return { subject: '', body: '' };
@@ -146,6 +149,40 @@ export default function PredictorView({ onLaunchOracle }) {
     }
 
     return { subject, body };
+  };
+
+  const handleOpenMailto = (e) => {
+    e.preventDefault();
+    const { subject, body } = getGeneratedEmail();
+    const mailtoUrl = `mailto:${encodeURIComponent(prospectEmail || '')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoUrl, '_self');
+  };
+
+  const handleSendViaBackend = async () => {
+    const { subject, body } = getGeneratedEmail();
+    try {
+      setSendingEmail(true);
+      setEmailSentMessage(null);
+      const res = await fetch('/api/email/send-prospect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          toEmail: prospectEmail,
+          subject,
+          body
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setEmailSentMessage(`✅ ${data.message}`);
+      } else {
+        setEmailSentMessage(`⚠️ ${data.error || 'Failed to dispatch email.'}`);
+      }
+    } catch (err) {
+      setEmailSentMessage(`⚠️ Connection error: ${err.message}`);
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   // New Custom Prediction Form State
@@ -592,7 +629,7 @@ export default function PredictorView({ onLaunchOracle }) {
             </div>
 
             <div className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="mira-form-group">
                   <label className="mira-form-label text-sm font-extrabold text-slate-300">PROSPECT / BUYER NAME</label>
                   <input 
@@ -612,6 +649,17 @@ export default function PredictorView({ onLaunchOracle }) {
                     onChange={e => setEmailCompanyName(e.target.value)}
                     className="mira-input text-base font-semibold py-3 px-4"
                     placeholder="e.g. Acme Corp"
+                  />
+                </div>
+
+                <div className="mira-form-group">
+                  <label className="mira-form-label text-sm font-extrabold text-slate-300">RECIPIENT EMAIL ADDRESS</label>
+                  <input 
+                    type="email"
+                    value={prospectEmail}
+                    onChange={e => setProspectEmail(e.target.value)}
+                    className="mira-input text-base font-semibold py-3 px-4"
+                    placeholder="e.g. alex@acme.com"
                   />
                 </div>
               </div>
@@ -649,20 +697,43 @@ export default function PredictorView({ onLaunchOracle }) {
               <div className="mira-form-group">
                 <label className="mira-form-label text-sm font-extrabold text-slate-300">GENERATED EMAIL BODY</label>
                 <textarea 
-                  rows={8}
+                  rows={7}
                   readOnly
                   value={getGeneratedEmail().body}
                   className="mira-input text-xs font-mono py-3 px-4 leading-relaxed text-slate-200 bg-[#090D1A]"
                 />
               </div>
 
+              {emailSentMessage && (
+                <div className={`p-3 rounded-xl border text-xs font-bold ${
+                  emailSentMessage.startsWith('✅') 
+                    ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' 
+                    : 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                }`}>
+                  {emailSentMessage}
+                </div>
+              )}
+
               <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/10 flex-wrap">
-                <a
-                  href={`mailto:?subject=${encodeURIComponent(getGeneratedEmail().subject)}&body=${encodeURIComponent(getGeneratedEmail().body)}`}
-                  className="mira-btn mira-btn-secondary px-6 py-3 text-xs font-black uppercase flex items-center gap-2"
+                <button
+                  type="button"
+                  onClick={handleOpenMailto}
+                  className="mira-btn mira-btn-secondary px-5 py-3 text-xs font-black uppercase flex items-center gap-2"
+                  title="Opens your desktop/browser mail app with pre-filled subject & body"
                 >
-                  <Send className="w-4 h-4" /> OPEN IN EMAIL CLIENT
-                </a>
+                  <Send className="w-4 h-4 text-cyan-400" /> OPEN IN EMAIL CLIENT
+                </button>
+
+                <button
+                  type="button"
+                  disabled={sendingEmail}
+                  onClick={handleSendViaBackend}
+                  className="mira-btn mira-btn-secondary px-5 py-3 text-xs font-black uppercase flex items-center gap-2 border-violet-500/50 text-violet-200 hover:bg-violet-600/30"
+                  title="Sends email directly from MIRA Backend Engine using SMTP/Resend"
+                >
+                  {sendingEmail ? <RefreshCw className="w-4 h-4 animate-spin text-violet-400" /> : <Mail className="w-4 h-4 text-violet-400" />}
+                  <span>{sendingEmail ? 'DISPATCHING...' : 'SEND VIA BACKEND ENGINE 🚀'}</span>
+                </button>
 
                 <button
                   type="button"
