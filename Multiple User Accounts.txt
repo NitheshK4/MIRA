@@ -1,0 +1,10 @@
+SecureVault
+│
+├── User 1
+│   ├── Gmail
+│   ├── Instagram
+│   └── GitHub
+│
+├── User 2
+│   ├── Facebook
+│   └── Bank
