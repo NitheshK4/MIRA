@@ -120,6 +120,57 @@ Ask MIRA Oracle anything — get instant competitive intelligence, pricing strat
 </tr>
 <tr>
 <td>
+---
+
+###  🧠 Intelligence Lifecycle
+
+This fits MIRA particularly well.
+
+```markdown
+## 🧠 Intelligence Lifecycle
+
+MIRA transforms raw competitor activity into actionable strategic intelligence.
+
+```text
+┌──────────────┐
+│ Competitor   │
+│ Website      │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ Web Scraping │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ Content      │
+│ Normalization│
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ Semantic     │
+│ Detection    │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ Impact       │
+│ Analysis     │
+└──────┬───────┘
+       ↓
+┌──────────────┐
+│ Battlecard   │
+│ Generation   │
+└──────┬───────┘
+       ↓
+┌─────────────────────────────┐
+│ Strategic Intelligence     │
+├─────────────────────────────┤
+│ 🔮 Oracle                  │
+│ ⚔️ War Room                │
+│ 📢 Alerts                  │
+│ 📓 CRM                     │
+└─────────────────────────────┘
+
+
 
 **📢 Multi-Channel Alerts**<br/>
 Slack (instant, high-impact ≥ 8), Email (periodic digest), Notion/Airtable (every change logged).
