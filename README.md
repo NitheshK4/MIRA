@@ -1127,3 +1127,4 @@ Licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 <sub>🔮 MIRA Oracle • ⚔️ War Room Simulator • 🃏 Auto-Battlecards • 🧠 Semantic Intelligence • 🕸️ Smart Scraping</sub>
 
 </div>
+  give me some separate thing to add for this read me

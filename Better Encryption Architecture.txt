@@ -1,0 +1,11 @@
+Master Password
+       ↓
+PBKDF2 Key Derivation
+       ↓
+Encryption Key
+       ↓
+AES-256-GCM
+       ↓
+Encrypted Credentials
+       ↓
+SQLite
