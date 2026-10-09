@@ -1,0 +1,968 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MIRA - AI-powered market intelligence and competitor monitoring platform.">
+  <title>MIRA | Market Intelligence & Research Automation</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --bg: #080b14;
+      --panel: #111625;
+      --panel-light: #171d30;
+      --text: #f5f7ff;
+      --muted: #9ca8c3;
+      --purple: #a78bfa;
+      --blue: #60a5fa;
+      --border: rgba(255,255,255,.09);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 85px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .container {
+      width: min(1120px, 90%);
+      margin: auto;
+    }
+
+    /* Navigation */
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8,11,20,.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      min-height: 72px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 26px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: .88rem;
+      color: var(--muted);
+      transition: .2s;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .menu-btn {
+      display: none;
+      color: white;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 11px;
+      cursor: pointer;
+    }
+
+    /* Hero */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 105px 0 90px;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 600px;
+      height: 450px;
+      left: 50%;
+      top: -180px;
+      transform: translateX(-50%);
+      background: #7445d6;
+      opacity: .17;
+      filter: blur(130px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      border: 1px solid rgba(167,139,250,.35);
+      background: rgba(167,139,250,.09);
+      color: #c4b5fd;
+      padding: 7px 15px;
+      border-radius: 30px;
+      font-size: .78rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: clamp(2.7rem, 7vw, 5rem);
+      line-height: 1.12;
+      letter-spacing: -3px;
+      margin-bottom: 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #c4b5fd, #60a5fa, #f0abfc);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 690px;
+      margin: 0 auto 30px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: .92rem;
+      transition: transform .2s, opacity .2s;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(100deg, #8b5cf6, #4f83f1);
+      color: white;
+      border: none;
+    }
+
+    .btn-secondary {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+
+    /* Dashboard preview */
+
+    .dashboard {
+      margin-top: 65px;
+      text-align: left;
+      background: #0e1321;
+      border: 1px solid rgba(167,139,250,.23);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 25px 90px rgba(0,0,0,.4);
+    }
+
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 17px 22px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .dash-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dash-dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #a78bfa;
+    }
+
+    .dash-dots span:nth-child(2) {
+      background: #60a5fa;
+    }
+
+    .dash-dots span:nth-child(3) {
+      background: #34d399;
+    }
+
+    .live {
+      color: #34d399;
+      font-size: .78rem;
+    }
+
+    .dash-body {
+      padding: 25px;
+    }
+
+    .dash-heading {
+      margin-bottom: 22px;
+    }
+
+    .dash-heading h3 {
+      font-size: 1.15rem;
+    }
+
+    .dash-heading p {
+      font-size: .85rem;
+      margin: 0;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .stat small {
+      color: var(--muted);
+    }
+
+    .stat h3 {
+      font-size: 1.7rem;
+      margin: 6px 0;
+    }
+
+    .stat .change {
+      font-size: .76rem;
+      color: #34d399;
+    }
+
+    .intel-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .intel-item strong {
+      display: block;
+      font-size: .9rem;
+    }
+
+    .intel-item small {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .score {
+      background: rgba(248,113,113,.12);
+      color: #fca5a5;
+      padding: 4px 10px;
+      border-radius: 7px;
+      white-space: nowrap;
+      font-size: .8rem;
+    }
+
+    /* Common sections */
+
+    section {
+      padding: 85px 0;
+    }
+
+    .section-head {
+      max-width: 700px;
+      margin: 0 auto 45px;
+      text-align: center;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1.25;
+      margin-bottom: 15px;
+      letter-spacing: -1px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, var(--panel), #0d1120);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 25px;
+      transition: transform .25s, border-color .25s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(167,139,250,.5);
+    }
+
+    .icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(167,139,250,.12);
+      font-size: 1.4rem;
+      margin-bottom: 19px;
+    }
+
+    .card h3 {
+      font-size: 1.08rem;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    /* Workflow */
+
+    .workflow {
+      background: rgba(255,255,255,.015);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+    }
+
+    .step {
+      text-align: center;
+      padding: 22px 12px;
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      margin: 0 auto 15px;
+      border: 1px solid rgba(167,139,250,.5);
+      border-radius: 50%;
+      background: rgba(167,139,250,.1);
+      color: #c4b5fd;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      font-size: .98rem;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    /* Technology */
+
+    .tech-list {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tech {
+      padding: 10px 17px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: #d7def1;
+      font-size: .88rem;
+    }
+
+    /* CTA */
+
+    .cta {
+      padding: 0 0 90px;
+    }
+
+    .cta-box {
+      text-align: center;
+      padding: 55px 25px;
+      border: 1px solid rgba(167,139,250,.25);
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse at top, rgba(124,58,237,.2), transparent 65%),
+        var(--panel);
+    }
+
+    .cta-box h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: 12px;
+    }
+
+    .cta-box p {
+      color: var(--muted);
+      margin-bottom: 25px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 850px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .steps {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        padding: 20px 5%;
+        background: #0b0f1b;
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hero {
+        padding: 75px 0 60px;
+      }
+
+      h1 {
+        letter-spacing: -1.5px;
+      }
+
+      section {
+        padding: 65px 0;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dash-body {
+        padding: 16px;
+      }
+
+      .intel-item strong {
+        font-size: .8rem;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="#home" class="logo">MIRA<span>.</span></a>
+
+      <button class="menu-btn" id="menuBtn"
+        aria-label="Toggle navigation" aria-expanded="false">
+        ☰
+      </button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#technology">Technology</a>
+        <a href="#about">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-content">
+
+        <span class="eyebrow">
+          ✦ AI-Powered Competitive Intelligence
+        </span>
+
+        <h1>
+          Turn Market Signals<br>
+          Into <span class="gradient-text">Smart Decisions.</span>
+        </h1>
+
+        <p>
+          MIRA (Market Intelligence & Research Automation) helps businesses
+          monitor competitors, understand market changes, evaluate business
+          impact, and generate actionable strategies using AI.
+        </p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="#features">
+            Explore Features →
+          </a>
+
+          <a class="btn btn-secondary"
+             href="https://github.com/NitheshK4/MIRA/tree/Bevinto"
+             target="_blank" rel="noopener noreferrer">
+            View GitHub ↗
+          </a>
+        </div>
+
+        <!-- Illustrative dashboard preview -->
+        <div class="dashboard">
+          <div class="dash-top">
+            <div class="dash-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="live">● Intelligence Dashboard</span>
+          </div>
+
+          <div class="dash-body">
+            <div class="dash-heading">
+              <h3>Competitive Intelligence Overview</h3>
+              <p>A sample view of the MIRA intelligence workspace</p>
+            </div>
+
+            <div class="stats">
+              <div class="stat">
+                <small>Tracked Competitors</small>
+                <h3>12</h3>
+                <span class="change">Monitoring overview</span>
+              </div>
+
+              <div class="stat">
+                <small>Intel Signals</small>
+                <h3>48</h3>
+                <span class="change">Sample activity</span>
+              </div>
+
+              <div class="stat">
+                <small>High Impact</small>
+                <h3>05</h3>
+                <span class="change">Sample alerts</span>
+              </div>
+            </div>
+
+            <div class="intel-item">
+              <div>
+                <strong>Competitor Pricing Update</strong>
+                <small>Pricing intelligence · Sample entry</small>
+              </div>
+              <span class="score">Impact 9/10</span>
+            </div>
+
+            <div class="intel-item">
+              <div>
+                <strong>New Product Feature</strong>
+                <small>Product intelligence · Sample entry</small>
+              </div>
+              <span class="score">Impact 8/10</span>
+            </div>
+
+            <div class="intel-item">
+              <div>
+                <strong>Website Content Change</strong>
+                <small>Market monitoring · Sample entry</small>
+              </div>
+              <span class="score">Impact 6/10</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">CORE CAPABILITIES</span>
+          <h2>Competitive Intelligence, <span class="gradient-text">Reimagined.</span></h2>
+          <p>
+            Transform competitor website changes into meaningful business
+            insights with automated monitoring and AI-assisted analysis.
+          </p>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <div class="icon">🔍</div>
+            <h3>Intelligent Monitoring</h3>
+            <p>
+              Monitor competitor websites using Axios and Puppeteer to
+              collect information from static and dynamic web pages.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🧠</div>
+            <h3>Semantic Change Detection</h3>
+            <p>
+              Use ONNX sentence embeddings and similarity comparison to
+              identify meaningful changes beyond simple text differences.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">📊</div>
+            <h3>AI Impact Analysis</h3>
+            <p>
+              Analyze detected changes with Gemini or a local model,
+              producing summaries, impact scores, and recommended actions.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🤖</div>
+            <h3>MIRA Oracle</h3>
+            <p>
+              Explore market intelligence through an AI strategy co-pilot
+              for competitive positioning, pricing, and SWOT analysis.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">⚔️</div>
+            <h3>War Room Simulator</h3>
+            <p>
+              Evaluate hypothetical business moves and generate potential
+              competitor responses, risk assessments, and action plans.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">📢</div>
+            <h3>Automated Alerts</h3>
+            <p>
+              Connect intelligence workflows with Slack, email, Notion,
+              and Airtable for notifications and organized records.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🃏</div>
+            <h3>Competitive Battlecards</h3>
+            <p>
+              Generate competitor summaries containing strengths,
+              weaknesses, sales questions, and potential objections.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🧩</div>
+            <h3>Chrome Extension</h3>
+            <p>
+              Register competitors from the browser and configure
+              connections to the MIRA backend.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🔄</div>
+            <h3>Resilient Processing</h3>
+            <p>
+              Use cloud, local-model, and rule-based fallback strategies
+              to handle certain inference failures.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workflow -->
+    <section class="workflow" id="workflow">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">HOW IT WORKS</span>
+          <h2>From Website Changes to <span class="gradient-text">Business Insights.</span></h2>
+          <p>
+            A simplified view of the MIRA competitive intelligence pipeline.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">01</div>
+            <h3>Scrape</h3>
+            <p>Collect competitor website content.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">02</div>
+            <h3>Detect</h3>
+            <p>Compare content using semantic similarity.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">03</div>
+            <h3>Analyze</h3>
+            <p>Summarize changes and evaluate impact.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">04</div>
+            <h3>Recommend</h3>
+            <p>Generate strategies and battlecards.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">05</div>
+            <h3>Notify</h3>
+            <p>Send alerts and synchronize records.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technology -->
+    <section id="technology">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">TECH STACK</span>
+          <h2>Built With Modern <span class="gradient-text">Technologies.</span></h2>
+          <p>
+            Technologies documented in the MIRA project README.
+          </p>
+        </div>
+
+        <div class="tech-list">
+          <span class="tech">Node.js</span>
+          <span class="tech">Express.js</span>
+          <span class="tech">React</span>
+          <span class="tech">Vite</span>
+          <span class="tech">Tailwind CSS</span>
+          <span class="tech">SQLite</span>
+          <span class="tech">Axios</span>
+          <span class="tech">Cheerio</span>
+          <span class="tech">Puppeteer</span>
+          <span class="tech">ONNX</span>
+          <span class="tech">Gemini 2.5 Flash</span>
+          <span class="tech">Qwen GGUF</span>
+          <span class="tech">Chrome MV3</span>
+          <span class="tech">Docker</span>
+          <span class="tech">Slack API</span>
+          <span class="tech">Notion API</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">ABOUT MIRA</span>
+          <h2>Understand Competitors. <span class="gradient-text">Act Strategically.</span></h2>
+          <p>
+            MIRA is designed to reduce the manual effort involved in
+            competitor research by combining website monitoring,
+            machine-learning-based change detection, AI analysis,
+            strategic simulation, and workflow integrations in one platform.
+          </p>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <div class="icon">🎯</div>
+            <h3>The Goal</h3>
+            <p>
+              Make competitive research more systematic and turn market
+              signals into information that teams can evaluate and act on.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">⚡</div>
+            <h3>The Approach</h3>
+            <p>
+              Combine automated data collection, semantic comparison,
+              AI-generated explanations, and notification workflows.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="icon">🚀</div>
+            <h3>The Outcome</h3>
+            <p>
+              Help users review competitor movements, explore possible
+              strategies, and organize intelligence for decision-making.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to action -->
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Ready to Explore <span class="gradient-text">MIRA?</span></h2>
+          <p>
+            Explore the source code, architecture, and project documentation.
+          </p>
+
+          <a class="btn btn-primary"
+             href="https://github.com/NitheshK4/MIRA/tree/Bevinto"
+             target="_blank" rel="noopener noreferrer">
+            Explore the GitHub Repository ↗
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> MIRA. Market Intelligence & Research Automation.</p>
+
+      <div class="footer-links">
+        <a href="#home">Back to top ↑</a>
+        <a href="https://github.com/NitheshK4/MIRA/tree/Bevinto"
+           target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const navLinks = document.getElementById("navLinks");
+
+    menuBtn.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    // Close the mobile menu after selecting a section.
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    // Automatically update the copyright year.
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+  </script>
+
+</body>
+</html>
