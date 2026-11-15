@@ -170,12 +170,12 @@ LLM-generated competitive battlecards with strengths, weaknesses, killer questio
   │  🔮  AI STRATEGY CO-PILOT (MIRA Oracle)                          │
   │      • Conversational AI with full workspace context             │
   │      • Instant pitch drafts, pricing analysis, SWOT audits       │
-  │      • Quick-prompt chips for common strategic queries            │
+  │      • Quick-prompt chips for common strategic queries           │
   │                                                                  │
   │  ⚔️  COMPETITIVE WAR ROOM SIMULATOR                              │
   │      • "What-If" scenario engine with game-theory modeling       │
   │      • Dynamic risk scoring (1-10) with threat levels            │
-  │      • Per-competitor predicted reactions & timelines             │
+  │      • Per-competitor predicted reactions & timelines            │
   │      • Step-by-step counter-offensive playbook generation        │
   │      • Pre-built scenario templates for rapid simulation         │
   │                                                                  │
