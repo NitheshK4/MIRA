@@ -1,3 +1,18 @@
+// ============================================================================
+// FILE: llm.js
+// PURPOSE: Multi-Tier AI Intelligence Engine & Strategic Simulation Core
+// LOGIC OVERVIEW:
+// 1. Triple-Tier Inference Chain:
+//      - Tier 1: Google Gemini 3.6 Flash API (<1.5s, structured cloud reasoning)
+//      - Tier 2: Local Qwen2.5-0.5B-Instruct GGUF via llama-cli (offline CPU inference)
+//      - Tier 3: Keyword Heuristic Fallback (<1ms, guaranteed uninterrupted execution)
+// 2. Core Capabilities:
+//      - Competitor Change Impact Scoring (1-10 threat rating + business justification)
+//      - Auto-Generated Battlecards (Strengths, Weaknesses, Killer Questions, Landmines)
+//      - MIRA Oracle Strategic Co-Pilot (Context-aware conversational advisory)
+//      - Competitive War Room Simulator (Game-theory market reaction modeling)
+// ============================================================================
+
 const path = require('path');
 const fs = require('fs');
 const fsSync = fs;
@@ -243,7 +258,15 @@ function generateFallbackAnalysis(diffText) {
   };
 }
 
-// Main analysis runner
+// ============================================================================
+// CORE LOGIC: analyzeChange
+// PURPOSE: Scores and classifies competitor website changes relative to business profile
+// LOGIC STEPS:
+//   Step 1: Check if Google Gemini API key is present. If present, run Cloud Inference.
+//   Step 2: If Gemini fails, rate-limits, or lacks an API key, fallback to local Qwen GGUF.
+//   Step 3: If local GGUF fails, fallback to generateFallbackAnalysis (heuristics).
+//   Output: category, summary, impact_score (1-10), justification, recommendation.
+// ============================================================================
 async function analyzeChange(diffText, businessProfile) {
   const geminiApiKey = process.env.GEMINI_API_KEY;
 
@@ -491,6 +514,19 @@ ${userPrompt}<|im_end|>
   });
 }
 
+// ============================================================================
+// CORE LOGIC: generateBattlecardData
+// PURPOSE: Synthesizes dynamic AI Battlecards for sales and executive strategy
+// LOGIC STEPS:
+//   Step 1: Aggregate multi-source context (competitor profile, DNS enrichment,
+//           recent scrape history, recorded intelligence cards, and our business profile).
+//   Step 2: Instruct Gemini to generate structured sales intelligence:
+//           - Strengths & Weaknesses
+//           - Killer Questions to ask prospects
+//           - Sales Landmines to avoid or trigger
+//           - Pricing comparisons & Elevator Pitch
+//   Step 3: If Gemini is unavailable, generate a grounded fallback card from historical telemetry.
+// ============================================================================
 async function generateBattlecardData(competitor, recentScrapes = [], intelCards = [], businessProfile = null, geminiApiKey = null) {
   const compName = competitor.name || competitor.url || 'Competitor';
   const compUrl = competitor.url || '';
@@ -651,9 +687,16 @@ Generate the tactical AI sales battlecard for ${compName} now. Format inside <js
   };
 }
 
-/**
- * AI Strategy Co-Pilot ("MIRA Oracle") response generator
- */
+// ============================================================================
+// CORE LOGIC: generateStrategyCopilotResponse (MIRA Oracle Co-Pilot)
+// PURPOSE: Context-aware conversational AI assistant for competitive positioning
+// LOGIC STEPS:
+//   Step 1: Assemble comprehensive workspace context (Business Goals, KPIs,
+//           Strategic Constraints, Monitored Competitors, and Intel Signals).
+//   Step 2: Append multi-turn conversational history for continuous context.
+//   Step 3: Query Gemini 3.6 Flash for strategic guidance, sales counter-scripts, or SWOTs.
+//   Step 4: If offline, assemble a structured heuristic briefing using live DB metrics.
+// ============================================================================
 async function generateStrategyCopilotResponse(userMessage, conversationHistory = [], workspaceContext = {}, geminiApiKey = null) {
   const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
   const { profile, competitors = [], intelCards = [], battlecards = [], memory = {} } = workspaceContext;
@@ -842,9 +885,15 @@ Based on live telemetry across your **${compCount} monitored competitors** and *
   };
 }
 
-/**
- * Interactive War Room ("What-If Market Simulator")
- */
+// ============================================================================
+// CORE LOGIC: runWarRoomSimulation (Competitive War Room Simulator)
+// PURPOSE: Game-theoretic market simulation engine for "What-If" hypotheses
+// LOGIC STEPS:
+//   Step 1: Ingest hypothesis (e.g. "Drop pricing 30%", "Launch AI Copilot").
+//   Step 2: Model individual competitor reactions, probabilities, and reaction timeframes.
+//   Step 3: Calculate market risk score (1-10) and evaluate cascading industry impact.
+//   Step 4: Formulate tactical 30/60/90 day counter-offensive playbook.
+// ============================================================================
 async function runWarRoomSimulation(scenarioInput, workspaceContext = {}, geminiApiKey = null) {
   const activeGeminiKey = geminiApiKey || process.env.GEMINI_API_KEY;
   const { profile, competitors = [], intelCards = [], battlecards = [] } = workspaceContext;

@@ -1,3 +1,17 @@
+// ============================================================================
+// FILE: scraper.js
+// PURPOSE: Intelligent Double-Engine Competitor Web Scraper & Screenshot Archiver
+// LOGIC OVERVIEW:
+// 1. Dual Scrape Architecture:
+//      - Fast Engine (Axios + Cheerio): Lightweight, sub-second static HTML scraping.
+//      - Dynamic Engine (Puppeteer Headless): Full Chrome JS execution for SPAs + screenshot capture.
+// 2. Strict Memory Optimization:
+//      - Blocks images, videos, fonts, and WebSockets inside Puppeteer to stay under 512MB RAM.
+// 3. Noise Stripping Pipeline (`cleanHtml`):
+//      - Strips cookie banners, popups, GDPR dialogs, navigation bars, headers, and footers.
+//      - Extracts clean, high-signal semantic text lines.
+// ============================================================================
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
@@ -9,6 +23,7 @@ if (!fs.existsSync(SCREENSHOTS_DIR)) {
   fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
 }
 
+// User-Agent rotation pool to prevent bot detection and rate-limiting
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -19,9 +34,17 @@ function getRandomUserAgent() {
   return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
 }
 
-// Clean HTML to remove noise like headers, footers, scripts, styles, cookie banners
+// ============================================================================
+// CORE LOGIC: cleanHtml
+// PURPOSE: Removes HTML boilerplate, navigation, cookie banners & extracts clean text
+// LOGIC STEPS:
+//   Step 1: Remove non-content tags (<script>, <style>, <iframe>, <nav>, <footer>).
+//   Step 2: Prune cookie consent dialogs (OneTrust, Optanon, modals).
+//   Step 3: Target designated scope container ('pricing', 'careers', or custom selector).
+//   Step 4: Extract text lines, filter UI noise (e.g. "click", "accept"), and deduplicate.
+// ============================================================================
 function cleanHtml($, scope = 'full', customSelector = null) {
-  // Remove scripts, styles, forms, inputs, headers, footers, navs
+  // Step 1: Remove structural non-content elements
   $('script').remove();
   $('style').remove();
   $('iframe').remove();
@@ -30,7 +53,7 @@ function cleanHtml($, scope = 'full', customSelector = null) {
   $('footer').remove();
   $('nav').remove();
   
-  // Remove common cookie consent, popup, and banner selectors
+  // Step 2: Strip common cookie consent, popup, and banner selectors
   const noiseSelectors = [
     '[class*="cookie"]', '[id*="cookie"]', 
     '[class*="consent"]', '[id*="consent"]',
@@ -46,10 +69,11 @@ function cleanHtml($, scope = 'full', customSelector = null) {
     try {
       $(selector).remove();
     } catch (e) {
-      // Ignore invalid selectors
+      // Ignore invalid CSS selectors
     }
   });
 
+  // Step 3: Identify targeted container based on monitoring scope
   let targetElement = $('body');
 
   if (customSelector) {
@@ -58,7 +82,7 @@ function cleanHtml($, scope = 'full', customSelector = null) {
       targetElement = selected;
     }
   } else if (scope === 'pricing') {
-    // Look for common pricing containers
+    // Focus specifically on pricing grids, tiers, and subscription tables
     const pricingSelectors = [
       '#pricing', '.pricing', 'section[id*="pricing"]', 'div[class*="pricing"]',
       '#price', '.price', 'div[class*="plan"]', 'div[class*="tier"]'
@@ -71,7 +95,7 @@ function cleanHtml($, scope = 'full', customSelector = null) {
       }
     }
   } else if (scope === 'careers') {
-    // Look for common careers/jobs containers
+    // Focus specifically on job openings and career listings
     const careersSelectors = [
       '#careers', '.careers', 'section[id*="careers"]', 'div[class*="careers"]',
       '#jobs', '.jobs', 'div[class*="job-"]', 'div[class*="opening"]'
@@ -85,19 +109,19 @@ function cleanHtml($, scope = 'full', customSelector = null) {
     }
   }
 
-  // Extract clean text lines
+  // Step 4: Extract meaningful text lines
   const lines = [];
   targetElement.find('*').each(function() {
     const text = $(this).clone().children().remove().end().text().trim();
     if (text) {
-      // Filter out typical UI noise (e.g. single-word actions, social link texts)
+      // Filter out low-value UI noise words
       if (text.length > 1 && !text.match(/^(click|login|signup|share|follow|scroll|cookie|close|accept|decline|ok|yes|no)$/i)) {
         lines.push(text);
       }
     }
   });
 
-  // Deduplicate consecutive identical lines (e.g. from tables or list items)
+  // Deduplicate consecutive identical lines (common in tables or repetitive lists)
   const cleanLines = [];
   for (let i = 0; i < lines.length; i++) {
     if (i === 0 || lines[i] !== lines[i - 1]) {
@@ -108,7 +132,10 @@ function cleanHtml($, scope = 'full', customSelector = null) {
   return cleanLines.join('\n');
 }
 
-// Scrape using static HTML fetch
+// ============================================================================
+// CORE LOGIC: scrapeStatic
+// PURPOSE: Fast, lightweight static HTTP scrape via Axios and Cheerio (< 1s)
+// ============================================================================
 async function scrapeStatic(url, scope = 'full', customSelector = null) {
   const ua = getRandomUserAgent();
   const response = await axios.get(url, {
@@ -130,20 +157,24 @@ async function scrapeStatic(url, scope = 'full', customSelector = null) {
   };
 }
 
-// Scrape using Puppeteer for JS-rendered pages and screenshot archiving
+// ============================================================================
+// CORE LOGIC: scrapeDynamic
+// PURPOSE: Full Chromium browser rendering for JavaScript SPAs & visual screenshot
+// OPTIMIZATION: Strips images, fonts, and media requests to maintain a <= 512MB RAM footprint
+// ============================================================================
 async function scrapeDynamic(url, scope = 'full', customSelector = null, competitorId = 'temp') {
   const ua = getRandomUserAgent();
   
-  // Puppeteer launch arguments optimized for Railway memory limit (512MB RAM)
+  // Launch Chromium with aggressive memory-saving flags
   const browser = await puppeteer.launch({
     headless: 'new',
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined, // Railway Chrome path
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
-      '--single-process', // Important for memory saving
+      '--single-process', // Critical for keeping RAM usage minimal
       '--no-zygote',
       '--no-first-run',
       '--disable-extensions',
@@ -169,7 +200,7 @@ async function scrapeDynamic(url, scope = 'full', customSelector = null, competi
     await page.setUserAgent(ua);
     await page.setViewport({ width: 1280, height: 800 });
 
-    // Enable request interception to block images, media, and web fonts to save memory
+    // Request interception: Abort images, media, and fonts to save memory and network bandwidth
     await page.setRequestInterception(true);
     page.on('request', (req) => {
       const type = req.resourceType();
@@ -180,17 +211,17 @@ async function scrapeDynamic(url, scope = 'full', customSelector = null, competi
       }
     });
 
-    // Navigate with a timeout of 30s
+    // Navigate with a 30s timeout
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-    // Wait an extra 2 seconds for JS execution/SPA rendering
+    // Allow brief settle window for client-side JS / React / Vue rendering
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const htmlContent = await page.content();
     const $ = cheerio.load(htmlContent);
     const textContent = cleanHtml($, scope, customSelector);
 
-    // Capture screenshot for visual diff
+    // Capture visual snapshot for visual diff auditing in the dashboard
     let screenshotPath = '';
     try {
       const filename = `${competitorId}_${Date.now()}.png`;
@@ -207,25 +238,29 @@ async function scrapeDynamic(url, scope = 'full', customSelector = null, competi
       screenshotPath
     };
   } finally {
+    // Ensure browser process is always terminated
     await browser.close();
   }
 }
 
-// Unified scrape runner
+// ============================================================================
+// CORE LOGIC: runScrape
+// PURPOSE: Unified scrape controller with automatic fallback
+// LOGIC:
+//   - If competitor has `js_enabled === true`, invokes `scrapeDynamic` directly.
+//   - If static, executes `scrapeStatic` first. If static fetch fails (e.g. bot firewall),
+//     automatically falls back to `scrapeDynamic`.
+// ============================================================================
 async function runScrape(competitor) {
   const { url, scope, js_enabled, id } = competitor;
-  const isCloudEnv = !!(process.env.RAILWAY_STATIC_URL || process.env.RAILWAY_SERVICE_ID || process.env.RENDER_EXTERNAL_URL);
 
   if (js_enabled) {
     return await scrapeDynamic(url, scope, null, id);
   } else {
-    // For static scraping, we can also generate a basic screenshot by loading it in puppeteer once.
-    // However, to save memory, we try Axios first. If Axios fails, we can fallback.
     try {
       const result = await scrapeStatic(url, scope, null);
       
-      // If we want screenshots even for static pages, we can fetch them via a quick Puppeteer launch.
-      // We do this inside a try-catch so that if Puppeteer fails, we still have the text content!
+      // Attempt visual screenshot capture
       let screenshotPath = '';
       try {
         const pResult = await scrapeDynamic(url, scope, null, id);
@@ -240,6 +275,7 @@ async function runScrape(competitor) {
         screenshotPath
       };
     } catch (err) {
+      // Fallback: If static scraping fails, attempt dynamic Puppeteer scrape
       console.log(`Static scrape failed for ${url}, trying dynamic fallback...`);
       try {
         const pResult = await scrapeDynamic(url, scope, null, id);
@@ -254,6 +290,12 @@ async function runScrape(competitor) {
     }
   }
 }
+
+module.exports = {
+  scrapeStatic,
+  scrapeDynamic,
+  runScrape
+};
 
 module.exports = {
   scrapeStatic,

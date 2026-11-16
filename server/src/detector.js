@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE: detector.js
+// PURPOSE: Semantic Change Detection Engine (ONNX Sentence Embeddings & Gemini)
+// LOGIC OVERVIEW:
+// 1. Replaces fragile character/string diffs with semantic meaning comparisons.
+//    (e.g., "Price is $100" vs "Current Price: $100" -> similarity 0.95 -> No false alert).
+// 2. Multi-tier Engine Architecture:
+//      - Tier 1 (Cloud): Gemini API semantic comparator (fast cloud inference).
+//      - Tier 2 (Local ML): ONNX MiniLM-L6-v2 embeddings + cosine similarity calculation.
+//      - Tier 3 (Heuristic): Jaccard token overlap (<1ms lightweight fallback).
+// ============================================================================
+
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
@@ -11,7 +23,7 @@ const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2';
 const LOCAL_MODEL_DIR = path.join(CACHE_DIR, 'Xenova', 'all-MiniLM-L6-v2');
 const ONNX_DIR = path.join(LOCAL_MODEL_DIR, 'onnx');
 
-// List of required model files to fetch from HF
+// HuggingFace CDN asset URLs required for local ONNX inference
 const FILES_TO_DOWNLOAD = [
   { name: 'config.json', url: 'https://huggingface.co/Xenova/all-MiniLM-L6-v2/resolve/main/config.json', destDir: LOCAL_MODEL_DIR },
   { name: 'tokenizer.json', url: 'https://huggingface.co/Xenova/all-MiniLM-L6-v2/resolve/main/tokenizer.json', destDir: LOCAL_MODEL_DIR },
@@ -19,6 +31,7 @@ const FILES_TO_DOWNLOAD = [
   { name: 'model.onnx', url: 'https://huggingface.co/Xenova/all-MiniLM-L6-v2/resolve/main/onnx/model.onnx', destDir: ONNX_DIR }
 ];
 
+// Helper to ensure the 90MB MiniLM ONNX weights exist locally in cache
 async function ensureEmbeddingModel() {
   if (!fs.existsSync(LOCAL_MODEL_DIR)) fs.mkdirSync(LOCAL_MODEL_DIR, { recursive: true });
   if (!fs.existsSync(ONNX_DIR)) fs.mkdirSync(ONNX_DIR, { recursive: true });
@@ -26,7 +39,7 @@ async function ensureEmbeddingModel() {
   for (const file of FILES_TO_DOWNLOAD) {
     const filePath = path.join(file.destDir, file.name);
     
-    // If file doesn't exist or is empty, download it manually
+    // Download file if missing or corrupt (<100 bytes)
     if (!fs.existsSync(filePath) || fs.statSync(filePath).size < 100) {
       console.log(`Downloading embedding file: ${file.name}...`);
       
@@ -71,7 +84,11 @@ async function getPipeline() {
   return embedPipeline;
 }
 
-// Compute dot product of two vectors (cosine similarity since vectors are normalized)
+// ============================================================================
+// CORE LOGIC: Vector Cosine Similarity
+// Normalized dot product comparing two high-dimensional semantic vectors
+// Output: 1.0 (identical meaning) to 0.0 (completely dissimilar)
+// ============================================================================
 function cosineSimilarity(vecA, vecB) {
   let dotProduct = 0;
   for (let i = 0; i < vecA.length; i++) {
@@ -80,25 +97,32 @@ function cosineSimilarity(vecA, vecB) {
   return dotProduct;
 }
 
+// Convert a single paragraph into a 384-dimensional dense semantic vector
 async function getEmbedding(text) {
   const pipe = await getPipeline();
   const output = await pipe(text, { pooling: 'mean', normalize: true });
   return Array.from(output.data);
 }
 
-// Splits text into semantic chunks (paragraphs)
+// Split full scraped text into paragraph-level semantic chunks
 function getChunks(text) {
   if (!text) return [];
   return text
     .split(/\n+/)
     .map(p => p.trim())
-    .filter(p => p.length > 10); // Ignore tiny fragments
+    .filter(p => p.length > 10); // Ignore trivial fragments (<10 characters)
 }
 
-/**
- * Compare two text versions semantically chunk-by-chunk using pure JavaScript.
- * (Saved as a robust local fallback engine).
- */
+// ============================================================================
+// CORE LOGIC: detectChangesJS
+// PURPOSE: Local ONNX Semantic Chunk-by-Chunk Comparator
+// LOGIC STEPS:
+//   Step 1: Partition old and new webpage text into semantic paragraph chunks.
+//   Step 2: Generate 384-dimensional sentence embeddings for every chunk.
+//   Step 3: Perform pairwise cosine similarity matching against prior crawl.
+//   Step 4: Chunks scoring below the threshold (e.g. < 0.85) are flagged as additions (+).
+//   Step 5: Unmatched previous chunks are flagged as removals (-).
+// ============================================================================
 async function detectChangesJS(oldText, newText, threshold = 0.85) {
   if (!oldText) {
     const newChunks = getChunks(newText);
@@ -128,6 +152,7 @@ async function detectChangesJS(oldText, newText, threshold = 0.85) {
     };
   }
 
+  // Generate vector embeddings for all paragraph chunks
   const oldEmbeddings = await Promise.all(oldChunks.map(async c => ({ text: c, vector: await getEmbedding(c) })));
   const newEmbeddings = await Promise.all(newChunks.map(async c => ({ text: c, vector: await getEmbedding(c) })));
 
@@ -135,6 +160,7 @@ async function detectChangesJS(oldText, newText, threshold = 0.85) {
   const matchedOldIndices = new Set();
   const diffLines = [];
 
+  // Match each new chunk to the most semantically similar old chunk
   for (const newChunk of newEmbeddings) {
     let bestMatchScore = -1;
     let bestMatchIndex = -1;
@@ -147,6 +173,7 @@ async function detectChangesJS(oldText, newText, threshold = 0.85) {
       }
     }
 
+    // If similarity is below semantic threshold, it represents novel content
     if (bestMatchScore < threshold) {
       addedChunks.push(newChunk.text);
       diffLines.push(`+ ${newChunk.text}`);
@@ -155,6 +182,7 @@ async function detectChangesJS(oldText, newText, threshold = 0.85) {
     }
   }
 
+  // Unmatched old chunks represent deleted/removed content
   const removedChunks = [];
   for (let i = 0; i < oldEmbeddings.length; i++) {
     if (!matchedOldIndices.has(i)) {
@@ -163,6 +191,7 @@ async function detectChangesJS(oldText, newText, threshold = 0.85) {
     }
   }
 
+  // Calculate overall page similarity score
   let totalMatchScore = 0;
   let matchCount = 0;
   
@@ -188,11 +217,10 @@ async function detectChangesJS(oldText, newText, threshold = 0.85) {
   };
 }
 
-/**
- * Compare two text versions semantically chunk-by-chunk.
- * Primary: Gemini API with rate-limiting retry.
- * Fallback: Local JS-ONNX transformers pipeline.
- */
+// ============================================================================
+// CORE LOGIC: detectChangesGemini
+// PURPOSE: Cloud LLM Semantic Comparison (used in cloud deployments to save RAM)
+// ============================================================================
 async function detectChangesGemini(oldText, newText, apiKey) {
   const systemPrompt = `You are a text change detector. Your job is to compare the old text of a webpage with the new text, and determine if the core content has changed significantly.
 Ignore minor cosmetic noise (like clock timestamps changing, minor page views/comment counters incrementing, or copyright years updating).
@@ -261,6 +289,10 @@ Compare the two contents and return the JSON response.`;
   };
 }
 
+// ============================================================================
+// CORE LOGIC: detectChangesLightweight
+// PURPOSE: Word token Jaccard similarity fallback (< 1ms, zero memory overhead)
+// ============================================================================
 function detectChangesLightweight(oldText, newText, threshold = 0.85) {
   const getWords = (text) => {
     if (!text) return new Set();
@@ -289,10 +321,15 @@ function detectChangesLightweight(oldText, newText, threshold = 0.85) {
   };
 }
 
+// ============================================================================
+// CORE LOGIC: detectChanges
+// PURPOSE: Primary orchestrator choosing Cloud Gemini vs Local ONNX vs Heuristic
+// ============================================================================
 async function detectChanges(oldText, newText, threshold = 0.85) {
   const isCloudEnv = !!(process.env.RAILWAY_STATIC_URL || process.env.RAILWAY_SERVICE_ID || process.env.RENDER_EXTERNAL_URL);
   const geminiApiKey = process.env.GEMINI_API_KEY;
 
+  // Cloud mode: Prefer Gemini to conserve RAM within 512MB limits
   if (isCloudEnv && geminiApiKey) {
     try {
       console.log('Cloud environment detected: Using Gemini API for semantic change detection to save memory...');
@@ -303,6 +340,7 @@ async function detectChanges(oldText, newText, threshold = 0.85) {
     }
   }
 
+  // Local mode: Run ONNX MiniLM pipeline natively in Node.js
   try {
     return await detectChangesJS(oldText, newText, threshold);
   } catch (err) {
@@ -310,6 +348,12 @@ async function detectChanges(oldText, newText, threshold = 0.85) {
     return detectChangesLightweight(oldText, newText, threshold);
   }
 }
+
+module.exports = {
+  getEmbedding,
+  detectChanges,
+  cosineSimilarity
+};
 
 module.exports = {
   getEmbedding,

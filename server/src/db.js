@@ -1,3 +1,21 @@
+// ============================================================================
+// FILE: db.js
+// PURPOSE: Embedded SQLite Storage, Schema Management, and Multi-Workspace Data Layer
+// LOGIC OVERVIEW:
+// 1. Manages a local zero-configuration SQLite database (`database.sqlite`).
+// 2. Automates schema migrations and workspace partitioning (multi-tenancy via workspace_id).
+// 3. Defines relational tables:
+//      - `competitors`: Tracked companies, monitoring intervals, and enrichment data.
+//      - `profile`: User's business profile and value proposition.
+//      - `scrapes`: Historical crawl text snapshots and screenshot file paths.
+//      - `intelligence_cards`: AI-analyzed changes, impact scores, and CRM sync status.
+//      - `crm_retry_queue`: SQLite-backed retry buffer for failed CRM integrations.
+//      - `settings`: API keys, notification webhooks, and thresholds per workspace.
+//      - `battlecards`: Living competitor battlecard dossiers.
+//      - `oracle_memory` & `oracle_messages`: Context and memory for MIRA Oracle AI.
+//      - `war_room_simulations`: Game-theory scenario simulations and counter-playbooks.
+// ============================================================================
+
 const path = require('path');
 const fs = require('fs');
 const sqlite3 = require('sqlite3');
@@ -175,6 +193,15 @@ async function runMigrations(db) {
   }
 }
 
+// ============================================================================
+// CORE LOGIC: getDb
+// PURPOSE: SQLite connection singleton and schema initialization
+// LOGIC STEPS:
+//   Step 1: Open or connect to SQLite database instance.
+//   Step 2: Enable PRAGMA foreign_keys = ON.
+//   Step 3: CREATE TABLE IF NOT EXISTS for all core application entities.
+//   Step 4: Execute database schema migrations.
+// ============================================================================
 async function getDb() {
   if (dbInstance) return dbInstance;
 

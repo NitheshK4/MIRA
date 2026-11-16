@@ -1,18 +1,46 @@
+// ============================================================================
+// FILE: crm.js
+// PURPOSE: Idempotent Multi-CRM Synchronization (Notion & Airtable) + Self-Healing Retry
+// LOGIC OVERVIEW:
+// 1. Dual CRM Adapter:
+//      - Notion (Official @notionhq/client): Maps properties dynamically & creates pages.
+//      - Airtable (REST API): Writes structured records with field mapping.
+// 2. Idempotency Protection:
+//      - Checks for existing cards by title and competitor URL before writing to avoid duplicate records.
+// 3. Self-Healing SQLite Retry Queue:
+//      - Failed API calls (rate limits, network glitches) are auto-enqueued in SQLite.
+//      - `runRetryQueue` re-executes pending writes asynchronously without losing data.
+// ============================================================================
+
 const { Client } = require('@notionhq/client');
 const axios = require('axios');
 const db = require('./db');
 
-// Sync a single card to the configured CRM
+// ============================================================================
+// CORE LOGIC: syncCard
+// PURPOSE: Routes intelligence card synchronization to Notion or Airtable
+// LOGIC STEPS:
+//   Step 1: Check active CRM setting ('notion', 'airtable', or 'none').
+//   Step 2: Resolve public screenshot URL for rich visual attachments.
+//   Step 3: Dispatch sync to selected provider (syncToNotion or syncToAirtable).
+//   Step 4: On success -> update DB status to 'synced' and dequeue any retry entry.
+//   Step 5: On failure -> update DB status to 'failed' and enqueue in SQLite retry queue.
+// ============================================================================
 async function syncCard(card, config, hostUrl = 'http://localhost:3000') {
+  // Step 1: Skip if no CRM integration is activated
   if (!config || config.active_crm === 'none') {
     return { success: true, status: 'skipped', message: 'No CRM integration configured.' };
   }
 
+  // Step 2: Build absolute URL for screenshot preview
   const screenshotUrl = card.screenshot_path
     ? (card.screenshot_path.startsWith('http') ? card.screenshot_path : `${hostUrl}${card.screenshot_path}`)
     : '';
 
   try {
+    // --------------------------------------------------------------------------
+    // CORE LOGIC: Provider Routing
+    // --------------------------------------------------------------------------
     if (config.active_crm === 'notion') {
       if (!config.notion_token || !config.notion_db_id) {
         throw new Error('Notion token or Database ID is missing in settings.');
@@ -25,13 +53,15 @@ async function syncCard(card, config, hostUrl = 'http://localhost:3000') {
       await syncToAirtable(card, config, screenshotUrl);
     }
 
-    // Success: Update database status
+    // --------------------------------------------------------------------------
+    // CORE LOGIC: Success State Update & Dequeue
+    // --------------------------------------------------------------------------
     await db.updateIntelligenceCard(card.id, {
       crm_sync_status: 'synced',
       crm_error: ''
     });
 
-    // Remove from queue if it was queued
+    // Remove from retry queue if this card was previously queued
     await db.removeFromCrmQueue(card.id);
 
     return { success: true, status: 'synced' };
@@ -39,20 +69,29 @@ async function syncCard(card, config, hostUrl = 'http://localhost:3000') {
     const errMsg = err.message || 'Unknown CRM sync error';
     console.error(`CRM sync failed for card ${card.id}:`, errMsg);
 
-    // Save failure status and error in DB
+    // --------------------------------------------------------------------------
+    // CORE LOGIC: Failure Handling & Self-Healing Enqueue
+    // --------------------------------------------------------------------------
     await db.updateIntelligenceCard(card.id, {
       crm_sync_status: 'failed',
       crm_error: errMsg
     });
 
-    // Enqueue for future retry
+    // Enqueue card for automatic retry in subsequent execution cycles
     await db.enqueueCrmRetry(card.id);
 
     return { success: false, status: 'failed', error: errMsg };
   }
 }
 
-// Notion Sync Helper
+// ============================================================================
+// CORE LOGIC: syncToNotion
+// PURPOSE: Idempotent synchronization to Notion database with dynamic property matching
+// LOGIC:
+//   - Fetches actual Notion DB schema to resolve properties case-insensitively.
+//   - Queries Notion first to verify the card does not already exist (Idempotency).
+//   - Creates new Notion database page with Title, Category, Score, and Rich Text blocks.
+// ============================================================================
 async function syncToNotion(card, config, screenshotUrl) {
   const notion = new Client({ auth: config.notion_token });
 
@@ -105,6 +144,7 @@ async function syncToNotion(card, config, screenshotUrl) {
     console.warn('Notion duplicate query failed, proceeding with create:', err.message);
   }
 
+  // Construct structured Notion page properties payload
   const properties = {
     [getPropName('Title')]: {
       title: [
@@ -166,13 +206,20 @@ async function syncToNotion(card, config, screenshotUrl) {
     };
   }
 
+  // Execute Notion Page Creation API call
   await notion.pages.create({
     parent: { database_id: config.notion_db_id },
     properties: properties
   });
 }
 
-// Airtable Sync Helper
+// ============================================================================
+// CORE LOGIC: syncToAirtable
+// PURPOSE: Idempotent synchronization to Airtable Base via REST API
+// LOGIC:
+//   - Checks for existing record using Airtable formula query (Idempotency).
+//   - Inserts record into designated table with field mapping.
+// ============================================================================
 async function syncToAirtable(card, config, screenshotUrl) {
   const tableName = config.airtable_table_name || 'Competitor Intel';
   const url = `https://api.airtable.com/v0/${config.airtable_base_id}/${encodeURIComponent(tableName)}`;
@@ -214,6 +261,7 @@ async function syncToAirtable(card, config, screenshotUrl) {
     fields['Screenshot URL'] = screenshotUrl;
   }
 
+  // Execute Airtable record creation POST request
   await axios.post(
     url,
     { fields },
@@ -227,7 +275,10 @@ async function syncToAirtable(card, config, screenshotUrl) {
   );
 }
 
-// Run the retry queue for all pending failed syncs
+// ============================================================================
+// CORE LOGIC: runRetryQueue
+// PURPOSE: Processes SQLite retry queue for pending / failed CRM syncs (Self-Healing)
+// ============================================================================
 async function runRetryQueue(hostUrl = 'http://localhost:3000') {
   const queue = await db.getCrmQueue();
   if (queue.length === 0) {
@@ -270,6 +321,11 @@ async function runRetryQueue(hostUrl = 'http://localhost:3000') {
   console.log(`CRM retry queue processing complete. Successes: ${successes}/${queue.length}`);
   return { processed: queue.length, successes };
 }
+
+module.exports = {
+  syncCard,
+  runRetryQueue
+};
 
 module.exports = {
   syncCard,
