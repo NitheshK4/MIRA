@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE: verify-test.js
+// PURPOSE: Automated End-to-End System Verification & Regression Test Suite
+// LOGIC OVERVIEW:
+// 1. Test 1 (Scraper): Validates Cheerio HTML parsing and noise-stripping on live web page.
+// 2. Test 2 (Detector): Asserts ONNX semantic cosine similarity distinguishes cosmetic
+//    rewordings (no change) from pricing cuts & message shifts (flagged change).
+// 3. Test 3 (LLM Inference): Evaluates structured output (category, score, recommendation)
+//    using Gemini API or local Qwen GGUF.
+// 4. Test 4 (CRM Resilience): Validates SQLite retry queue enqueuing and self-healing retries.
+// ============================================================================
+
 const assert = require('assert');
 const { scrapeStatic } = require('./scraper');
 const { detectChanges, cosineSimilarity, getEmbedding } = require('./detector');

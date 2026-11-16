@@ -1,3 +1,26 @@
+// ============================================================================
+// FILE: index.js
+// PURPOSE: Primary Express HTTP Server, REST API Router, and Background Schedulers
+// LOGIC OVERVIEW:
+// 1. Boots Express application on port 3000 (or process.env.PORT).
+// 2. Multi-Workspace Isolation & Security Middleware:
+//      - `checkWorkspace`: Maps X-Workspace-Id header or resolves Bearer API key.
+//      - `checkExtensionAuth`: Secures Chrome Extension endpoints with Bearer tokens.
+// 3. REST API Routes:
+//      - `/api/profile`: Business profile configuration.
+//      - `/api/competitors`: Competitor registration, pauses, and manual re-scrapes.
+//      - `/api/cards`: Intelligence feed, severity filtering, and read status.
+//      - `/api/battlecards`: Auto-generated competitive battlecards dossiers.
+//      - `/api/kill-cards`: Dynamic 15-second sales objection counter-scripts.
+//      - `/api/oracle`: MIRA Oracle AI strategic co-pilot conversation endpoints.
+//      - `/api/war-room`: Competitive War Room game-theory simulation engine.
+//      - `/api/extension`: Chrome Extension one-click ingest and badge counters.
+// 4. Background Daemon Schedulers:
+//      - `startCompetitorScheduler`: Checks competitor crawl intervals every 60s.
+//      - `startDigestScheduler`: Evaluates daily/weekly email digest intervals.
+//      - `startKeepAliveScheduler`: Prevents cloud container sleep by self-pinging.
+// ============================================================================
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -882,7 +905,14 @@ if (fs.existsSync(CLIENT_DIST)) {
 // CRON SCHEDULER LOOPS (POLLING)
 // ----------------------------------------------------
 
-// Polling interval loop for checking competitors (runs every 5 minutes)
+// ============================================================================
+// CORE LOGIC: startCompetitorScheduler
+// PURPOSE: Automated polling scheduler that evaluates which competitors are due for re-scraping
+// LOGIC STEPS:
+//   Step 1: Queries all active competitors across workspaces.
+//   Step 2: Checks (now - last_checked >= interval_hours).
+//   Step 3: If due, enqueues competitor ID into the FIFO background processing queue.
+// ============================================================================
 async function startCompetitorScheduler() {
   console.log('Background competitor check scheduler started.');
   

@@ -1,14 +1,35 @@
+// ============================================================================
+// FILE: mailer.js
+// PURPOSE: Automated Email Digest Notification Engine for Competitor Intelligence
+// LOGIC OVERVIEW:
+// 1. Gathers newly recorded competitor intelligence cards for a given workspace.
+// 2. Sorts and filters the cards by impact score (highlighting top 3 highest threats).
+// 3. Groups the remaining changes by competitor name to keep reports readable.
+// 4. Formats everything into a modern, responsive HTML digest template.
+// 5. Transports the email via Resend HTTP API or standard SMTP (Nodemailer).
+// 6. Updates the database timestamp ('last_digest_sent') upon successful delivery.
+// ============================================================================
+
 const nodemailer = require('nodemailer');
 const axios = require('axios');
 const db = require('./db');
 
-// Generate HTML Content for the digest email
+// ============================================================================
+// TEMPLATE GENERATOR: Builds the responsive HTML email body
+// LOGIC:
+// - Extracts the top 3 cards globally across all competitors by impact score.
+// - Groups remaining cards by competitor name.
+// - Applies conditional color branding based on impact score:
+//     Score >= 8: Red (#ef4444) -> Critical threat
+//     Score >= 5: Orange (#f97316) -> Medium threat
+//     Score < 5:  Blue (#3b82f6) -> Informational
+// ============================================================================
 function generateDigestHtml(cards, periodName = 'Periodic') {
-  // Sort cards globally by impact score to find top 3
+  // Sort cards globally by impact score descending to identify the top 3 critical threats
   const sortedGlobally = [...cards].sort((a, b) => b.impact_score - a.impact_score);
   const top3 = sortedGlobally.slice(0, 3);
 
-  // Group cards by competitor
+  // Group cards by competitor name so readers can digest updates per company
   const groups = {};
   for (const card of cards) {
     if (!groups[card.competitor_name]) {
@@ -17,20 +38,21 @@ function generateDigestHtml(cards, periodName = 'Periodic') {
     groups[card.competitor_name].push(card);
   }
 
-  // Sort groups by maximum impact score descending
+  // Sort competitor groups so the competitor with the highest impact change appears first
   const sortedGroupNames = Object.keys(groups).sort((a, b) => {
     const maxA = Math.max(...groups[a].map(c => c.impact_score));
     const maxB = Math.max(...groups[b].map(c => c.impact_score));
     return maxB - maxA;
   });
 
+  // Dynamic visual styling helper for severity badges and borders
   const getScoreColor = (score) => {
-    if (score >= 8) return '#ef4444'; // Red
-    if (score >= 5) return '#f97316'; // Orange
-    return '#3b82f6'; // Blue
+    if (score >= 8) return '#ef4444'; // Red (High severity)
+    if (score >= 5) return '#f97316'; // Orange (Medium severity)
+    return '#3b82f6'; // Blue (Low severity)
   };
 
-  // Render Top 3 Highlights
+  // Render Top 3 Highlights HTML markup
   const highlightsHtml = top3.map((card, idx) => `
     <div style="background-color: #1e293b; border-left: 4px solid ${getScoreColor(card.impact_score)}; padding: 15px; margin-bottom: 12px; border-radius: 4px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
@@ -46,7 +68,7 @@ function generateDigestHtml(cards, periodName = 'Periodic') {
     </div>
   `).join('');
 
-  // Render Competitor Groups
+  // Render Competitor Groups HTML markup
   const groupsHtml = sortedGroupNames.map(compName => {
     const compCards = groups[compName].sort((a, b) => b.impact_score - a.impact_score);
     const cardListHtml = compCards.map(card => `
@@ -72,6 +94,7 @@ function generateDigestHtml(cards, periodName = 'Periodic') {
     `;
   }).join('');
 
+  // Assemble full responsive HTML document
   return `
     <!DOCTYPE html>
     <html>
@@ -121,9 +144,18 @@ function generateDigestHtml(cards, periodName = 'Periodic') {
   `;
 }
 
-// Send digest email to recipient
+// ============================================================================
+// CORE LOGIC: sendDigestEmail
+// PURPOSE: Main execution controller for sending scheduled digests
+// LOGIC STEPS:
+//   Step 1: Normalize workspace parameters and retrieve email credentials from DB.
+//   Step 2: Check timestamp of last sent digest to query only NEW changes.
+//   Step 3: Generate the HTML email report (or mock card if triggered in test mode).
+//   Step 4: Detect delivery channel (Resend API if key starts with 're_', else SMTP).
+//   Step 5: Dispatch the email payload and persist new 'last_digest_sent' timestamp.
+// ============================================================================
 async function sendDigestEmail(workspaceId = 'default', period = 'daily', overrideConfig = null) {
-  // If period is not daily/weekly/test, check if arguments were shifted
+  // Step 1: Normalize arguments if invoked with shifted params (e.g. ('daily', config))
   let finalWorkspaceId = workspaceId;
   let finalPeriod = period;
   let finalOverride = overrideConfig;
@@ -133,12 +165,14 @@ async function sendDigestEmail(workspaceId = 'default', period = 'daily', overri
     finalOverride = typeof period === 'object' ? period : null;
   }
 
+  // Load email configuration (Host, Port, User, Pass, Recipient) from DB or override
   let emailConfig = finalOverride;
   if (!emailConfig) {
     const emailConfigJson = await db.getSetting(finalWorkspaceId, 'email_config');
     emailConfig = emailConfigJson ? JSON.parse(emailConfigJson) : null;
   }
 
+  // Abort gracefully if credentials are not configured in settings
   if (!emailConfig || !emailConfig.smtp_host || !emailConfig.recipient_email) {
     console.log(`Skipping digest email for workspace ${finalWorkspaceId}: SMTP credentials or recipient email not configured.`);
     return { success: false, reason: 'Credentials not configured' };
@@ -147,12 +181,13 @@ async function sendDigestEmail(workspaceId = 'default', period = 'daily', overri
   const lastDigest = await db.getSetting(finalWorkspaceId, 'last_digest_sent') || '';
   const now = new Date().toISOString();
 
-  // Query all cards since last digest for this workspace
+  // Step 2: Query all cards and filter only those created since the last digest run
   const cards = await db.getIntelligenceCards(finalWorkspaceId);
   let newCards = lastDigest
     ? cards.filter(c => new Date(c.timestamp) > new Date(lastDigest))
     : cards; // Send all on first run
 
+  // Handle 'test' trigger from the dashboard Settings tab
   if (finalPeriod === 'test') {
     if (newCards.length === 0) {
       newCards = [{
@@ -165,20 +200,27 @@ async function sendDigestEmail(workspaceId = 'default', period = 'daily', overri
       }];
     }
   } else {
+    // If no new changes happened since last run, do not spam the user's inbox
     if (newCards.length === 0) {
       console.log(`Skipping digest email for workspace ${finalWorkspaceId}: No new competitor changes detected since last digest.`);
       return { success: true, reason: 'No new changes' };
     }
   }
 
+  // Step 3: Compile email content and title
   const periodName = finalPeriod.charAt(0).toUpperCase() + finalPeriod.slice(1);
   const htmlContent = generateDigestHtml(newCards, periodName);
   const emailSubject = `[ACIE] Competitor Intelligence Digest - ${newCards.length} New Alerts`;
 
+  // Check whether to use Resend REST API or standard Nodemailer SMTP
   const isResend = emailConfig.provider === 'resend' || (emailConfig.smtp_pass && emailConfig.smtp_pass.startsWith('re_'));
 
   try {
+    // Step 4: Dispatch email
     if (isResend) {
+      // ----------------------------------------------------
+      // CORE LOGIC: Resend HTTP API Dispatch
+      // ----------------------------------------------------
       console.log('Sending email via Resend HTTP API...');
       const fromEmail = (emailConfig.smtp_user && emailConfig.smtp_user.includes('@'))
         ? emailConfig.smtp_user
@@ -196,6 +238,9 @@ async function sendDigestEmail(workspaceId = 'default', period = 'daily', overri
         timeout: 10000
       });
     } else {
+      // ----------------------------------------------------
+      // CORE LOGIC: Standard SMTP Transport via Nodemailer
+      // ----------------------------------------------------
       console.log('Sending email via standard SMTP...');
       const transporter = nodemailer.createTransport({
         host: emailConfig.smtp_host,
@@ -214,7 +259,7 @@ async function sendDigestEmail(workspaceId = 'default', period = 'daily', overri
       });
     }
 
-    // Update last digest sent time
+    // Step 5: Persist timestamp of this run to prevent duplicate alerts in future runs
     await db.setSetting(finalWorkspaceId, 'last_digest_sent', now);
     console.log(`Digest email sent successfully for workspace ${finalWorkspaceId}.`);
     return { success: true, count: newCards.length };
@@ -224,6 +269,11 @@ async function sendDigestEmail(workspaceId = 'default', period = 'daily', overri
     return { success: false, error: errorMsg };
   }
 }
+
+module.exports = {
+  sendDigestEmail,
+  generateDigestHtml
+};
 
 module.exports = {
   sendDigestEmail,
