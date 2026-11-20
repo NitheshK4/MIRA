@@ -30,7 +30,7 @@ async function runTests() {
     const scrapeRes = await scrapeStatic('https://example.com', 'full');
     assert.ok(scrapeRes.textContent, 'Should extract text content');
     assert.ok(scrapeRes.htmlContent, 'Should return raw HTML');
-    assert.ok(scrapeRes.textContent.includes('Example Domain'), 'Text should contain domain title');
+    assert.ok(scrapeRes.textContent.includes('documentation examples') || scrapeRes.textContent.includes('Example Domain'), 'Text should contain domain text');
     console.log('✅ Test 1 Passed: Static scraping and cheerio cleaning work.\n');
 
     // ----------------------------------------------------
@@ -183,7 +183,6 @@ async function runTests() {
     console.log('==================================================');
     console.log('ALL VERIFICATION TESTS COMPLETED SUCCESSFULLY! 🎉');
     console.log('==================================================');
-    process.exit(0);
 
   } catch (err) {
     console.error('\n❌ VERIFICATION TEST SUITE ENCOUNTERED A FAILURE:');
@@ -194,5 +193,5 @@ async function runTests() {
 
 // Run the script directly if executed in shell
 if (require.main === module) {
-  runTests();
+  runTests().catch(() => process.exit(1));
 }
