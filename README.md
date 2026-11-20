@@ -761,10 +761,14 @@ npm run dev
 ### 4️⃣ Test
 
 ```bash
+# Core pipeline integration tests (Scraper, ONNX Detector, LLM, CRM)
 npm test
+
+# Comprehensive live verification across all 13 subsystems & SDKs
+npm run test:e2e
 ```
 
-> Validates: Scraping → Semantic Detection → LLM Inference → Battlecards → CRM Sync
+> Validates: Scraping → Semantic Detection → LLM Inference → Battlecards → War Room → CRM Sync
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
