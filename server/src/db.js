@@ -919,6 +919,16 @@ async function saveOracleMessage(sessionId, workspaceId = 'default', role, text,
   return result.lastID;
 }
 
+function safeJsonParse(str, fallback = null) {
+  if (!str) return fallback;
+  if (typeof str === 'object') return str;
+  try {
+    return JSON.parse(str);
+  } catch (_) {
+    return str;
+  }
+}
+
 async function getOracleMessages(sessionId, workspaceId = 'default') {
   const db = await getDb();
   const rows = await db.all(`
@@ -928,7 +938,7 @@ async function getOracleMessages(sessionId, workspaceId = 'default') {
   `, [sessionId, workspaceId]);
   return rows.map(r => ({
     ...r,
-    structured_data: r.structured_data ? JSON.parse(r.structured_data) : null
+    structured_data: safeJsonParse(r.structured_data, null)
   }));
 }
 
@@ -969,8 +979,8 @@ async function getWarRoomSimulations(workspaceId = 'default') {
 
   return rows.map(r => ({
     ...r,
-    scenario_input: r.scenario_input ? JSON.parse(r.scenario_input) : null,
-    simulation_data: r.simulation_data ? JSON.parse(r.simulation_data) : null
+    scenario_input: safeJsonParse(r.scenario_input, null),
+    simulation_data: safeJsonParse(r.simulation_data, null)
   }));
 }
 
