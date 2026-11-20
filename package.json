@@ -11,6 +11,7 @@
     "build:client": "npm run build --prefix client",
     "start": "NODE_ENV=production npm start --prefix server",
     "test": "node server/src/verify-test.js",
+    "test:e2e": "node scripts/verify_all_live_features.js",
     "php:server": "php -S 0.0.0.0:8000 -t php",
     "php:test": "php php/tests/MiraClientTest.php",
     "python:test": "python3 -m unittest discover -s python/tests",
